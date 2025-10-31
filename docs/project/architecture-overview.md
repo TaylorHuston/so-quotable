@@ -322,12 +322,15 @@ import { v } from "convex/values";
 export default defineSchema({
   people: defineTable({
     name: v.string(),
+    slug: v.string(), // URL-friendly: "albert-einstein"
     bio: v.optional(v.string()),
-    birthDate: v.optional(v.string()),
+    birthDate: v.optional(v.string()), // ISO 8601: "YYYY-MM-DD" or "YYYY"
     deathDate: v.optional(v.string()),
-    defaultImageId: v.optional(v.id("images")), // Primary image
+    createdAt: v.number(),
+    updatedAt: v.number(),
   })
-    .index("by_name", ["name"]),
+    .index("by_name", ["name"])
+    .index("by_slug", ["slug"]),
 
   quotes: defineTable({
     personId: v.id("people"),
@@ -336,6 +339,7 @@ export default defineSchema({
     sourceUrl: v.optional(v.string()),
     verified: v.boolean(),
     createdAt: v.number(),
+    updatedAt: v.number(),
   })
     .index("by_person", ["personId"])
     .searchIndex("search_text", {
@@ -346,14 +350,19 @@ export default defineSchema({
   images: defineTable({
     personId: v.id("people"),
     cloudinaryId: v.string(), // Cloudinary reference
-    category: v.optional(v.string()), // "portrait", "action", etc.
-    description: v.optional(v.string()),
-    isPrimary: v.boolean(),
-    usageCount: v.number(),
+    url: v.string(), // Cloudinary URL
+    isPrimary: v.boolean(), // Primary image for this person
     width: v.number(),
     height: v.number(),
-    source: v.string(), // "Wikimedia Commons"
-    license: v.string(),
+    source: v.string(), // "Wikimedia Commons", etc.
+    license: v.union( // Type-safe license validation
+      v.literal("Public Domain"),
+      v.literal("CC0"),
+      v.literal("CC BY 4.0"),
+      v.literal("CC BY-SA 4.0"),
+      v.literal("CC BY 3.0"),
+      v.literal("CC BY-SA 3.0")
+    ),
     createdAt: v.number(),
   })
     .index("by_person", ["personId"])
@@ -363,11 +372,9 @@ export default defineSchema({
     quoteId: v.id("quotes"),
     imageId: v.id("images"), // Base image used
     cloudinaryId: v.string(), // Generated image reference
-    userId: v.optional(v.id("users")),
-    viewCount: v.number(),
+    url: v.string(), // Generated image URL
     createdAt: v.number(),
-    expiresAt: v.number(), // 30 days by default
-    isPermanent: v.boolean(), // False for free users
+    expiresAt: v.number(), // 30 days by default (Unix timestamp)
   })
     .index("by_quote", ["quoteId"])
     .index("by_expiration", ["expiresAt"]), // For cleanup cron
