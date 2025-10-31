@@ -9,7 +9,7 @@ This document defines the Git workflow and branching strategy for the So Quotabl
 ### Main Branches
 
 - **main**: Production-ready code
-- **develop**: Integration branch (if using Git Flow)
+- **develop**: Integration branch
 
 ### Supporting Branches
 
