@@ -1,117 +1,110 @@
 # Design Assets
 
-This directory contains all design-related assets for the So Quotable project.
+This directory contains design-related artifacts and references for the project.
 
 ## Directory Structure
 
-### mockups/
+### `/mockups/`
+UI/UX mockups and wireframes from design tools
+- Figma exports
+- Sketch files
+- Adobe XD designs
+- Low-fidelity wireframes
 
-UI/UX mockups and wireframes
+### `/screenshots/`
+Reference screenshots and visual examples
+- Competitor analysis screenshots
+- Design inspiration captures
+- User flow examples
+- A/B test variants
 
-- **Purpose**: Visual designs and layouts before implementation
-- **File types**: Figma exports, Sketch files, PNG/JPG mockups
-- **Naming**: `[feature]-[view]-[version].png`
-  - Example: `quote-editor-v1.png`
+### `/color-schemes/`
+Color palette references and definitions
+- Brand color specifications
+- Accessibility contrast reports
+- Color palette exports (from Coolors, Adobe Color, etc.)
+- Semantic color mapping documentation
 
-### screenshots/
+### `/assets/`
+Design assets and resources
+- Logo files (SVG, PNG)
+- Icon sets
+- Typography specimens
+- Pattern libraries
+- Canva templates
 
-Screenshots of the application at various stages
+## Usage Guidelines
 
-- **Purpose**: Document UI changes, bug reports, feature demonstrations
-- **File types**: PNG, JPG
-- **Naming**: `[feature]-[date].png`
-  - Example: `quote-gallery-2025-10-22.png`
+**File Naming**: Use descriptive, lowercase-kebab-case names
+- Good: `dashboard-mobile-mockup-v2.png`
+- Bad: `Screen Shot 2024-01-15.png`
 
-### color-schemes/
+**Organization**: Group related files in dated subdirectories when working on iterations
+- Example: `mockups/2024-01-checkout-redesign/`
 
-Color palette definitions and theme files
+**Formats**:
+- Prefer vector formats (SVG, Figma) for scalability
+- Use PNG for screenshots and raster images
+- Include source files when possible
 
-- **Purpose**: Maintain consistent branding and theme
-- **File types**: JSON, CSS, color palette exports
-- **Naming**: `[theme-name].json`
-  - Example: `primary-palette.json`, `dark-theme.json`
+## Design System Documentation
 
-Example color scheme JSON:
+### Visual Design (Required)
 
-```json
-{
-  "primary": "#3B82F6",
-  "secondary": "#8B5CF6",
-  "accent": "#10B981",
-  "background": "#FFFFFF",
-  "text": "#1F2937",
-  "error": "#EF4444",
-  "warning": "#F59E0B",
-  "success": "#10B981"
-}
+The **source of truth** for all visual design decisions:
+```
+docs/project/design-system.md
 ```
 
-### assets/
+Defines:
+- Visual language (colors, typography, spacing)
+- UI components and variants
+- Interaction patterns and animations
+- Accessibility standards
+- Responsive design and dark mode
 
-General design assets (logos, icons, illustrations)
+**When to update**: When adding components, changing design tokens, or updating visual standards.
 
-- **Purpose**: Reusable design elements
-- **File types**: SVG, PNG (with transparency), AI, PSD
-- **Naming**: `[asset-type]-[name].svg`
-  - Example: `logo-primary.svg`, `icon-quote.svg`
+### Writing & Content (Optional)
 
-## Design Process
+For projects with content/copywriting needs:
+```
+docs/project/writing-style.md
+```
 
-1. **Ideation**: Sketch concepts, create wireframes
-2. **Mockups**: Create high-fidelity mockups in design tool
-3. **Review**: Share mockups for feedback
-4. **Export**: Export assets to appropriate directories
-5. **Implement**: Developers reference mockups during implementation
-6. **Screenshots**: Capture screenshots of implemented features
+Defines:
+- Voice and tone guidelines
+- Microcopy patterns (buttons, errors, empty states)
+- Capitalization and formatting rules
+- Grammar and usage conventions
 
-## Design Tools
+**When to use**: Projects with user-facing content, marketing copy, or specific brand voice requirements. Many technical projects won't need this.
 
-(Update as you choose your tools)
+## Strategic Design Decisions
 
-- **UI/UX Design**: Figma, Sketch, Adobe XD
-- **Icons**: Heroicons, Font Awesome, custom SVGs
-- **Illustrations**: [To be determined]
-- **Prototyping**: [To be determined]
+For foundational design decisions that need documentation and rationale, use:
+```bash
+/adr "design system framework selection"
+```
 
-## Design System
+Examples of strategic design decisions:
+- Choosing a design framework (Tailwind CSS, Material UI, custom)
+- Selecting accessibility standards or tooling
+- Design token structure and naming conventions
+- Component library architecture
 
-For comprehensive design system documentation (components, patterns, typography, spacing), see design system documentation once established.
+These decisions are:
+- Stored as ADRs in `docs/project/adrs/`
+- Documented with context, alternatives, and consequences
+- Used to update `design-system.md` with the chosen approach
 
-Key design principles for So Quotable:
+**Tactical design changes** (component specs, color values, spacing) should be updated directly in `design-system.md` by AI assistants as they implement UI.
 
-- Clean, minimal interface
-- Focus on quote readability
-- Source verification prominence
-- Intuitive image overlay controls
+## Documentation Structure
 
-## Accessibility
+- **`design-system.md`**: Visual design specifications (required)
+- **`writing-style.md`**: Content and copy guidelines (optional)
+- **`design/` directory**: Visual assets and mockups (this folder)
+- **Component library**: Implementation code (in your codebase)
 
-Design with accessibility in mind:
-
-- Sufficient color contrast (WCAG AA minimum)
-- Clear typography
-- Keyboard navigation support
-- Screen reader compatibility
-- Touch-friendly targets (minimum 44px)
-
-## Responsive Design
-
-Design for multiple breakpoints:
-
-- Mobile: 320px - 767px
-- Tablet: 768px - 1023px
-- Desktop: 1024px+
-
-## Brand Guidelines
-
-(To be developed)
-
-- Logo usage
-- Color palette
-- Typography
-- Voice and tone
-- Image style
-
----
-
-_Keep design assets organized and up to date to maintain consistency across the project._
+This separation ensures design decisions are documented separately from assets and implementation.

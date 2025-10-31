@@ -1,45 +1,72 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Dependencies
+node_modules/
+vendor/
+__pycache__/
+*.pyc
+.venv/
+venv/
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
-
-# testing
-/coverage
-
-# next.js
+# Next.js
 /.next/
 /out/
+next-env.d.ts
+.vercel
 
-# production
-/build
+# Convex
+.convex/
+convex/_generated/
 
-# misc
+# Build outputs
+dist/
+build/
+*.o
+*.so
+*.dylib
+*.exe
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
 .DS_Store
-*.pem
+Thumbs.db
 
-# debug
+# Environment
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
-!.env.local.example
+# Testing
+coverage/
+.nyc_output/
+*.test.js.snap
+playwright-report/
+test-results/
+playwright/.cache/
 
-# convex
-convex/_generated/
+# Claude Code (project settings only - plugins installed globally)
+.claude/settings.local.json
+.claude/temp/
 
-# vercel
-.vercel
+# Temporary files
+*.tmp
+*.temp
+.cache/
 
-# typescript
+# TypeScript
 *.tsbuildinfo
-next-env.d.ts
+
+# Backup files
+*.backup

@@ -1,22 +1,46 @@
 # Project Documentation
 
-Project-wide technical documentation and decisions.
+Documentation specific to YOUR application.
 
-## Contents
+## What Goes Here
 
-This directory will contain:
+Project-specific content that describes your application:
+- Architecture decisions (ADRs)
+- System architecture and tech stack
+- Design assets (mockups, color schemes)
+- Feature specifications
+- API contracts and database schemas
 
-- **Architecture Decision Records (ADRs)** - Key technical decisions
-- **System Architecture** - High-level system design
-- **API Documentation** - API contracts and specifications
-- **Data Models** - Database schemas and data structures
+## Current Structure
 
-## Creating ADRs
-
-When making significant technical decisions, document them:
-
-```bash
-/docs "create ADR for choosing database technology"
+```
+project/
+├── architecture-overview.md  # Your tech stack and system design
+├── adrs/                     # Architecture Decision Records
+│   ├── README.md             # ADR best practices
+│   └── adr-template.md       # Template with YAML frontmatter
+└── design/                   # Design assets and references
+    ├── README.md
+    ├── mockups/
+    ├── screenshots/
+    ├── color-schemes/
+    └── assets/
 ```
 
-ADRs help future developers understand why decisions were made.
+## How It Grows
+
+1. **Fill in architecture-overview.md** as you make technology choices
+2. **Create ADRs** via `/adr` for important technical decisions
+3. **Add design assets** to `design/` subdirectories as you work on UI/UX
+4. **Create additional structure** as your project needs evolve
+
+Documentation emerges from actual work, not upfront planning.
+
+## Next Step
+
+Start with your project vision:
+```bash
+/project-brief
+```
+
+Define what you're building and why!

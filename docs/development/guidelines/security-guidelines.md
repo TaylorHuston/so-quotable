@@ -1,4 +1,27 @@
+---
+# === Metadata ===
+template_type: "guideline"
+version: "1.0.0"
+created: "2025-10-30"
+last_updated: "2025-10-31"
+status: "Active"
+target_audience: ["AI Assistants", "Security Auditors", "Development Team"]
+description: "Security practices and standards for So Quotable to protect user data and prevent vulnerabilities"
+
+# === Security Configuration (Machine-readable for AI agents) ===
+authentication: "Convex Auth"      # Convex Auth (email/password + OAuth)
+authorization: "RBAC"              # Role-based access control
+encryption_at_rest: "Convex"       # Convex handles encryption
+encryption_in_transit: "TLS"       # HTTPS/TLS for all connections
+secret_management: "env_vars"      # Environment variables
+security_headers: true             # Implement security headers
+rate_limiting: "Convex"            # Convex rate limiting
+cors_policy: "strict"              # Strict CORS configuration
+---
+
 # Security Guidelines
+
+**Referenced by Commands:** security-auditor agent, `/security-audit`
 
 ## Purpose
 

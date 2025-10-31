@@ -1,3 +1,21 @@
+---
+# === Metadata ===
+template_type: "adr"
+version: "1.0.0"
+created: "2025-10-30"
+last_updated: "2025-10-30"
+status: "Accepted"
+target_audience: ["AI Assistants", "DevOps Engineers", "Development Team"]
+description: "Development environment and deployment strategy for So Quotable MVP"
+
+# === ADR Metadata ===
+adr_number: "003"
+title: "Development Environment and Deployment Strategy"
+date: "2025-10-30"
+deciders: ["Taylor (Project Owner)", "DevOps Engineer (Review)"]
+tags: ["infrastructure", "deployment", "development-environment", "CI/CD", "DevOps"]
+---
+
 # ADR-003: Development Environment and Deployment Strategy
 
 **Date**: 2025-10-30

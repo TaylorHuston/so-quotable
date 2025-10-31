@@ -1,45 +1,60 @@
 ---
-id: BUG-XXX
-title: Bug Title
-severity: low | medium | high | critical
-status: open
-created: YYYY-MM-DD
-updated: YYYY-MM-DD
+# === Metadata ===
+template_type: "pm-template"
+version: "1.0.0"
+created: "2025-10-30"
+last_updated: "2025-10-30"
+status: "Active"
+target_audience: ["AI Assistants", "Project Management"]
+description: "Bug report template with reproduction steps and environment details"
+
+# === Template Configuration ===
+type: bug
+sections:
+  - name: Description
+    prompt: "What is the bug? Provide a clear summary of the issue."
+    required: true
+    format: paragraph
+    hint: "Brief overview of the problem and its impact."
+  - name: Reproduction Steps
+    prompt: "How can this bug be reproduced?"
+    required: true
+    format: numbered-list
+    hint: "Step-by-step instructions to reproduce the issue consistently."
+  - name: Expected Behavior
+    prompt: "What should happen?"
+    required: true
+    format: paragraph
+    hint: "Describe the correct/expected behavior."
+  - name: Actual Behavior
+    prompt: "What actually happens?"
+    required: true
+    format: paragraph
+    hint: "Describe the observed incorrect behavior."
+  - name: Environment
+    prompt: "What environment is this occurring in?"
+    required: false
+    format: list
+    hint: "OS, browser, version, configuration, etc."
 ---
 
-# BUG-XXX: Bug Title
-
-**Severity**: [low | medium | high | critical]
-**Status**: open
+# BUG-{id}: {name}
 
 ## Description
+{description}
 
-Clear description of the bug and its impact.
-
-## Steps to Reproduce
-
-1. Step 1
-2. Step 2
-3. Step 3
+## Reproduction Steps
+{reproduction_steps}
 
 ## Expected Behavior
-
-What should happen.
+{expected_behavior}
 
 ## Actual Behavior
-
-What actually happens.
+{actual_behavior}
 
 ## Environment
+{environment}
 
-- Browser/OS:
-- Version:
-- Other relevant details:
+---
 
-## Root Cause
-
-(To be filled during investigation)
-
-## Fix
-
-(To be filled during implementation)
+**Fix Plan**: Run `/plan BUG-{id}` to create PLAN.md with root cause analysis and fix approach.

@@ -1,3 +1,21 @@
+---
+# === Metadata ===
+template_type: "adr"
+version: "1.0.0"
+created: "2025-10-30"
+last_updated: "2025-10-30"
+status: "Accepted"
+target_audience: ["AI Assistants", "Test Engineers", "Development Team"]
+description: "Testing framework and strategy for So Quotable with TDD/BDD approach"
+
+# === ADR Metadata ===
+adr_number: "002"
+title: "Testing Framework and Strategy"
+date: "2025-10-30"
+deciders: ["Taylor (Project Owner)"]
+tags: ["testing", "TDD", "BDD", "quality", "infrastructure"]
+---
+
 # ADR-002: Testing Framework and Strategy
 
 **Date**: 2025-10-30

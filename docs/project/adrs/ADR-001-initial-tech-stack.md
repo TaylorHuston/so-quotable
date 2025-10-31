@@ -1,3 +1,21 @@
+---
+# === Metadata ===
+template_type: "adr"
+version: "1.0.0"
+created: "2025-10-30"
+last_updated: "2025-10-30"
+status: "Accepted"
+target_audience: ["AI Assistants", "Code Architects", "Development Team"]
+description: "Initial tech stack selection for So Quotable MVP"
+
+# === ADR Metadata ===
+adr_number: "001"
+title: "Initial Tech Stack Selection"
+date: "2025-10-30"
+deciders: ["Taylor (Project Owner)"]
+tags: ["architecture", "tech-stack", "database", "infrastructure", "MVP"]
+---
+
 # ADR-001: Initial Tech Stack Selection
 
 **Date**: 2025-10-30

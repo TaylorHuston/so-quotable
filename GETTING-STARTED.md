@@ -1,200 +1,314 @@
 # Getting Started with AI Toolkit
 
-This guide shows you how to use the AI Toolkit workflow for developing So Quotable.
+Welcome! You've initialized your project with the AI Toolkit for Claude Code.
 
-## Overview
+## Your Project Structure
 
-The AI Toolkit provides a structured, AI-assisted development workflow:
+```
+your-project/
+├── CLAUDE.md               # Project context for AI
+├── README.md               # Project overview
+├── GETTING-STARTED.md      # This file
+├── docs/
+│   ├── project-brief.md    # Your vision (start here!)
+│   ├── project/            # Architecture, ADRs, design assets
+│   └── development/        # Guidelines (7 customizable templates)
+└── pm/
+    ├── epics/              # Feature planning
+    ├── issues/             # Tasks and bugs
+    └── templates/          # Issue templates
+```
 
-1. **Define** - Clarify what you're building (brief, epics)
-2. **Plan** - Break down into tasks with implementation plans
-3. **Build** - Execute tasks with test-first development
-4. **Review** - Quality checks and documentation
+**34 files organized for clarity:**
+- **9 core files**: Project essentials (CLAUDE.md, README.md, CHANGELOG.md, etc.)
+- **25 structure files**: Guidelines (7), templates (5), documentation (7), placeholders (6)
+
+**Why this approach?** Guidelines and templates provide structure without overwhelming you. The AI Toolkit builds content as you work - no stale examples, just living documentation.
 
 ## Quick Start
 
-### 1. Complete Your Project Brief
-
+### 1. Define Your Vision
 ```bash
 /project-brief
 ```
+Interactive conversation to create your project brief - the "what" and "why" of your project.
 
-This starts a conversation to fill in the gaps in your project brief. It will ask about:
-
-- The problem you're solving
-- Your solution approach
-- Target audience
-- Key features
-- Success metrics
-
-### 2. Create Your First Epic
-
+### 2. Plan Your First Feature
 ```bash
 /epic
 ```
+Create an epic to organize related work. The AI helps you break it down into tasks.
 
-Create a feature epic through natural conversation. For example:
+### 3. Make Architecture Decisions
+```bash
+/adr
+```
+Explore technical solutions and create ADRs (Architecture Decision Records).
 
-- "Create a quote generator that overlays text on images"
-- "Build user authentication system"
-
-### 3. Plan a Task
-
-Once you have epics with tasks:
-
+### 4. Plan Implementation
 ```bash
 /plan TASK-001
 ```
+Break tasks into implementation phases with clear steps and testing requirements.
 
-This creates a detailed, phase-based implementation plan with:
-
-- Test requirements first
-- Implementation phases
-- Success criteria
-
-### 4. Implement a Task
-
+### 5. Build It
 ```bash
 /implement TASK-001 1.1
 ```
+Execute specific phases with specialized AI agents (frontend, backend, test, security, etc.).
 
-Execute a specific phase from the task plan. The AI will:
+## Git Workflow
 
-- Write tests first (TDD)
-- Implement the phase
-- Run tests
-- Fix any failures
+The AI Toolkit enforces a **three-branch workflow** for production safety:
 
-### 5. Check Status
+```
+main (production)         # Live environment - ONLY from develop
+  ↑
+  └─ develop (staging)    # Pre-production - from feature branches
+       ↑
+       ├─ feature/TASK-001  (your work)
+       ├─ feature/TASK-002
+       └─ bugfix/BUG-001
+```
 
+**CRITICAL RULES:**
+- ✅ Work branches → develop ONLY
+- ✅ Only develop → main
+- ❌ NEVER merge work branches directly to main
+
+### Branch Management
+
+**Work branches are created automatically:**
 ```bash
-/status
+/implement TASK-001 1.1
+# → Creates feature/TASK-001 if needed
+# → Switches to the branch
+# → Executes the phase
 ```
 
-See your current project status:
-
-- Active epics and tasks
-- Recent work
-- Next steps
-
-## Core Commands
-
-### Planning & Design
-
-- `/project-brief` - Complete project brief through conversation
-- `/epic [EPIC-###]` - Create or refine feature epics
-- `/plan TASK-###` - Add implementation plan to task
-
-### Development
-
-- `/implement TASK-### PHASE` - Execute implementation phase
-- `/test-fix` - Automatically detect and fix test failures
-- `/commit [message]` - Create quality-checked git commit
-
-### Quality & Documentation
-
-- `/quality` - Comprehensive quality assessment
-- `/security-audit` - Security vulnerability scan
-- `/docs` - Generate, validate, or sync documentation
-
-### Project Management
-
-- `/status` - View project status and progress
-- `/comment "text"` - Log manual changes with timestamp
-
-## Workflow Example
-
-Here's a typical workflow:
-
+**Merging to staging (with test validation):**
 ```bash
-# 1. Define a feature
-/epic
-> "I want to create a quote overlay feature"
-
-# Epic EPIC-001 created with tasks TASK-001, TASK-002, TASK-003
-
-# 2. Plan the first task
-/plan TASK-001
-
-# Implementation plan created with phases
-
-# 3. Implement phase by phase
-/implement TASK-001 1.1  # Tests
-/implement TASK-001 1.2  # Implementation
-/implement TASK-001 1.3  # Integration
-
-# 4. Commit when done
-/commit
-
-# 5. Check overall progress
-/status
+/branch merge develop
+# → Runs all tests
+# → BLOCKS if any fail
+# → Merges if all pass
+# ✅ feature/* → develop (allowed)
 ```
 
-## Project Structure
-
-```
-quoteable/
-├── pm/                    # Project management
-│   ├── epics/            # Feature epics (EPIC-###.md)
-│   ├── issues/           # Tasks and bugs (TASK-###.md, BUG-###.md)
-│   └── templates/        # Templates for new items
-├── docs/                 # Documentation
-│   ├── project-brief.md # Product vision (the "what" and "why")
-│   ├── project/         # Technical docs, ADRs
-│   └── development/     # Dev guidelines, workflows
-├── src/                 # Your application code
-└── tests/               # Your tests
-```
-
-## Tips
-
-### Natural Language
-
-All commands work with natural language:
-
+**Promoting to production (with staging validation):**
 ```bash
-/epic "user authentication with social login"
-/plan TASK-005
-/implement TASK-005 2.1
-```
+# ❌ WRONG - work branches cannot merge to main:
+# /branch merge main  # BLOCKED by /branch command
 
-### Test-First Development
-
-The `/implement` command enforces TDD:
-
-1. Write tests first
-2. Implement to pass tests
-3. Fix failures automatically
-
-### Track Manual Changes
-
-When you make manual changes, log them:
-
-```bash
-/comment "Updated API endpoint to use new auth"
-```
-
-This helps AI understand context for future work.
-
-### Use Branches
-
-For features, use branches:
-
-```bash
-/branch create TASK-005
-# ... work on task ...
-/commit
+# ✅ CORRECT - two-step process via develop:
+/branch switch develop
 /branch merge main
+# → Verifies source is develop (BLOCKS work branches)
+# → Runs staging health checks
+# → Validates deployment
+# → Merges if validated
 ```
+
+**Clean up after merge:**
+```bash
+/branch delete feature/TASK-001
+# → Verifies fully merged
+# → Deletes local and remote
+```
+
+### Commit Messages
+
+Branch-aware commits automatically include issue references:
+
+```bash
+# On feature/TASK-001
+/commit "add user authentication"
+# → Generates: feat(TASK-001): add user authentication
+```
+
+### Workflow Configuration
+
+Your git workflow is defined in `docs/development/guidelines/git-workflow.md`:
+- Branch naming patterns
+- Merge validation rules
+- Commit message format
+- Production safety requirements
+
+Commands automatically read and enforce these rules.
+
+## How It Works
+
+### Commands Guide You
+Each command is conversational and guides you through its workflow:
+- `/project-brief` asks questions to fill in your vision
+- `/epic` helps structure features with acceptance criteria
+- `/adr` explores options and creates ADRs
+- `/plan` breaks work into testable phases
+- `/implement` executes with domain-specific agents
+
+### Structure Emerges
+As you work, the AI creates documentation automatically:
+- **ADRs** from `/adr` sessions
+- **Task plans** from `/plan` command
+- **Implementation notes** during `/implement`
+- **Test plans** integrated throughout
+
+### Guidelines Adapt
+Your project includes 7 customizable guideline templates in `docs/development/guidelines/`:
+- `development-loop.md` - AI-assisted workflow and quality gates
+- `api-guidelines.md` - API patterns and structure
+- `testing-standards.md` - Testing approach
+- `git-workflow.md` - Branching and commits
+- `coding-standards.md` - Code style
+- `security-guidelines.md` - Security practices
+- `architectural-principles.md` - Design philosophy
+
+Start with TBD placeholders, fill in via `/adr` decisions, customize as needed.
 
 ## Next Steps
 
-1. Run `/project-brief` to complete your brief
-2. Run `/epic` to create your first feature
-3. Use `/plan` and `/implement` to build it
+1. **Review CLAUDE.md** - Add your tech stack and external links
+2. **Create Your Vision** - Run `/project-brief`
+3. **Start Your First Feature** - Run `/epic`
+4. **Learn As You Go** - Commands guide you through the workflow
 
-For more details on each command, check the pm/ and docs/ directories.
+## Command Reference
 
----
+| Command | Purpose |
+|---------|---------|
+| `/toolkit-init` | Initialize project structure |
+| `/project-brief` | Create/update project vision |
+| `/epic` | Plan features and epics |
+| `/adr` | Make technical decisions (ADRs) |
+| `/plan TASK-###` | Break down implementation |
+| `/implement TASK-### PHASE` | Execute specific phases |
+| `/branch` | Branch operations (create, merge, delete, switch) |
+| `/commit` | Branch-aware git commits |
+| `/quality` | Quality assessment |
+| `/test-fix` | Fix failing tests |
+| `/project-status` | Project status dashboard |
+| `/docs` | Documentation management |
 
-_This is a living guide. As you discover better workflows, update this file!_
+## Specialized Agents
+
+The AI Toolkit includes **19 specialized agents** that automatically activate based on your work:
+
+| Agent | Domain | Auto-Activates For |
+|-------|--------|-------------------|
+| **brief-strategist** | Product strategy | Project brief development |
+| **code-architect** | System design | Architecture decisions, ADRs |
+| **ui-ux-designer** | Design & UX | Design decisions, mockups |
+| **frontend-specialist** | UI development | Component development |
+| **backend-specialist** | Server-side | API implementation, business logic |
+| **database-specialist** | Data design | Schema design, query optimization |
+| **api-designer** | API architecture | Endpoint design, contracts |
+| **test-engineer** | Testing | Test creation, TDD/BDD |
+| **code-reviewer** | Code quality | Post-implementation reviews |
+| **security-auditor** | Security | Security-critical changes |
+| **performance-optimizer** | Performance | Performance bottlenecks |
+| **devops-engineer** | Infrastructure | Deployment, CI/CD |
+| **technical-writer** | Documentation | Documentation creation |
+| **context-analyzer** | Investigation | Bug diagnosis, analysis |
+| **project-manager** | Coordination | Multi-agent workflows |
+| **refactoring-specialist** | Code cleanup | Technical debt reduction |
+| **migration-specialist** | Upgrades | Framework migrations |
+| **data-analyst** | Data processing | Analytics, reporting |
+| **ai-llm-expert** | AI/ML | AI architecture, LLM integration |
+
+**You don't need to invoke agents manually** - they activate automatically when you use commands like `/implement`, `/adr`, or `/quality`.
+
+## Commands vs Agents: When to Use Which?
+
+Understanding the distinction between **slash commands** and **agents** helps you work more effectively:
+
+### Commands = Structured Workflow Actions
+
+**Use commands when you want:**
+- Structured workflows with specific file outputs
+- Files created in standard locations with required sections
+- Process enforcement and consistency
+
+**Examples:**
+```bash
+/epic                      # Creates pm/epics/EPIC-###-name.md
+/plan TASK-001             # Creates pm/issues/TASK-001-*/PLAN.md
+/adr                       # Creates docs/project/adrs/ADR-###.md
+/implement TASK-001 1.1    # Executes phase, updates WORKLOG.md
+```
+
+Commands orchestrate agents and enforce project structure.
+
+### Agents = Expert Consultation & Automation
+
+**Use agents (via conversation) when you want:**
+- Expert advice without creating files
+- Quick answers to technical questions
+- Exploration without committing to structure
+
+**Examples:**
+```
+"How should I structure this authentication flow?"
+→ backend-specialist provides guidance
+
+"Review this code for security issues"
+→ security-auditor analyzes and advises
+
+"What's the best way to handle real-time updates?"
+→ backend-specialist + performance-optimizer discuss options
+```
+
+Agents provide expertise without enforcing file structure.
+
+### When Both Exist
+
+Some workflows have both command and agent versions:
+
+**`/quality` command:**
+- Comprehensive quality report across entire codebase
+- Generates quality metrics and analysis
+- Use for: Explicit quality audits, pre-release checks
+
+**`code-reviewer` agent (auto-invoked):**
+- Per-phase code review during `/implement`
+- Provides score (0-100) and iterates until ≥90
+- Use for: Automatic quality gates during development
+
+**`/docs` command:**
+- Documentation management and synchronization
+- Updates docs across entire project
+- Use for: Explicit documentation updates
+
+**`technical-writer` agent (auto-invoked):**
+- Auto-updates docs when code changes
+- Maintains doc-code consistency
+- Use for: Automatic documentation during `/implement`
+
+### Rule of Thumb
+
+- **Want a file created?** → Use a command
+- **Want expert advice?** → Ask directly (agent activates)
+- **Want automated workflow?** → Commands invoke agents automatically
+
+Both approaches work together - commands orchestrate agents to deliver complete workflows.
+
+## Need More Information?
+
+**Ask Claude** - Claude has access to complete plugin documentation and can answer questions:
+
+- "How does the security-auditor agent work?"
+- "When should I use the code-architect vs api-designer?"
+- "How does the /adr command work?"
+- "Show me the full command workflow"
+- "What's the difference between /epic and /plan?"
+
+Claude reads the plugin documentation (AGENTS.md, COMMANDS.md) and provides detailed explanations.
+
+## Philosophy
+
+This toolkit embraces AI-assisted development:
+- **AI helps you build**, not pre-built templates
+- **Structure emerges from work**, not upfront planning
+- **Documentation reflects reality**, not aspirations
+- **Guidelines are templates**, customized per project
+
+Welcome to AI-assisted development. Let's build something! 🚀

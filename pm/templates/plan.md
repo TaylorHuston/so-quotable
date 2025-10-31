@@ -1,4 +1,14 @@
 ---
+# === Metadata ===
+template_type: "pm-template"
+version: "1.0.0"
+created: "2025-10-30"
+last_updated: "2025-10-30"
+status: "Active"
+target_audience: ["AI Assistants"]
+description: "AI-managed implementation plan separate from PM-tool-synced TASK.md/BUG.md"
+
+# === Template Configuration ===
 type: plan
 purpose: "AI-managed implementation breakdown that stays separate from PM-tool-synced TASK.md/BUG.md"
 auto_generated: true
@@ -38,17 +48,15 @@ sections:
 ## Phases
 
 ### Phase 1 - {phase_1_name}
-
 - [ ] 1.1 {step_description}
+  - [ ] 1.1.1 {step_description}
 - [ ] 1.2 {step_description}
 
 ### Phase 2 - {phase_2_name}
-
 - [ ] 2.1 {step_description}
 - [ ] 2.2 {step_description}
 
 ### Phase 3 - {phase_3_name}
-
 - [ ] 3.1 {step_description}
 - [ ] 3.2 {step_description}
 
@@ -57,7 +65,6 @@ sections:
 **Note**: Phases are suggestions. Modify to fit your workflow!
 
 **Alternative Patterns**:
-
 - **Strict TDD**: Red-Green-Refactor cycle visible in every step
 - **BDD Scenarios**: Define Given/When/Then → Implement tests → Build features
 - **Test Pyramid**: Heavy unit, moderate integration, light E2E
