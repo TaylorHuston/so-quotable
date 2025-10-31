@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines API design and development standards for the So Quoteable project.
+This document defines API design and development standards for the So Quotable project.
 
 ## RESTful Design Principles
 

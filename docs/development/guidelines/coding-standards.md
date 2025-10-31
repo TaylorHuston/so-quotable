@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines coding standards for the So Quoteable project to ensure consistency, maintainability, and quality across the codebase.
+This document defines coding standards for the So Quotable project to ensure consistency, maintainability, and quality across the codebase.
 
 ## General Principles
 

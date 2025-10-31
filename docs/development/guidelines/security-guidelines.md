@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines security practices and standards for the So Quoteable project to protect user data and prevent vulnerabilities.
+This document defines security practices and standards for the So Quotable project to protect user data and prevent vulnerabilities.
 
 ## Core Security Principles
 

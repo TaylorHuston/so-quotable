@@ -1,6 +1,6 @@
 # Architecture Overview
 
-## Project: So Quoteable
+## Project: So Quotable
 
 **Last Updated**: 2025-10-22
 
@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-So Quoteable is a web application that allows users to generate quotes on top of images of the source of the quote, with verified, attributed sources.
+So Quotable is a web application that allows users to generate quotes on top of images of the source of the quote, with verified, attributed sources.
 
 This document provides a high-level overview of the system architecture, key components, and design decisions.
 

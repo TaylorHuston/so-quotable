@@ -1,4 +1,4 @@
-# So Quoteable
+# So Quotable
 
 Allows users to generate quotes on top of images of the source of the quote.
 

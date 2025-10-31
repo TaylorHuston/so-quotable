@@ -1,6 +1,6 @@
 # Design Assets
 
-This directory contains all design-related assets for the So Quoteable project.
+This directory contains all design-related assets for the So Quotable project.
 
 ## Directory Structure
 
@@ -76,7 +76,7 @@ General design assets (logos, icons, illustrations)
 
 For comprehensive design system documentation (components, patterns, typography, spacing), see design system documentation once established.
 
-Key design principles for So Quoteable:
+Key design principles for So Quotable:
 - Clean, minimal interface
 - Focus on quote readability
 - Source verification prominence

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines testing standards and practices for the So Quoteable project.
+This document defines testing standards and practices for the So Quotable project.
 
 ## Testing Philosophy
 

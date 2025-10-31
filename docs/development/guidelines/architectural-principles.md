@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines the core architectural principles guiding the design and development of the So Quoteable project.
+This document defines the core architectural principles guiding the design and development of the So Quotable project.
 
 ## Core Principles
 

@@ -1,6 +1,6 @@
 # Project Management
 
-This directory contains all project management artifacts for So Quoteable.
+This directory contains all project management artifacts for So Quotable.
 
 ## Structure
 

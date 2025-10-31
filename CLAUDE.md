@@ -1,10 +1,10 @@
-# So Quoteable - AI Assistant Context
+# So Quotable - AI Assistant Context
 
 This file provides context for AI assistants working on this project.
 
 ## Project Context
 
-- **Project Name**: So Quoteable
+- **Project Name**: So Quotable
 - **Description**: Allows users to generate quotes on top of images of the source of the quote. Quotes should have a verified, attributed source.
 - **Tech Stack**: [Update as you decide on technologies]
 - **External Links**:

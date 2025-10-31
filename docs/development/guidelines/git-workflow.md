@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines the Git workflow and branching strategy for the So Quoteable project.
+This document defines the Git workflow and branching strategy for the So Quotable project.
 
 ## Branching Strategy
 

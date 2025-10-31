@@ -1,6 +1,6 @@
 # Documentation
 
-This directory contains all project documentation for So Quoteable.
+This directory contains all project documentation for So Quotable.
 
 ## Structure
 

@@ -1,6 +1,6 @@
 # Getting Started with AI Toolkit
 
-This guide shows you how to use the AI Toolkit workflow for developing So Quoteable.
+This guide shows you how to use the AI Toolkit workflow for developing So Quotable.
 
 ## Overview
 
