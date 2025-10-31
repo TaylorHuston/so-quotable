@@ -2,6 +2,11 @@
 
 This file provides context for AI assistants working on this project.
 
+## Critical Rules
+
+1. Never commit without explicit instruction to do so
+2. Always review all project documentation and guidelines before starting a batch of work
+
 ## Project Context
 
 - **Project Name**: So Quotable
