@@ -1,8 +1,29 @@
+---
+# === Metadata ===
+template_type: "guideline"
+version: "1.0.0"
+created: "2025-10-30"
+last_updated: "2025-10-31"
+status: "Active"
+target_audience: ["AI Assistants", "API Designers", "Backend Developers"]
+description: "API design patterns, structure, and conventions for Convex function-based API"
+
+# === API Configuration (Machine-readable for AI agents) ===
+api_pattern: "Convex Functions"  # Convex function-based API
+api_location: "convex/"          # Convex backend functions
+authentication: "Convex Auth"    # Convex Auth (email/password + OAuth)
+versioning: "none"               # No versioning for MVP
+error_format: "throw Error"      # Standard JavaScript errors
+documentation: "TypeScript"      # TypeScript types + comments
+---
+
 # API Guidelines
 
-## Purpose
+**Referenced by Commands:** `/implement`, backend-specialist agent
 
-This document defines API design and development standards for the So Quotable project.
+## Quick Reference
+
+This guideline defines our API design patterns, structure, and conventions. So Quotable uses Convex's function-based API instead of traditional REST endpoints.
 
 See [ADR-001: Initial Tech Stack](../../project/adrs/ADR-001-initial-tech-stack.md) for rationale on choosing Convex's function-based API over traditional REST.
 
@@ -35,6 +56,12 @@ export const remove = mutation(...)      // Delete quote
 // Actions (convex/images.ts)
 export const generateQuoteImage = action(...)  // Generate image via Cloudinary
 ```
+
+### File Structure
+
+- **Location**: `convex/` directory
+- **Naming Convention**: Resource-based files (quotes.ts, people.ts, images.ts)
+- **Organization**: By domain entity
 
 ### Frontend Usage
 
@@ -94,11 +121,13 @@ throw new Error(`Quote ${quoteId} not found`);
 
 // Best: Structured error handling
 if (!quote) {
-  throw new Error(JSON.stringify({
-    code: "QUOTE_NOT_FOUND",
-    message: "Quote not found",
-    quoteId,
-  }));
+  throw new Error(
+    JSON.stringify({
+      code: "QUOTE_NOT_FOUND",
+      message: "Quote not found",
+      quoteId,
+    })
+  );
 }
 ```
 
@@ -121,7 +150,9 @@ Use Convex Auth to protect functions:
 import { mutation } from "./_generated/server";
 
 export const create = mutation({
-  args: { /* ... */ },
+  args: {
+    /* ... */
+  },
   handler: async (ctx, args) => {
     // Require authentication
     const user = await ctx.auth.getUserIdentity();
@@ -174,8 +205,6 @@ quotes: defineTable({...})
   })
 ```
 
----
-
 ## Legacy REST Reference
 
 The following REST principles may be useful for external API integrations (e.g., Cloudinary), but the primary So Quotable API uses Convex functions.
@@ -216,11 +245,13 @@ The following REST principles may be useful for external API integrations (e.g.,
 Use appropriate HTTP status codes:
 
 **Success:**
+
 - 200 OK: Successful GET, PUT, PATCH
 - 201 Created: Successful POST
 - 204 No Content: Successful DELETE
 
 **Client Errors:**
+
 - 400 Bad Request: Invalid input
 - 401 Unauthorized: Authentication required
 - 403 Forbidden: Insufficient permissions
@@ -229,126 +260,35 @@ Use appropriate HTTP status codes:
 - 422 Unprocessable Entity: Validation errors
 
 **Server Errors:**
+
 - 500 Internal Server Error: General server error
 - 503 Service Unavailable: Temporary unavailability
 
-## Request/Response Format
+## Examples
 
-### Request Body
+This section documents real API implementations for consistency.
 
-```json
-{
-  "quote": {
-    "text": "The quote text",
-    "author": "Author Name",
-    "source": "Source Title",
-    "image_url": "https://example.com/image.jpg"
-  }
-}
-```
+### Endpoint Example
+- TBD - Add link to first Convex function
 
-### Response Format
+### Authentication Example
+- TBD - Add link to auth implementation
 
-Success response:
-```json
-{
-  "data": {
-    "id": "123",
-    "quote": "...",
-    "author": "...",
-    "created_at": "2025-10-22T12:00:00Z"
-  }
-}
-```
+### Error Handling Example
+- TBD - Add link to error handler
 
-Error response:
-```json
-{
-  "error": {
-    "code": "INVALID_QUOTE",
-    "message": "Quote text is required",
-    "details": {
-      "field": "quote.text",
-      "reason": "required"
-    }
-  }
-}
-```
+## General API Knowledge
 
-## Versioning
+For API design best practices, Claude has extensive knowledge of:
+- REST principles (resources, verbs, status codes)
+- GraphQL schema design and query optimization
+- API security (authentication, authorization, rate limiting)
+- Versioning strategies and backward compatibility
+- Documentation standards (OpenAPI, AsyncAPI)
+- Convex function patterns and best practices
 
-- Include version in URL: `/api/v1/quotes`
-- Maintain backward compatibility when possible
-- Clearly document breaking changes
-- Deprecate old versions gradually
-
-## Authentication
-
-- Use JWT tokens or OAuth 2.0
-- Include authentication in headers: `Authorization: Bearer <token>`
-- Implement rate limiting
-- Validate all inputs
-
-## Pagination
-
-For list endpoints:
-
-```
-GET /quotes?page=2&limit=20
-
-Response:
-{
-  "data": [...],
-  "pagination": {
-    "page": 2,
-    "limit": 20,
-    "total": 150,
-    "total_pages": 8
-  }
-}
-```
-
-## Filtering and Sorting
-
-```
-GET /quotes?author=einstein&sort=-created_at
-```
-
-- Use query parameters for filtering
-- Use `-` prefix for descending sort
-- Document available filters
-
-## Error Handling
-
-- Return consistent error format
-- Include helpful error messages
-- Don't expose sensitive information
-- Log errors server-side
-
-## Documentation
-
-- Document all endpoints
-- Include request/response examples
-- Document authentication requirements
-- Keep documentation up to date
-- Consider using OpenAPI/Swagger
-
-## Performance
-
-- Implement caching where appropriate
-- Use compression (gzip)
-- Minimize payload size
-- Implement field selection (`?fields=id,title`)
-
-## Security
-
-- Validate all inputs
-- Sanitize outputs
-- Use HTTPS only
-- Implement CORS properly
-- Rate limit to prevent abuse
-- Never trust client input
+Ask questions like "What's the best way to design [X] function?" and Claude will provide guidance based on industry standards and Convex patterns.
 
 ---
 
-*Update this document as your API evolves.*
+_Update this document as your API evolves._

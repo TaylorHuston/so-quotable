@@ -13,9 +13,11 @@ updated: 2025-10-30
 **Status**: todo
 
 ## Description
+
 Set up Convex Auth to handle user authentication with email/password and Google OAuth. Implement user session management, protected routes, and authorization patterns for securing backend functions.
 
 ## Acceptance Criteria
+
 - [ ] Convex Auth configured and initialized
 - [ ] Email/password authentication working
 - [ ] Google OAuth integration configured and functional
@@ -29,6 +31,7 @@ Set up Convex Auth to handle user authentication with email/password and Google 
 - [ ] Auth UI components created (login, register, profile)
 
 ## Technical Notes
+
 - Install `@convex-dev/auth` package
 - Configure auth in convex/auth.config.ts
 - Set up providers:
@@ -50,6 +53,7 @@ Set up Convex Auth to handle user authentication with email/password and Google 
   - UserProfile component
 
 ## Dependencies
+
 - TASK-002: Convex backend must be initialized
 - Google Cloud Console project for OAuth credentials
 - Email service configuration (for password resets)
@@ -60,6 +64,7 @@ Set up Convex Auth to handle user authentication with email/password and Google 
   - EMAIL_SERVER (SMTP configuration)
 
 ## Testing
+
 - Register new user with email/password
 - Login with registered credentials
 - Logout and verify session cleared

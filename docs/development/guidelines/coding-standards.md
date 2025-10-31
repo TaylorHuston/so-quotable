@@ -1,4 +1,31 @@
+---
+# === Metadata ===
+template_type: "guideline"
+version: "1.0.0"
+created: "2025-10-30"
+last_updated: "2025-10-31"
+status: "Active"
+target_audience: ["AI Assistants", "Development Team"]
+description: "Code style, naming conventions, and file organization standards for So Quotable"
+
+# === Coding Configuration (Machine-readable for AI agents) ===
+language: "typescript"          # TypeScript (mandatory)
+file_naming: "kebab-case"       # kebab-case for files
+directory_structure: "feature-based"  # Feature-based organization
+formatter: "prettier"           # Prettier for formatting
+linter: "eslint"               # ESLint with TypeScript
+max_line_length: 100
+indent_style: "spaces"         # spaces
+indent_size: 2
+---
+
 # Coding Standards
+
+**Referenced by Commands:** code-reviewer agent, refactoring-specialist agent
+
+## Quick Reference
+
+This guideline defines our code style, naming conventions, and file organization for So Quotable. All code must be TypeScript for end-to-end type safety.
 
 ## Purpose
 
@@ -27,6 +54,7 @@ This document defines coding standards for the So Quotable project to ensure con
 - Use proper type annotations (avoid `any`)
 
 **Convex-Specific**:
+
 ```typescript
 // Use generated types from Convex
 import { api } from "@/convex/_generated/api";
@@ -78,4 +106,4 @@ All code must be reviewed before merging. Reviewers should check for:
 
 ---
 
-*Update this document as the project evolves and new patterns emerge.*
+_Update this document as the project evolves and new patterns emerge._

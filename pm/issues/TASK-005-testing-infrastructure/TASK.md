@@ -13,9 +13,11 @@ updated: 2025-10-30
 **Status**: todo
 
 ## Description
+
 Implement the comprehensive testing infrastructure as defined in ADR-002, including Vitest for unit/integration tests, convex-test for backend testing, and Playwright for E2E tests. Configure the backend-first testing pyramid with 60% backend, 30% frontend, and 10% E2E coverage targets.
 
 ## Acceptance Criteria
+
 - [ ] Vitest installed and configured for unit/integration tests
 - [ ] convex-test configured for Convex function testing
 - [ ] React Testing Library integrated for component tests
@@ -29,6 +31,7 @@ Implement the comprehensive testing infrastructure as defined in ADR-002, includ
 - [ ] Mock data fixtures created
 
 ## Technical Notes
+
 - Install packages:
   - vitest (v2.0+)
   - @vitest/ui
@@ -58,11 +61,13 @@ Implement the comprehensive testing infrastructure as defined in ADR-002, includ
   - test:e2e:ui: Playwright UI mode
 
 ## Dependencies
+
 - TASK-001: Next.js project must be initialized
 - TASK-002: Convex backend for testing database functions
 - Node.js test runner support
 
 ## Testing
+
 - Run `npm test` and verify Vitest starts in watch mode
 - Execute a sample Convex function test
 - Run a sample React component test
