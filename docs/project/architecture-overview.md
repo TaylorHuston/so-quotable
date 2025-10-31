@@ -2,7 +2,7 @@
 
 ## Project: So Quotable
 
-**Last Updated**: 2025-10-22
+**Last Updated**: 2025-10-30
 
 ---
 
@@ -47,25 +47,28 @@ Key principles:
 
 ### Architectural Style
 
-[To be determined based on implementation]
+**Serverless** - Function-based architecture with managed backend services
 
-Options being considered:
-- **Monolithic**: Single deployable application (simpler to start)
-- **Microservices**: Separate services for quotes, images, auth (more scalable)
-- **Serverless**: Function-based architecture (lower infrastructure overhead)
+The application uses a serverless architecture combining:
+- Next.js frontend on Vercel (edge functions, server components)
+- Convex backend (reactive database + serverless functions)
+- Cloudinary for image storage and processing
+
+This approach provides low infrastructure overhead while maintaining scalability.
 
 ### Technology Stack
 
-**Current decisions** (update as decided):
+**Decided** (see [ADR-001](./adrs/ADR-001-initial-tech-stack.md) for details):
 
-- **Frontend**: [To be determined - likely Next.js based on README.md]
-- **Backend**: [To be determined - likely Node.js/Express based on README.md]
-- **Database**: [To be determined]
-- **Image Storage**: [To be determined - S3, Cloudinary, etc.]
-- **Deployment**: Vercel (mentioned in README.md)
-- **Authentication**: [To be determined]
+- **Frontend**: Next.js (App Router) with TypeScript
+- **Backend**: Convex (reactive TypeScript database + serverless functions)
+- **Database**: Convex (document database with relational capabilities)
+- **Image Storage**: Cloudinary (base images + generated quote images)
+- **Image Processing**: Cloudinary transformations (text overlay generation)
+- **Deployment**: Vercel (frontend) + Convex Cloud (backend)
+- **Authentication**: Convex Auth (email/password + OAuth)
 
-See [ADRs](./adrs/README.md) for detailed decision records as they are made.
+See [ADRs](./adrs/README.md) for detailed decision records.
 
 ---
 
@@ -87,81 +90,102 @@ See [ADRs](./adrs/README.md) for detailed decision records as they are made.
 - Typography controls (font, size, color)
 - Source verification UI
 
-### 2. Backend (Business Logic Layer)
+### 2. Backend (Convex Functions)
+
+**Architecture**: Serverless functions (queries, mutations, actions)
 
 **Responsibilities**:
-- Quote CRUD operations
-- Source verification
-- Image processing
+- Quote CRUD operations (mutations)
+- Real-time data subscriptions (queries)
+- Image metadata management
 - User authentication and authorization
 - Quote validation
-- API endpoints
+- Background jobs (cleanup expired images)
 
-**Key Services** (potential structure):
-- Quote Service: Manage quote data
-- Image Service: Handle image upload, processing, storage
-- Verification Service: Verify quote sources
-- User Service: Manage user accounts
+**Key Function Types**:
+- **Queries**: Read-only, reactive data fetching (quotes, people, images)
+- **Mutations**: Data modifications (create quote, update person, save image)
+- **Actions**: External API calls (Cloudinary upload, image generation)
+- **Cron Jobs**: Scheduled tasks (auto-delete expired images)
 
-### 3. Database (Data Layer)
+### 3. Database (Convex Document Database)
+
+**Technology**: Convex reactive database (document-based with TypeScript schema)
 
 **Responsibilities**:
 - Persistent storage of quotes
 - User account information
-- Source verification records
-- Quote metadata
+- Image metadata (references to Cloudinary)
+- Generated image tracking
+- Real-time data synchronization
 
-**Key Entities**:
-- **Quote**: text, author, source, verification status
-- **User**: account information, created quotes
-- **Image**: image metadata, storage location
-- **Source**: source information, verification details
+**Key Collections** (TypeScript schema):
+- **people**: name, bio, dates, defaultImageId (multiple images per person)
+- **quotes**: personId, text, source, sourceUrl, verified
+- **images**: personId, cloudinaryId, category, isPrimary (base person photos)
+- **generatedImages**: quoteId, cloudinaryId, createdAt, expiresAt (user-created quote overlays)
+- **users**: email, name, auth metadata (managed by Convex Auth)
 
 ### 4. External Services
 
-**Image Storage**:
-- Store uploaded images
-- Serve generated quote images
-- CDN for performance
+**Cloudinary** (Image Storage & Processing):
+- Store curated person photos (base images)
+- Store user-generated quote images (30-day expiration)
+- Text overlay generation via URL transformations
+- Automatic image optimization (WebP, compression)
+- Global CDN delivery
+- Free tier: 25GB storage, 25GB bandwidth/month
 
-**Source Verification** (potential):
-- Third-party APIs for quote verification
-- Manual verification system
-- Crowdsourced verification
-
-**Authentication** (potential):
-- OAuth providers (Google, GitHub, etc.)
+**Convex Auth** (Authentication):
 - Email/password authentication
+- OAuth providers (Google, GitHub, etc.)
+- Built on Auth.js
+- Integrated with Convex backend
 
 ---
 
 ## Data Flow
 
-### Quote Creation Flow
+### Quote Image Generation Flow
 
 ```
-User → Frontend → Backend API → Database
+User → Frontend → Convex Query (get quote + person + image)
                       ↓
-                  Image Service → Image Storage
+        Convex returns: quote text, person data, Cloudinary image URL
                       ↓
-                  Verification Service → Verification DB
-```
-
-1. User creates quote in frontend
-2. Frontend sends quote data to backend API
-3. Backend validates quote data
-4. Image is uploaded and processed
-5. Quote is stored in database
-6. Source verification is initiated
-7. Generated quote image is returned to user
-
-### Quote Retrieval Flow
-
-```
-User → Frontend → Backend API → Database
+        Frontend → Cloudinary URL transformation (text overlay)
                       ↓
-                  Image Storage (CDN) → User
+        Cloudinary → Generated image with quote overlay
+                      ↓
+        User downloads or Frontend → Cloudinary (save for sharing)
+                      ↓
+        Convex Mutation → Save generatedImage metadata
 ```
+
+**Steps**:
+1. User selects person and quote in frontend
+2. Frontend calls Convex query to fetch data
+3. Convex returns quote, person, and Cloudinary image reference
+4. Frontend builds Cloudinary URL with text overlay transformations
+5. User previews image (Canvas API for editing)
+6. User generates final image via Cloudinary transformation URL
+7. Optional: Save to Cloudinary for sharing (unique URL)
+8. Convex mutation saves generated image metadata (for auto-deletion)
+
+### Quote Search Flow
+
+```
+User → Frontend → Convex Query (search)
+                      ↓
+        Convex full-text search → matching quotes
+                      ↓
+        Real-time reactive updates → Frontend
+```
+
+**Features**:
+- Real-time reactivity (automatic UI updates)
+- Built-in full-text search (no external service needed)
+- Type-safe queries (TypeScript end-to-end)
 
 ---
 
@@ -242,74 +266,120 @@ See [api-guidelines.md](../development/guidelines/api-guidelines.md) for detaile
 
 ### API Style
 
-RESTful API design
+**Function-based API** (Convex)
 
-### Key Endpoints (proposed)
+Instead of REST endpoints, the API consists of TypeScript functions:
+- **Queries**: Read-only operations (automatically cached, reactive)
+- **Mutations**: Write operations (transactional)
+- **Actions**: External API calls (non-transactional)
 
+### Key Functions (TypeScript)
+
+```typescript
+// Queries (convex/quotes.ts)
+export const list = query(...)           // List quotes
+export const get = query(...)            // Get single quote
+export const search = query(...)         // Full-text search
+
+// Mutations (convex/quotes.ts)
+export const create = mutation(...)      // Create quote
+export const update = mutation(...)      // Update quote
+export const remove = mutation(...)      // Delete quote
+
+// Queries (convex/people.ts)
+export const get = query(...)            // Get person
+export const getImages = query(...)      // Get person's images
+
+// Mutations (convex/images.ts)
+export const save = mutation(...)        // Save image metadata
+export const saveGenerated = mutation(...) // Save generated image
+
+// Actions (convex/images.ts)
+export const generateQuoteImage = action(...) // Generate via Cloudinary
+
+// Authentication (via Convex Auth)
+// Built-in: signIn, signUp, signOut, getUser
 ```
-# Quotes
-GET    /api/v1/quotes           # List quotes
-POST   /api/v1/quotes           # Create quote
-GET    /api/v1/quotes/:id       # Get quote
-PUT    /api/v1/quotes/:id       # Update quote
-DELETE /api/v1/quotes/:id       # Delete quote
 
-# Images
-POST   /api/v1/images           # Upload image
-GET    /api/v1/images/:id       # Get image
+**Frontend Usage**:
+```typescript
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
-# Users
-POST   /api/v1/users/register   # Register user
-POST   /api/v1/users/login      # Login
-GET    /api/v1/users/me         # Get current user
-
-# Verification
-POST   /api/v1/quotes/:id/verify  # Verify quote source
+const quotes = useQuery(api.quotes.list);
+const createQuote = useMutation(api.quotes.create);
 ```
 
 ---
 
-## Database Schema (Proposed)
+## Database Schema (Convex TypeScript)
 
-### Quotes Table
+```typescript
+// convex/schema.ts
+import { defineSchema, defineTable } from "convex/server";
+import { v } from "convex/values";
 
-```sql
-quotes:
-  - id (PK)
-  - user_id (FK)
-  - text
-  - author
-  - source
-  - source_url
-  - image_id (FK)
-  - verified (boolean)
-  - created_at
-  - updated_at
-```
+export default defineSchema({
+  people: defineTable({
+    name: v.string(),
+    bio: v.optional(v.string()),
+    birthDate: v.optional(v.string()),
+    deathDate: v.optional(v.string()),
+    defaultImageId: v.optional(v.id("images")), // Primary image
+  })
+    .index("by_name", ["name"]),
 
-### Users Table
+  quotes: defineTable({
+    personId: v.id("people"),
+    text: v.string(),
+    source: v.string(),
+    sourceUrl: v.optional(v.string()),
+    verified: v.boolean(),
+    createdAt: v.number(),
+  })
+    .index("by_person", ["personId"])
+    .searchIndex("search_text", {
+      searchField: "text",
+      filterFields: ["verified", "personId"],
+    }),
 
-```sql
-users:
-  - id (PK)
-  - email
-  - password_hash
-  - name
-  - created_at
-  - updated_at
-```
+  images: defineTable({
+    personId: v.id("people"),
+    cloudinaryId: v.string(), // Cloudinary reference
+    category: v.optional(v.string()), // "portrait", "action", etc.
+    description: v.optional(v.string()),
+    isPrimary: v.boolean(),
+    usageCount: v.number(),
+    width: v.number(),
+    height: v.number(),
+    source: v.string(), // "Wikimedia Commons"
+    license: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_person", ["personId"])
+    .index("by_person_primary", ["personId", "isPrimary"]),
 
-### Images Table
+  generatedImages: defineTable({
+    quoteId: v.id("quotes"),
+    imageId: v.id("images"), // Base image used
+    cloudinaryId: v.string(), // Generated image reference
+    userId: v.optional(v.id("users")),
+    viewCount: v.number(),
+    createdAt: v.number(),
+    expiresAt: v.number(), // 30 days by default
+    isPermanent: v.boolean(), // False for free users
+  })
+    .index("by_quote", ["quoteId"])
+    .index("by_expiration", ["expiresAt"]), // For cleanup cron
 
-```sql
-images:
-  - id (PK)
-  - user_id (FK)
-  - filename
-  - storage_url
-  - width
-  - height
-  - created_at
+  users: defineTable({
+    // Managed by Convex Auth
+    email: v.string(),
+    name: v.optional(v.string()),
+    emailVerified: v.boolean(),
+  })
+    .index("by_email", ["email"]),
+});
 ```
 
 ---
@@ -363,12 +433,13 @@ See [testing-standards.md](../development/guidelines/testing-standards.md) for d
 
 For detailed records of architectural decisions, see [ADRs](./adrs/README.md).
 
-Key decisions to document:
-- Database selection
-- Frontend framework choice
-- Authentication strategy
-- Image storage solution
-- Deployment platform
+**Decisions Made**:
+- [ADR-001: Initial Tech Stack Selection](./adrs/ADR-001-initial-tech-stack.md) - Next.js, Convex, Cloudinary
+
+**Future Decisions**:
+- Image cleanup cron job strategy
+- Paid user tier implementation
+- User-submitted quote approval workflow
 
 ---
 

@@ -91,12 +91,13 @@ Examples:
 
 ## Existing ADRs
 
-(List will grow as decisions are made)
+- [ADR-001: Initial Tech Stack Selection](./ADR-001-initial-tech-stack.md) - Accepted (2025-10-30)
 
 <!--
-Template for listing ADRs:
-- [ADR-001: Database Selection](./adr-001-database-selection.md) - Accepted
-- [ADR-002: Authentication Strategy](./adr-002-authentication-strategy.md) - Accepted
+Future ADRs as needed:
+- ADR-002: Image Cleanup Cron Strategy
+- ADR-003: Paid User Tier Implementation
+- ADR-004: User-Submitted Quote Workflow
 -->
 
 ---
