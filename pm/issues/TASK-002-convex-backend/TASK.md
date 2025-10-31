@@ -79,3 +79,14 @@ Initialize Convex backend, deploy to development environment, and implement the 
 - Verify queries work from React components using useQuery hook
 - Test mutations work using useMutation hook
 - Ensure search indexes return expected results
+- Create health.ts with ping query for health check endpoint (from TASK-001):
+  ```typescript
+  // convex/health.ts
+  import { query } from "./_generated/server";
+
+  export const ping = query({
+    handler: async () => {
+      return { status: "ok", timestamp: Date.now() };
+    },
+  });
+  ```

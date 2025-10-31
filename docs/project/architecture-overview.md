@@ -231,32 +231,66 @@ See [security-guidelines.md](../development/guidelines/security-guidelines.md) f
 
 ## Deployment Architecture
 
+See [ADR-003: Development Environment and Deployment Strategy](./adrs/ADR-003-environment-and-deployment-strategy.md) for detailed deployment decisions.
+
 ### Environment Strategy
 
-1. **Development**: Local development environment
-2. **Staging**: Pre-production testing environment
+1. **Development**: Native Node.js (no Docker) with nvm for version management
+   - Node.js 18.18.0 (enforced via .nvmrc and package.json engines)
+   - Two terminals: `npm run dev` + `npx convex dev`
+   - Hot reload with native file system performance
+
+2. **Preview**: Vercel preview deployments (per PR)
+   - Automatic deployments for every pull request
+   - Ephemeral environments with unique URLs
+   - E2E tests run against preview URLs
+
 3. **Production**: Live user-facing application
+   - Vercel (frontend) + Convex Cloud (backend)
+   - Automatic deployment on merge to `main`
+   - Instant rollback capability via Vercel dashboard
 
 ### CI/CD Pipeline
 
-(To be implemented)
-
+**GitHub Actions Workflow**:
 ```
-Code Push → Tests → Build → Deploy to Staging → Manual Approval → Deploy to Production
+Push/PR → Lint → Type Check → Unit Tests → Build → E2E Tests (on Vercel preview)
+```
+
+**Deployment Flow**:
+```
+Merge to main → Vercel auto-deploy → Convex deploy → Health check → Live
 ```
 
 ### Infrastructure
 
-**Hosting**: [Based on README.md, likely Vercel]
+**Frontend Hosting**: Vercel
+- Edge functions for server-side rendering
+- Automatic preview deployments
+- Built-in analytics (free tier)
+- Global CDN distribution
 
-**Monitoring**: [To be determined]
-- Application performance monitoring
-- Error tracking
-- User analytics
+**Backend Hosting**: Convex Cloud
+- Serverless functions (queries, mutations, actions)
+- Reactive database with real-time subscriptions
+- Automatic scaling and management
+- Built-in authentication
 
-**Logging**: [To be determined]
-- Centralized logging
-- Log aggregation and analysis
+**Image Storage**: Cloudinary
+- CDN delivery for images
+- On-the-fly transformations
+- 25GB free tier
+
+**Monitoring** (MVP):
+- **Application Performance**: Vercel Analytics (built-in)
+- **Error Tracking**: Sentry (optional for MVP)
+- **Uptime Monitoring**: Health check endpoint (`/api/health`)
+- **Future**: UptimeRobot for external monitoring
+
+**Logging**:
+- **Frontend**: Vercel Functions logs (1-day retention free tier)
+- **Backend**: Convex dashboard logs
+- **Future**: Structured logging with correlation IDs
 
 ---
 
@@ -468,6 +502,7 @@ For detailed records of architectural decisions, see [ADRs](./adrs/README.md).
 **Decisions Made**:
 - [ADR-001: Initial Tech Stack Selection](./adrs/ADR-001-initial-tech-stack.md) - Next.js, Convex, Cloudinary
 - [ADR-002: Testing Framework and Strategy](./adrs/ADR-002-testing-framework.md) - Vitest, Playwright, convex-test
+- [ADR-003: Development Environment and Deployment Strategy](./adrs/ADR-003-environment-and-deployment-strategy.md) - Native Node.js, Vercel + Convex deployment
 
 **Future Decisions**:
 - Image cleanup cron job strategy

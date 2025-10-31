@@ -17,6 +17,7 @@ This file provides context for AI assistants working on this project.
   - Images: Cloudinary (storage + transformations)
   - Auth: Convex Auth (email/password + OAuth)
   - Testing: Vitest + convex-test + Playwright (see [ADR-002](./docs/project/adrs/ADR-002-testing-framework.md))
+  - Deployment: Native Node.js (no Docker), Vercel preview deployments (see [ADR-003](./docs/project/adrs/ADR-003-environment-and-deployment-strategy.md))
 - **External Links**:
   - Project Management: See `pm/` directory for epics and tasks
   - Documentation: See `docs/` directory for architecture and guidelines
@@ -42,38 +43,52 @@ quoteable/
     └── helpers/          # Test utilities
 ```
 
-## Development Commands
+## Development Environment Setup
 
+**Prerequisites**:
+- Node.js 18.18.0 (use nvm/fnm for version management)
+- npm 9.0.0+
+
+**Initial Setup**:
 ```bash
+# Use correct Node.js version
+nvm use  # Reads from .nvmrc
+
 # Install dependencies
 npm install
 
-# Run development server (Next.js)
+# Start development (requires 2 terminals)
+# Terminal 1: Next.js frontend
 npm run dev
 
-# Run Convex backend (in separate terminal)
+# Terminal 2: Convex backend
 npx convex dev
+```
 
-# Run tests (Vitest watch mode)
-npm test
+## Development Commands
 
-# Run tests with UI
-npm run test:ui
+```bash
+# Development
+npm run dev              # Start Next.js dev server (localhost:3000)
+npx convex dev          # Start Convex backend (separate terminal)
 
-# Run test coverage
-npm run test:coverage
+# Testing
+npm test                # Run tests in watch mode (Vitest)
+npm run test:ui         # Run tests with UI
+npm run test:coverage   # Run with coverage report
+npm run test:e2e        # Run E2E tests (Playwright)
+npm run test:e2e:ui     # Run E2E tests with UI
 
-# Run E2E tests (Playwright)
-npm run test:e2e
+# Code Quality
+npm run lint            # Lint code (ESLint)
+npm run type-check      # TypeScript type checking
 
-# Run E2E tests with UI
-npm run test:e2e:ui
+# Build
+npm run build           # Build for production
 
-# Build for production
-npm run build
-
-# Lint code
-npm run lint
+# Deployment
+git push origin main    # Auto-deploys to Vercel production
+# Preview deployments created automatically for PRs
 ```
 
 ## Workflow
@@ -88,21 +103,28 @@ See [GETTING-STARTED.md](./GETTING-STARTED.md) for the complete AI-assisted deve
 - ✅ Project structure initialized with ai-toolkit
 - ✅ Tech stack decided and documented (ADR-001)
 - ✅ Testing framework decided and documented (ADR-002)
-- ✅ Architecture overview updated
-- ✅ Documentation synchronized
+- ✅ Deployment strategy decided and documented (ADR-003)
+- ✅ DevOps review completed (monitoring, CI/CD, disaster recovery)
+- ✅ Architecture overview updated with deployment details
+- ✅ Documentation synchronized across all ADRs
+- ✅ Branch structure created (main, develop, feature branches)
+
+**Current Task**: TASK-001 - Initialize Next.js Project (feature/TASK-001-initialize-nextjs)
 
 **Next Steps**:
-1. Initialize Next.js project with TypeScript
+1. Initialize Next.js project with TypeScript (.nvmrc, package.json engines)
 2. Set up Convex backend and deploy to dev environment
 3. Configure Cloudinary account and integration
 4. Implement database schema in Convex
 5. Set up testing infrastructure (Vitest, Playwright, convex-test)
-6. Create first epic for core quote browsing functionality
+6. Set up MVP monitoring (health check, Vercel Analytics)
 
 **Current Priorities**:
 - Backend-first development approach
 - TDD/BDD workflow with comprehensive test coverage
 - Type-safe end-to-end development with TypeScript
+- MVP-critical infrastructure (Node version management, CI/CD basics, health checks)
+- Native Node.js development (no Docker for MVP)
 
 ---
 

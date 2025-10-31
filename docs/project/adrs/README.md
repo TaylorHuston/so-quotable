@@ -93,14 +93,13 @@ Examples:
 
 - [ADR-001: Initial Tech Stack Selection](./ADR-001-initial-tech-stack.md) - Accepted (2025-10-30)
 - [ADR-002: Testing Framework and Strategy](./ADR-002-testing-framework.md) - Accepted (2025-10-30)
+- [ADR-003: Development Environment and Deployment Strategy](./ADR-003-environment-and-deployment-strategy.md) - Accepted (2025-10-30)
 
 <!--
 Future ADRs as needed:
-- ADR-003: Image Cleanup Cron Strategy
-- ADR-004: Paid User Tier Implementation
-- ADR-005: User-Submitted Quote Workflow
+- ADR-004: Image Cleanup Cron Strategy
+- ADR-005: Paid User Tier Implementation
+- ADR-006: User-Submitted Quote Workflow
 -->
 
 ---
-
-*Create your first ADR when you make your first major architectural decision.*
