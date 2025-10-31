@@ -20,4 +20,17 @@ describe("GET /api/health", () => {
     const timestamp = new Date(data.timestamp);
     expect(timestamp.toISOString()).toBe(data.timestamp);
   });
+
+  it("should include Convex health status", async () => {
+    const response = await GET();
+    const data = await response.json();
+
+    // Verify Convex health information is included
+    expect(data.convex).toBeDefined();
+    expect(data.convex.status).toBe("ok");
+    expect(data.convex.database).toBeDefined();
+    expect(data.convex.database.connected).toBe(true);
+    expect(data.convex.database.peopleCount).toBeGreaterThanOrEqual(0);
+    expect(data.convex.environment).toBeDefined();
+  });
 });

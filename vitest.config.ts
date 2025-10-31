@@ -5,7 +5,13 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: "happy-dom",
+    // Use Node environment for Convex tests, happy-dom for React tests
+    // @ts-expect-error - environmentMatchGlobs is supported in Vitest 4.0+
+    environmentMatchGlobs: [
+      ["convex/**/*.test.ts", "node"],
+      ["src/**/*.test.{ts,tsx}", "happy-dom"],
+      ["tests/**/*.test.{ts,tsx}", "happy-dom"],
+    ],
     globals: true,
     setupFiles: ["./tests/setup.ts"],
   },

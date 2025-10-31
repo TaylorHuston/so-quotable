@@ -10,8 +10,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // Environment variable validation will be added when Convex is installed
-  // This ensures build fails early if required env vars are missing
+  // TODO(TASK-005): Add runtime environment variable validation
+  // Convex validates NEXT_PUBLIC_CONVEX_URL at build time via client initialization
 };
 
 export default nextConfig;
