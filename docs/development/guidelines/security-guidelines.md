@@ -4,6 +4,48 @@
 
 This document defines security practices and standards for the So Quotable project to protect user data and prevent vulnerabilities.
 
+## Platform-Specific Security
+
+### Convex Backend Security
+
+**Built-in Protections**:
+- Automatic input validation via TypeScript validators
+- Type-safe queries and mutations
+- No SQL injection risk (document database with type-safe API)
+- Automatic HTTPS/TLS for all connections
+- Built-in authentication via Convex Auth
+
+**Authentication** (Convex Auth):
+```typescript
+// Protect functions with authentication
+export const create = mutation({
+  handler: async (ctx, args) => {
+    const user = await ctx.auth.getUserIdentity();
+    if (!user) {
+      throw new Error("Authentication required");
+    }
+    // ... authorized operation
+  },
+});
+```
+
+**Authorization Patterns**:
+```typescript
+// Check resource ownership
+const quote = await ctx.db.get(quoteId);
+if (quote.userId !== user.subject) {
+  throw new Error("Unauthorized");
+}
+```
+
+### Cloudinary Security
+
+- Use signed URLs for sensitive operations
+- Configure upload presets with restrictions
+- Implement file size limits
+- Enable auto-moderation if available
+- Use secure API credentials (environment variables)
+
 ## Core Security Principles
 
 ### 1. Defense in Depth

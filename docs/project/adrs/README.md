@@ -92,12 +92,13 @@ Examples:
 ## Existing ADRs
 
 - [ADR-001: Initial Tech Stack Selection](./ADR-001-initial-tech-stack.md) - Accepted (2025-10-30)
+- [ADR-002: Testing Framework and Strategy](./ADR-002-testing-framework.md) - Accepted (2025-10-30)
 
 <!--
 Future ADRs as needed:
-- ADR-002: Image Cleanup Cron Strategy
-- ADR-003: Paid User Tier Implementation
-- ADR-004: User-Submitted Quote Workflow
+- ADR-003: Image Cleanup Cron Strategy
+- ADR-004: Paid User Tier Implementation
+- ADR-005: User-Submitted Quote Workflow
 -->
 
 ---

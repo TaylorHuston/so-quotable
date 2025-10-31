@@ -75,10 +75,19 @@ See `GETTING-STARTED.md` for complete workflow guide.
 
 ## Tech Stack
 
-- **Frontend**: Next.js
-- **Backend**: Node.js/Express
-- **Infrastructure**: Vercel
-- **Database**: TBD
+See [ADR-001](./docs/project/adrs/ADR-001-initial-tech-stack.md) for detailed rationale.
+
+- **Frontend**: Next.js (App Router) + TypeScript
+- **Backend**: Convex (serverless functions + reactive database)
+- **Database**: Convex (document database with TypeScript schema)
+- **Images**: Cloudinary (storage + transformations)
+- **Auth**: Convex Auth (email/password + OAuth)
+- **Hosting**: Vercel (frontend) + Convex Cloud (backend)
+
+**Testing** (see [ADR-002](./docs/project/adrs/ADR-002-testing-framework.md)):
+- **Unit/Integration**: Vitest + convex-test
+- **E2E**: Playwright
+- **Coverage**: 80%+ backend, 70%+ frontend
 
 ## License
 

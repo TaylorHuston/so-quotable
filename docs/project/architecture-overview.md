@@ -398,13 +398,38 @@ See [api-guidelines.md](../development/guidelines/api-guidelines.md#error-handli
 
 ## Testing Strategy
 
-See [testing-standards.md](../development/guidelines/testing-standards.md) for detailed standards.
+See [ADR-002: Testing Framework](./adrs/ADR-002-testing-framework.md) and [testing-standards.md](../development/guidelines/testing-standards.md) for detailed standards.
 
-### Testing Pyramid
+### Testing Framework
 
-- **Unit Tests**: Individual functions, components
-- **Integration Tests**: API endpoints, database interactions
-- **E2E Tests**: Critical user flows (create quote, share quote)
+**Decided** (see [ADR-002](./adrs/ADR-002-testing-framework.md)):
+- **Test Runner**: Vitest (v2.0+) - unified for all unit/integration tests
+- **Backend Testing**: convex-test - Convex function testing with real database
+- **Frontend Testing**: Testing Library - React component testing
+- **E2E Testing**: Playwright - critical user flows
+- **BDD Style**: Native describe/it with Given-When-Then comments (no Cucumber.js)
+
+### Testing Pyramid (Backend-First)
+
+```
+     /\
+    /E2E\          10%: Playwright (search → generate → share)
+   /------\
+  /Frontend\       30%: Vitest + Testing Library (key components)
+ /----------\
+/  Backend   \     60%: Vitest + convex-test (Convex functions)
+--------------
+```
+
+**Coverage Goals**:
+- Backend functions: 80%+ line coverage
+- Frontend components: 70%+ line coverage
+- E2E: Critical paths only
+
+**Test Organization**:
+- Co-located tests: `*.test.ts` next to source files
+- E2E tests: `tests/e2e/*.spec.ts`
+- Test fixtures: `tests/fixtures/`
 
 ---
 
@@ -435,6 +460,7 @@ For detailed records of architectural decisions, see [ADRs](./adrs/README.md).
 
 **Decisions Made**:
 - [ADR-001: Initial Tech Stack Selection](./adrs/ADR-001-initial-tech-stack.md) - Next.js, Convex, Cloudinary
+- [ADR-002: Testing Framework and Strategy](./adrs/ADR-002-testing-framework.md) - Vitest, Playwright, convex-test
 
 **Future Decisions**:
 - Image cleanup cron job strategy

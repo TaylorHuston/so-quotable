@@ -14,13 +14,36 @@ This document defines coding standards for the So Quotable project to ensure con
 
 ## Language-Specific Standards
 
-### JavaScript/TypeScript
+### TypeScript (Required)
 
-- Use TypeScript for type safety
-- Follow ESLint configuration
+**Mandatory**: All code must be written in TypeScript for end-to-end type safety.
+
+- Enable strict mode in tsconfig.json
+- Follow ESLint + TypeScript configuration
 - Use async/await over callbacks
 - Prefer const over let, avoid var
 - Use template literals for string interpolation
+- Leverage Convex's generated types for backend functions
+- Use proper type annotations (avoid `any`)
+
+**Convex-Specific**:
+```typescript
+// Use generated types from Convex
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+
+// Proper typing for Convex functions
+export const create = mutation({
+  args: {
+    personId: v.id("people"),
+    text: v.string(),
+  },
+  handler: async (ctx, args) => {
+    // TypeScript knows the types of args
+    return await ctx.db.insert("quotes", args);
+  },
+});
+```
 
 ### CSS/Styling
 

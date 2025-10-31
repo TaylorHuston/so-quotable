@@ -126,12 +126,20 @@ When choosing technologies:
 
 ## API Design
 
-- RESTful by default
-- Clear, consistent naming
+See [ADR-001](../../project/adrs/ADR-001-initial-tech-stack.md) for API architecture rationale.
+
+**Function-Based API** (Convex):
+- Type-safe TypeScript functions instead of REST
+- Queries (read), Mutations (write), Actions (external calls)
+- Clear, descriptive function names (list, get, create, update, remove)
+- Input validation via Convex validators
+- Automatic API generation
+- End-to-end type safety
+
+**External APIs** (Cloudinary):
+- RESTful design for third-party integrations
 - Proper HTTP method usage
 - Meaningful status codes
-- Versioning strategy
-- Comprehensive documentation
 
 ## Data Management
 
@@ -160,20 +168,29 @@ When choosing technologies:
 
 ## Testing Strategy
 
-### Testing Pyramid
+See [ADR-002](../../project/adrs/ADR-002-testing-framework.md) for testing framework rationale.
+
+### Testing Pyramid (Backend-First)
 
 ```
-    /\
-   /E2E\        <- Few, slow, expensive
-  /------\
- /Integration\ <- Some, moderate speed
-/-------------\
-/   Unit      \ <- Many, fast, cheap
+     /\
+    /E2E\          10%: Playwright - Critical flows
+   /------\
+  /Frontend\       30%: Vitest + Testing Library - Key components
+ /----------\
+/  Backend   \     60%: Vitest + convex-test - Business logic
+--------------
 ```
 
-- Emphasize unit tests
-- Strategic integration tests
-- Minimal but critical E2E tests
+**Rationale**: Backend-first because core business logic lives in Convex functions.
+
+**Framework**: Vitest (unit/integration), convex-test (Convex functions), Playwright (E2E)
+
+**Coverage Goals**: 80%+ backend, 70%+ frontend
+
+- Emphasize backend testing (business logic)
+- Strategic component tests (user-facing behavior)
+- Minimal but critical E2E tests (complete flows)
 - Test coverage as a guide, not a goal
 
 ## Deployment

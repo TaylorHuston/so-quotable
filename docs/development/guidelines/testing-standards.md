@@ -36,11 +36,18 @@ This document defines testing standards and practices for the So Quotable projec
 
 ## Testing Tools
 
-[Update as you choose your testing stack]
+See [ADR-002: Testing Framework and Strategy](../../project/adrs/ADR-002-testing-framework.md) for detailed rationale.
 
-- Unit Testing: [Jest, Vitest, etc.]
-- Component Testing: [React Testing Library, etc.]
-- E2E Testing: [Playwright, Cypress, etc.]
+- **Test Runner**: Vitest (v2.0+) - Unit and integration tests
+- **Backend Testing**: convex-test (v0.0.17) - Convex function testing with real database
+- **Component Testing**: React Testing Library - User-focused component tests
+- **E2E Testing**: Playwright (v1.45+) - Critical user flows
+- **BDD Style**: Native describe/it with Given-When-Then comments
+
+**Testing Pyramid** (Backend-First):
+- 60%: Backend (Convex functions - core business logic)
+- 30%: Frontend (React components - presentation layer)
+- 10%: E2E (Critical flows - search → generate → share)
 
 ## Test Structure
 
