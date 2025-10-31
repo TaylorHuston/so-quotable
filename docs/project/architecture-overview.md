@@ -19,6 +19,7 @@ This document provides a high-level overview of the system architecture, key com
 ### Purpose
 
 Enable users to:
+
 - Create visually appealing quote images
 - Ensure quotes have verified, attributed sources
 - Share quote images on social media and other platforms
@@ -36,6 +37,7 @@ Enable users to:
 See [architectural-principles.md](../development/guidelines/architectural-principles.md) for detailed principles.
 
 Key principles:
+
 1. **Separation of Concerns**: Clear boundaries between layers
 2. **Security First**: Validate sources, protect user data
 3. **Scalability**: Design for growth in users and quotes
@@ -50,6 +52,7 @@ Key principles:
 **Serverless** - Function-based architecture with managed backend services
 
 The application uses a serverless architecture combining:
+
 - Next.js frontend on Vercel (edge functions, server components)
 - Convex backend (reactive database + serverless functions)
 - Cloudinary for image storage and processing
@@ -77,6 +80,7 @@ See [ADRs](./adrs/README.md) for detailed decision records.
 ### 1. Frontend (Presentation Layer)
 
 **Responsibilities**:
+
 - User interface for quote creation
 - Image upload and preview
 - Quote text input and formatting
@@ -85,6 +89,7 @@ See [ADRs](./adrs/README.md) for detailed decision records.
 - Export/share functionality
 
 **Key Features**:
+
 - Quote editor with live preview
 - Image overlay controls (position, size, opacity)
 - Typography controls (font, size, color)
@@ -95,6 +100,7 @@ See [ADRs](./adrs/README.md) for detailed decision records.
 **Architecture**: Serverless functions (queries, mutations, actions)
 
 **Responsibilities**:
+
 - Quote CRUD operations (mutations)
 - Real-time data subscriptions (queries)
 - Image metadata management
@@ -103,6 +109,7 @@ See [ADRs](./adrs/README.md) for detailed decision records.
 - Background jobs (cleanup expired images)
 
 **Key Function Types**:
+
 - **Queries**: Read-only, reactive data fetching (quotes, people, images)
 - **Mutations**: Data modifications (create quote, update person, save image)
 - **Actions**: External API calls (Cloudinary upload, image generation)
@@ -113,6 +120,7 @@ See [ADRs](./adrs/README.md) for detailed decision records.
 **Technology**: Convex reactive database (document-based with TypeScript schema)
 
 **Responsibilities**:
+
 - Persistent storage of quotes
 - User account information
 - Image metadata (references to Cloudinary)
@@ -120,6 +128,7 @@ See [ADRs](./adrs/README.md) for detailed decision records.
 - Real-time data synchronization
 
 **Key Collections** (TypeScript schema):
+
 - **people**: name, bio, dates, defaultImageId (multiple images per person)
 - **quotes**: personId, text, source, sourceUrl, verified
 - **images**: personId, cloudinaryId, category, isPrimary (base person photos)
@@ -129,6 +138,7 @@ See [ADRs](./adrs/README.md) for detailed decision records.
 ### 4. External Services
 
 **Cloudinary** (Image Storage & Processing):
+
 - Store curated person photos (base images)
 - Store user-generated quote images (30-day expiration)
 - Text overlay generation via URL transformations
@@ -137,6 +147,7 @@ See [ADRs](./adrs/README.md) for detailed decision records.
 - Free tier: 25GB storage, 25GB bandwidth/month
 
 **Convex Auth** (Authentication):
+
 - Email/password authentication
 - OAuth providers (Google, GitHub, etc.)
 - Built on Auth.js
@@ -163,6 +174,7 @@ User → Frontend → Convex Query (get quote + person + image)
 ```
 
 **Steps**:
+
 1. User selects person and quote in frontend
 2. Frontend calls Convex query to fetch data
 3. Convex returns quote, person, and Cloudinary image reference
@@ -183,6 +195,7 @@ User → Frontend → Convex Query (search)
 ```
 
 **Features**:
+
 - Real-time reactivity (automatic UI updates)
 - Built-in full-text search (no external service needed)
 - Type-safe queries (TypeScript end-to-end)
@@ -253,11 +266,13 @@ See [ADR-003: Development Environment and Deployment Strategy](./adrs/ADR-003-en
 ### CI/CD Pipeline
 
 **GitHub Actions Workflow**:
+
 ```
 Push/PR → Lint → Type Check → Unit Tests → Build → E2E Tests (on Vercel preview)
 ```
 
 **Deployment Flow**:
+
 ```
 Merge to main → Vercel auto-deploy → Convex deploy → Health check → Live
 ```
@@ -265,29 +280,34 @@ Merge to main → Vercel auto-deploy → Convex deploy → Health check → Live
 ### Infrastructure
 
 **Frontend Hosting**: Vercel
+
 - Edge functions for server-side rendering
 - Automatic preview deployments
 - Built-in analytics (free tier)
 - Global CDN distribution
 
 **Backend Hosting**: Convex Cloud
+
 - Serverless functions (queries, mutations, actions)
 - Reactive database with real-time subscriptions
 - Automatic scaling and management
 - Built-in authentication
 
 **Image Storage**: Cloudinary
+
 - CDN delivery for images
 - On-the-fly transformations
 - 25GB free tier
 
 **Monitoring** (MVP):
+
 - **Application Performance**: Vercel Analytics (built-in)
 - **Error Tracking**: Sentry (optional for MVP)
 - **Uptime Monitoring**: Health check endpoint (`/api/health`)
 - **Future**: UptimeRobot for external monitoring
 
 **Logging**:
+
 - **Frontend**: Vercel Functions logs (1-day retention free tier)
 - **Backend**: Convex dashboard logs
 - **Future**: Structured logging with correlation IDs
@@ -303,6 +323,7 @@ See [api-guidelines.md](../development/guidelines/api-guidelines.md) for detaile
 **Function-based API** (Convex)
 
 Instead of REST endpoints, the API consists of TypeScript functions:
+
 - **Queries**: Read-only operations (automatically cached, reactive)
 - **Mutations**: Write operations (transactional)
 - **Actions**: External API calls (non-transactional)
@@ -336,6 +357,7 @@ export const generateQuoteImage = action(...) // Generate via Cloudinary
 ```
 
 **Frontend Usage**:
+
 ```typescript
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -389,7 +411,8 @@ export default defineSchema({
     width: v.number(),
     height: v.number(),
     source: v.string(), // "Wikimedia Commons", etc.
-    license: v.union( // Type-safe license validation
+    license: v.union(
+      // Type-safe license validation
       v.literal("Public Domain"),
       v.literal("CC0"),
       v.literal("CC BY 4.0"),
@@ -418,8 +441,7 @@ export default defineSchema({
     email: v.string(),
     name: v.optional(v.string()),
     emailVerified: v.boolean(),
-  })
-    .index("by_email", ["email"]),
+  }).index("by_email", ["email"]),
 });
 ```
 
@@ -444,6 +466,7 @@ See [ADR-002: Testing Framework](./adrs/ADR-002-testing-framework.md) and [testi
 ### Testing Framework
 
 **Decided** (see [ADR-002](./adrs/ADR-002-testing-framework.md)):
+
 - **Test Runner**: Vitest (v2.0+) - unified for all unit/integration tests
 - **Backend Testing**: convex-test - Convex function testing with real database
 - **Frontend Testing**: Testing Library - React component testing
@@ -463,11 +486,13 @@ See [ADR-002: Testing Framework](./adrs/ADR-002-testing-framework.md) and [testi
 ```
 
 **Coverage Goals**:
+
 - Backend functions: 80%+ line coverage
 - Frontend components: 70%+ line coverage
 - E2E: Critical paths only
 
 **Test Organization**:
+
 - Co-located tests: `*.test.ts` next to source files
 - E2E tests: `tests/e2e/*.spec.ts`
 - Test fixtures: `tests/fixtures/`
@@ -500,11 +525,13 @@ See [ADR-002: Testing Framework](./adrs/ADR-002-testing-framework.md) and [testi
 For detailed records of architectural decisions, see [ADRs](./adrs/README.md).
 
 **Decisions Made**:
+
 - [ADR-001: Initial Tech Stack Selection](./adrs/ADR-001-initial-tech-stack.md) - Next.js, Convex, Cloudinary
 - [ADR-002: Testing Framework and Strategy](./adrs/ADR-002-testing-framework.md) - Vitest, Playwright, convex-test
 - [ADR-003: Development Environment and Deployment Strategy](./adrs/ADR-003-environment-and-deployment-strategy.md) - Native Node.js, Vercel + Convex deployment
 
 **Future Decisions**:
+
 - Image cleanup cron job strategy
 - Paid user tier implementation
 - User-submitted quote approval workflow
@@ -544,6 +571,7 @@ For detailed records of architectural decisions, see [ADRs](./adrs/README.md).
 **Note**: This is a living document. Update as architectural decisions are made and the system evolves.
 
 **Next Steps**:
+
 1. Make key technology decisions (document in ADRs)
 2. Create detailed component designs
 3. Design database schema

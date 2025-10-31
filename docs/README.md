@@ -31,6 +31,7 @@ Use `/docs` for unified documentation management:
 ## Keeping Docs Updated
 
 Documentation is a living artifact. Update docs when:
+
 - Adding new features
 - Changing architecture
 - Updating workflows

@@ -45,6 +45,7 @@ See [ADR-002: Testing Framework and Strategy](../../project/adrs/ADR-002-testing
 - **BDD Style**: Native describe/it with Given-When-Then comments
 
 **Testing Pyramid** (Backend-First):
+
 - 60%: Backend (Convex functions - core business logic)
 - 30%: Frontend (React components - presentation layer)
 - 10%: E2E (Critical flows - search → generate → share)
@@ -52,14 +53,14 @@ See [ADR-002: Testing Framework and Strategy](../../project/adrs/ADR-002-testing
 ## Test Structure
 
 ```javascript
-describe('Component/Function Name', () => {
+describe("Component/Function Name", () => {
   // Setup
   beforeEach(() => {
     // Common setup
   });
 
-  describe('when condition', () => {
-    it('should do expected behavior', () => {
+  describe("when condition", () => {
+    it("should do expected behavior", () => {
       // Arrange
       // Act
       // Assert
@@ -84,4 +85,4 @@ describe('Component/Function Name', () => {
 
 ---
 
-*Update this document as your testing practices evolve.*
+_Update this document as your testing practices evolve._

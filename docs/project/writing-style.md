@@ -21,6 +21,7 @@ description: "Writing style and content guidelines for UI copy, documentation, a
 [Define your brand's writing personality - typically 3-5 characteristics]
 
 Example:
+
 - **Clear & Concise**: Simple language, avoid jargon
 - **Friendly but Professional**: Conversational without being casual
 - **Helpful**: Guide users, explain actions clearly
@@ -154,17 +155,14 @@ Avoid:
 ### Empty States
 
 ```yaml
-Structure:
-  1. Explain why it's empty
+Structure: 1. Explain why it's empty
   2. Suggest next action
   3. Optionally provide context/benefit
 
 Examples:
-  Good:
-    "No projects yet. Create your first project to start collaborating with your team."
+  Good: "No projects yet. Create your first project to start collaborating with your team."
 
-  Bad:
-    "No data available"
+  Bad: "No data available"
 
 Components:
   - Heading: State what's empty
@@ -363,16 +361,16 @@ Toast Notifications:
   - Brief: 1 sentence maximum
   - Auto-dismiss after 3-5 seconds
   - Examples:
-    - "File uploaded"
-    - "Link copied to clipboard"
-    - "Settings saved"
+      - "File uploaded"
+      - "Link copied to clipboard"
+      - "Settings saved"
 
 Alert Banners:
   - More detail than toasts
   - User-dismissible
   - Persist until acknowledged
   - Examples:
-    - "Your trial ends in 3 days. Upgrade to continue using premium features."
+      - "Your trial ends in 3 days. Upgrade to continue using premium features."
 ```
 
 ## Accessibility
@@ -413,6 +411,7 @@ Reading Level:
 ## AI Assistant Instructions
 
 When writing UI copy:
+
 1. Match the established voice and tone
 2. Follow capitalization and formatting rules
 3. Keep microcopy concise and actionable
@@ -422,6 +421,7 @@ When writing UI copy:
 7. Ensure accessibility with proper labels
 
 For strategic content decisions (voice definition, messaging architecture):
+
 ```bash
 /adr "content strategy decision"
 ```
@@ -435,6 +435,7 @@ For strategic content decisions (voice definition, messaging architecture):
 ## Maintenance
 
 Update this guide when:
+
 - Brand voice evolves
 - New content patterns emerge
 - User feedback indicates confusion

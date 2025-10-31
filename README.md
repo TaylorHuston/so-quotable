@@ -53,21 +53,25 @@ quoteable/
 ## AI Toolkit Commands
 
 ### Planning & Design
+
 - `/project-brief` - Complete project brief through conversation
 - `/epic` - Create or refine feature epics
 - `/plan TASK-###` - Add implementation plan to task
 
 ### Development
+
 - `/implement TASK-### PHASE` - Execute implementation phase
 - `/test-fix` - Automatically detect and fix test failures
 - `/commit` - Create quality-checked git commit
 
 ### Quality & Documentation
+
 - `/quality` - Comprehensive quality assessment
 - `/security-audit` - Security vulnerability scan
 - `/docs` - Generate, validate, or sync documentation
 
 ### Project Management
+
 - `/status` - View project status and progress
 - `/comment "text"` - Log manual changes
 
@@ -85,9 +89,62 @@ See [ADR-001](./docs/project/adrs/ADR-001-initial-tech-stack.md) for detailed ra
 - **Hosting**: Vercel (frontend) + Convex Cloud (backend)
 
 **Testing** (see [ADR-002](./docs/project/adrs/ADR-002-testing-framework.md)):
+
 - **Unit/Integration**: Vitest + convex-test
 - **E2E**: Playwright
 - **Coverage**: 80%+ backend, 70%+ frontend
+
+## Development
+
+### Prerequisites
+
+- Node.js 18.18.0 (managed via `.nvmrc` - use `nvm use`)
+- npm 9.0.0+
+
+### Setup
+
+```bash
+# Use correct Node.js version
+nvm use
+
+# Install dependencies
+npm install
+
+# Copy environment template (fill in actual values)
+cp .env.local.example .env.local
+```
+
+### Development Commands
+
+```bash
+# Start Next.js dev server (Terminal 1)
+npm run dev
+
+# Start Convex backend (Terminal 2 - when Convex is set up)
+npx convex dev
+
+# Run tests
+npm test                # Watch mode
+npm run test:run        # Single run
+npm run test:coverage   # With coverage
+
+# Code quality
+npm run lint            # Check linting
+npm run lint:fix        # Fix linting issues
+npm run type-check      # TypeScript check
+npm run format          # Format code
+npm run format:check    # Check formatting
+
+# Build
+npm run build           # Production build
+```
+
+### Health Check
+
+```bash
+curl http://localhost:3000/api/health
+# Expected: {"status":"healthy","timestamp":"...","service":"quoteable-api"}
+```
 
 ## License
 

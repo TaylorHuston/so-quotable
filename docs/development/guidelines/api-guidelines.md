@@ -94,11 +94,13 @@ throw new Error(`Quote ${quoteId} not found`);
 
 // Best: Structured error handling
 if (!quote) {
-  throw new Error(JSON.stringify({
-    code: "QUOTE_NOT_FOUND",
-    message: "Quote not found",
-    quoteId,
-  }));
+  throw new Error(
+    JSON.stringify({
+      code: "QUOTE_NOT_FOUND",
+      message: "Quote not found",
+      quoteId,
+    })
+  );
 }
 ```
 
@@ -121,7 +123,9 @@ Use Convex Auth to protect functions:
 import { mutation } from "./_generated/server";
 
 export const create = mutation({
-  args: { /* ... */ },
+  args: {
+    /* ... */
+  },
   handler: async (ctx, args) => {
     // Require authentication
     const user = await ctx.auth.getUserIdentity();
@@ -216,11 +220,13 @@ The following REST principles may be useful for external API integrations (e.g.,
 Use appropriate HTTP status codes:
 
 **Success:**
+
 - 200 OK: Successful GET, PUT, PATCH
 - 201 Created: Successful POST
 - 204 No Content: Successful DELETE
 
 **Client Errors:**
+
 - 400 Bad Request: Invalid input
 - 401 Unauthorized: Authentication required
 - 403 Forbidden: Insufficient permissions
@@ -229,6 +235,7 @@ Use appropriate HTTP status codes:
 - 422 Unprocessable Entity: Validation errors
 
 **Server Errors:**
+
 - 500 Internal Server Error: General server error
 - 503 Service Unavailable: Temporary unavailability
 
@@ -250,6 +257,7 @@ Use appropriate HTTP status codes:
 ### Response Format
 
 Success response:
+
 ```json
 {
   "data": {
@@ -262,6 +270,7 @@ Success response:
 ```
 
 Error response:
+
 ```json
 {
   "error": {
@@ -351,4 +360,4 @@ GET /quotes?author=einstein&sort=-created_at
 
 ---
 
-*Update this document as your API evolves.*
+_Update this document as your API evolves._

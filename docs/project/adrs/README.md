@@ -45,6 +45,7 @@ adr-NNN-short-title.md
 Where NNN is a sequential number (001, 002, etc.).
 
 Examples:
+
 - `adr-001-database-selection.md`
 - `adr-002-authentication-strategy.md`
 - `adr-003-frontend-framework.md`
@@ -52,6 +53,7 @@ Examples:
 ## Creating a New ADR
 
 1. Copy the template:
+
    ```bash
    cp docs/project/adrs/adr-template.md docs/project/adrs/adr-001-your-decision.md
    ```
@@ -80,10 +82,12 @@ Examples:
 **Decision**: Use PostgreSQL as the primary database.
 
 **Consequences**:
+
 - Pros: Strong ACID guarantees, excellent JSON support, mature ecosystem
 - Cons: May need caching layer for high read loads
 
 **Alternatives**:
+
 - MongoDB: Rejected due to need for strong consistency
 - MySQL: Rejected due to inferior JSON support
 

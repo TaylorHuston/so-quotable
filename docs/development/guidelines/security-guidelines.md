@@ -9,6 +9,7 @@ This document defines security practices and standards for the So Quotable proje
 ### Convex Backend Security
 
 **Built-in Protections**:
+
 - Automatic input validation via TypeScript validators
 - Type-safe queries and mutations
 - No SQL injection risk (document database with type-safe API)
@@ -16,6 +17,7 @@ This document defines security practices and standards for the So Quotable proje
 - Built-in authentication via Convex Auth
 
 **Authentication** (Convex Auth):
+
 ```typescript
 // Protect functions with authentication
 export const create = mutation({
@@ -30,6 +32,7 @@ export const create = mutation({
 ```
 
 **Authorization Patterns**:
+
 ```typescript
 // Check resource ownership
 const quote = await ctx.db.get(quoteId);
@@ -51,6 +54,7 @@ if (quote.userId !== user.subject) {
 ### 1. Defense in Depth
 
 Implement multiple layers of security:
+
 - Input validation
 - Authentication
 - Authorization
@@ -132,17 +136,20 @@ Implement multiple layers of security:
 ### Prevent Injection Attacks
 
 **SQL Injection:**
+
 - Use parameterized queries
 - Use ORM with proper escaping
 - Never concatenate user input into queries
 
 **XSS (Cross-Site Scripting):**
+
 - Escape all user-generated content
 - Use Content Security Policy (CSP)
 - Validate and sanitize HTML input
 - Use framework-provided escaping
 
 **Command Injection:**
+
 - Avoid system calls with user input
 - Use safe APIs instead of shell commands
 - Sanitize any necessary command inputs
@@ -152,12 +159,14 @@ Implement multiple layers of security:
 ### Encryption
 
 **Data in Transit:**
+
 - Use HTTPS/TLS for all connections
 - Use strong cipher suites
 - Implement HSTS (HTTP Strict Transport Security)
 - Keep TLS certificates up to date
 
 **Data at Rest:**
+
 - Encrypt sensitive data in database
 - Use encryption for file storage
 - Secure encryption keys properly
@@ -219,7 +228,7 @@ Implement multiple layers of security:
 
 - Configure CORS properly
 - Allow only trusted origins
-- Avoid using wildcard (*)
+- Avoid using wildcard (\*)
 - Validate Origin header
 
 ## Logging and Monitoring
@@ -381,4 +390,4 @@ Before deployment:
 
 ---
 
-*Security is everyone's responsibility. When in doubt, ask for a security review.*
+_Security is everyone's responsibility. When in doubt, ask for a security review._

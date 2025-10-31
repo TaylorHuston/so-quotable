@@ -32,6 +32,7 @@ Color palette definitions and theme files
   - Example: `primary-palette.json`, `dark-theme.json`
 
 Example color scheme JSON:
+
 ```json
 {
   "primary": "#3B82F6",
@@ -77,6 +78,7 @@ General design assets (logos, icons, illustrations)
 For comprehensive design system documentation (components, patterns, typography, spacing), see design system documentation once established.
 
 Key design principles for So Quotable:
+
 - Clean, minimal interface
 - Focus on quote readability
 - Source verification prominence
@@ -85,6 +87,7 @@ Key design principles for So Quotable:
 ## Accessibility
 
 Design with accessibility in mind:
+
 - Sufficient color contrast (WCAG AA minimum)
 - Clear typography
 - Keyboard navigation support
@@ -94,6 +97,7 @@ Design with accessibility in mind:
 ## Responsive Design
 
 Design for multiple breakpoints:
+
 - Mobile: 320px - 767px
 - Tablet: 768px - 1023px
 - Desktop: 1024px+
@@ -110,4 +114,4 @@ Design for multiple breakpoints:
 
 ---
 
-*Keep design assets organized and up to date to maintain consistency across the project.*
+_Keep design assets organized and up to date to maintain consistency across the project._

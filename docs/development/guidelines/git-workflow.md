@@ -151,4 +151,4 @@ Use AI Toolkit commands for git operations:
 
 ---
 
-*Update this document as your Git workflow evolves.*
+_Update this document as your Git workflow evolves._

@@ -13,9 +13,11 @@ updated: 2025-10-30
 **Status**: todo
 
 ## Description
+
 Set up Cloudinary account, configure API integration with Next.js, and implement functions for image upload, storage, and text overlay transformations. This includes both base image management (person photos) and generated quote image handling with auto-deletion after 30 days.
 
 ## Acceptance Criteria
+
 - [ ] Cloudinary account created with free tier (25GB storage/bandwidth)
 - [ ] Cloudinary API credentials securely stored in environment variables
 - [ ] next-cloudinary package installed and configured
@@ -29,6 +31,7 @@ Set up Cloudinary account, configure API integration with Next.js, and implement
 - [ ] Image delivery through Cloudinary CDN verified
 
 ## Technical Notes
+
 - Install `next-cloudinary` package for Next.js integration
 - Use Cloudinary's Upload API for programmatic uploads
 - Configure upload presets:
@@ -44,6 +47,7 @@ Set up Cloudinary account, configure API integration with Next.js, and implement
 - Configure responsive image delivery with next-cloudinary
 
 ## Dependencies
+
 - TASK-002: Convex backend must be set up for storing image metadata
 - Cloudinary account registration
 - Environment variables:
@@ -53,6 +57,7 @@ Set up Cloudinary account, configure API integration with Next.js, and implement
   - NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
 
 ## Testing
+
 - Upload a sample person image and verify storage
 - Generate a quote overlay using URL transformations
 - Verify auto-deletion configuration for generated images

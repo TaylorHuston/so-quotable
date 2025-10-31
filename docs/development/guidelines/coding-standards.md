@@ -27,6 +27,7 @@ This document defines coding standards for the So Quotable project to ensure con
 - Use proper type annotations (avoid `any`)
 
 **Convex-Specific**:
+
 ```typescript
 // Use generated types from Convex
 import { api } from "@/convex/_generated/api";
@@ -78,4 +79,4 @@ All code must be reviewed before merging. Reviewers should check for:
 
 ---
 
-*Update this document as the project evolves and new patterns emerge.*
+_Update this document as the project evolves and new patterns emerge._

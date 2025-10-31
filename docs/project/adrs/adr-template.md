@@ -15,6 +15,7 @@
 What is the issue that we're seeing that is motivating this decision or change?
 
 Include:
+
 - Background information
 - Current situation
 - Problem statement
@@ -26,6 +27,7 @@ Include:
 What is the change that we're proposing and/or doing?
 
 Be specific:
+
 - What are we choosing to do?
 - How will it be implemented?
 - What are the key components?
@@ -60,10 +62,12 @@ What other options did we evaluate?
 **Description**: Brief description of the alternative
 
 **Pros**:
+
 - Pro 1
 - Pro 2
 
 **Cons**:
+
 - Con 1
 - Con 2
 
@@ -74,10 +78,12 @@ What other options did we evaluate?
 **Description**: Brief description of the alternative
 
 **Pros**:
+
 - Pro 1
 - Pro 2
 
 **Cons**:
+
 - Con 1
 - Con 2
 
@@ -98,7 +104,7 @@ Any additional context, implementation details, or follow-up items.
 
 ## Revision History
 
-| Date | Author | Description |
-|------|--------|-------------|
-| YYYY-MM-DD | Name | Initial version |
-| YYYY-MM-DD | Name | Updated status to Accepted |
+| Date       | Author | Description                |
+| ---------- | ------ | -------------------------- |
+| YYYY-MM-DD | Name   | Initial version            |
+| YYYY-MM-DD | Name   | Updated status to Accepted |

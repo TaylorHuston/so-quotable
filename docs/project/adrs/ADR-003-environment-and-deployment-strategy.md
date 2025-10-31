@@ -26,6 +26,7 @@ So Quotable requires a development and deployment strategy that aligns with the 
 ### Initial Consideration: Docker
 
 The initial inclination was to enforce Docker-first development for:
+
 - Dependency isolation
 - Environment consistency
 - Team onboarding simplicity
@@ -60,6 +61,7 @@ We will use **native Node.js development without Docker** as our primary develop
 ### Development Environment
 
 **Node.js Version Management**:
+
 ```bash
 # .nvmrc file for automatic version detection
 18.18.0
@@ -74,6 +76,7 @@ We will use **native Node.js development without Docker** as our primary develop
 ```
 
 **Local Development Workflow**:
+
 ```bash
 # One-time setup
 nvm install 18.18.0
@@ -87,12 +90,14 @@ npx convex dev          # Convex backend (connects to cloud)
 ### Deployment Strategy
 
 **Frontend (Vercel)**:
+
 - Automatic deployments on push to `main` branch
 - Preview deployments for every PR
 - Environment-specific configuration via Vercel dashboard
 - Rollback via Vercel dashboard (instant)
 
 **Backend (Convex)**:
+
 - Development: `npx convex dev` (auto-sync with cloud)
 - Production: `npx convex deploy` (CI/CD or manual)
 - Separate deployments per environment (dev/staging/prod)
@@ -101,6 +106,7 @@ npx convex dev          # Convex backend (connects to cloud)
 ### CI/CD Pipeline
 
 **GitHub Actions Configuration**:
+
 ```yaml
 # .github/workflows/test.yml
 jobs:
@@ -108,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.18.0]  # Match .nvmrc exactly
+        node-version: [18.18.0] # Match .nvmrc exactly
     steps:
       - uses: actions/setup-node@v4
         with:
@@ -121,6 +127,7 @@ jobs:
 ```
 
 **Quality Gates** (MVP-Critical):
+
 - ✅ Lint passes (ESLint)
 - ✅ Type check passes (TypeScript)
 - ✅ Unit tests pass (Vitest)
@@ -130,12 +137,14 @@ jobs:
 ### Staging Strategy
 
 **Preview Deployments (MVP Phase)**:
+
 - Every PR gets unique Vercel preview URL
 - Automatic E2E tests run against preview URL
 - Ephemeral environments (destroyed after merge)
 - Sufficient for MVP and early growth
 
 **Future Dedicated Staging** (Post-MVP):
+
 - Separate Vercel project for staging
 - Separate Convex deployment
 - Auto-deploy from `develop` branch
@@ -144,11 +153,12 @@ jobs:
 ### E2E Testing Strategy
 
 **Vercel Preview Integration**:
+
 ```yaml
 # GitHub Actions webhook from Vercel
 on:
   repository_dispatch:
-    types: ['vercel.deployment.success']
+    types: ["vercel.deployment.success"]
 
 jobs:
   e2e:
@@ -166,21 +176,23 @@ Tests run against **real Vercel preview deployments**, not local Docker containe
 ### Monitoring & Observability (MVP)
 
 **Essential Monitoring**:
+
 1. **Vercel Analytics**: Enable in dashboard (free tier)
 2. **Health Check Endpoint**: `/api/health/route.ts`
 3. **Error Tracking**: Sentry (optional for MVP, recommended post-launch)
 4. **Uptime Monitoring**: UptimeRobot (post-MVP)
 
 **Health Check Implementation**:
+
 ```typescript
 // app/api/health/route.ts
 export async function GET() {
   try {
     // Verify Convex connectivity
     await fetchQuery(api.health.check);
-    return Response.json({ status: 'healthy' }, { status: 200 });
+    return Response.json({ status: "healthy" }, { status: 200 });
   } catch (error) {
-    return Response.json({ status: 'unhealthy', error }, { status: 503 });
+    return Response.json({ status: "unhealthy", error }, { status: 503 });
   }
 }
 ```
@@ -188,12 +200,14 @@ export async function GET() {
 ### Rollback Procedures
 
 **Vercel (Frontend)**:
+
 1. Go to Vercel Dashboard → Project → Deployments
 2. Find previous working deployment
 3. Click "..." menu → "Promote to Production"
 4. Instant rollback (DNS switch)
 
 **Convex (Backend)**:
+
 1. Keep deployment history in git tags
 2. Rollback via: `npx convex deploy --version <previous>`
 3. Or restore from Convex dashboard (if available)
@@ -202,12 +216,14 @@ export async function GET() {
 ### Disaster Recovery
 
 **Backup Strategy**:
+
 - **Code**: Git (GitHub) - inherently backed up
 - **Convex Data**: Verify Convex's backup policy (likely automatic)
 - **Cloudinary Images**: Cloud service with built-in redundancy
 - **Secrets**: Store in password manager + GitHub Secrets
 
 **Recovery Targets**:
+
 - RTO (Recovery Time Objective): 4 hours
 - RPO (Recovery Point Objective): 24 hours
 
@@ -290,12 +306,14 @@ export async function GET() {
 **Description**: Containerize everything - Next.js, Convex CLI, and development environment
 
 **Pros**:
+
 - Complete environment isolation
 - Consistent across all operating systems
 - Single `docker-compose up` to start everything
 - Matches traditional deployment models
 
 **Cons**:
+
 - **No production parity** - Vercel doesn't use Docker
 - **Convex CLI issues** - WebSocket connections problematic in containers
 - **Performance overhead** - Slower hot reload with volume mounts
@@ -310,11 +328,13 @@ The production environment (Vercel + Convex) is inherently non-containerized. Us
 **Description**: Containerize Next.js but run Convex CLI on host
 
 **Pros**:
+
 - Partial isolation for frontend
 - Convex CLI works optimally
 - Some consistency benefits
 
 **Cons**:
+
 - Complex mental model (mixed approaches)
 - Still no Vercel production parity
 - Network complexity between container and host
@@ -328,11 +348,13 @@ The complexity of managing both containerized and native services outweighs bene
 **Description**: Run everything locally with service mocks/emulators
 
 **Pros**:
+
 - Complete offline development
 - Fast test execution
 - No cloud service costs during development
 
 **Cons**:
+
 - **No Convex local emulator exists**
 - Massive effort to mock Convex's reactive system
 - Divergence from production behavior
@@ -348,11 +370,13 @@ Convex is designed as a cloud-first service with no local emulator. Building moc
 ### Required Files for MVP
 
 1. **`.nvmrc`**:
+
 ```
 18.18.0
 ```
 
 2. **`package.json` engines**:
+
 ```json
 {
   "engines": {
@@ -363,6 +387,7 @@ Convex is designed as a cloud-first service with no local emulator. Building moc
 ```
 
 3. **`.env.local.example`**:
+
 ```bash
 # Convex
 NEXT_PUBLIC_CONVEX_URL=https://your-project.convex.cloud
@@ -380,6 +405,7 @@ GOOGLE_CLIENT_SECRET=your-google-secret
 ```
 
 4. **GitHub Actions** (`.github/workflows/test.yml`):
+
 ```yaml
 name: Test
 on: [push, pull_request]
@@ -391,7 +417,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
+          node-version-file: ".nvmrc"
       - run: npm ci
       - run: npm run lint
       - run: npm run type-check
@@ -400,6 +426,7 @@ jobs:
 ```
 
 5. **Health Check** (`app/api/health/route.ts`):
+
 ```typescript
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
@@ -407,9 +434,9 @@ import { api } from "@/convex/_generated/api";
 export async function GET() {
   try {
     await fetchQuery(api.health.ping);
-    return Response.json({ status: 'healthy' });
+    return Response.json({ status: "healthy" });
   } catch (error) {
-    return Response.json({ status: 'unhealthy' }, { status: 503 });
+    return Response.json({ status: "unhealthy" }, { status: 503 });
   }
 }
 ```
@@ -448,6 +475,7 @@ Keep as secondary option, not primary development path.
 ### When to Reconsider This Decision
 
 **Triggers for Re-evaluation**:
+
 1. Team grows to 5+ developers
 2. Need for complex local services (Redis, Elasticsearch)
 3. Shift away from serverless architecture
@@ -456,12 +484,14 @@ Keep as secondary option, not primary development path.
 ### Cost Implications
 
 **Current (MVP)**:
+
 - Vercel: Free tier (hobby)
 - Convex: Free tier
 - GitHub Actions: Free tier (2000 minutes/month)
 - Total: $0/month
 
 **Growth Phase**:
+
 - Vercel Pro: $20/month
 - Convex: $25/month
 - GitHub Actions: Within free tier
@@ -470,12 +500,14 @@ Keep as secondary option, not primary development path.
 ### Security Considerations
 
 **Secret Management**:
+
 - Never commit `.env.local` (in .gitignore)
 - Use GitHub Secrets for CI/CD
 - Rotate secrets quarterly
 - Document all required secrets in `.env.local.example`
 
 **Dependency Security**:
+
 - Enable Dependabot (GitHub)
 - Run `npm audit` in CI
 - Update dependencies monthly
@@ -485,6 +517,6 @@ Keep as secondary option, not primary development path.
 
 ## Revision History
 
-| Date | Author | Description |
-|------|--------|-------------|
+| Date       | Author | Description                                          |
+| ---------- | ------ | ---------------------------------------------------- |
 | 2025-10-30 | Taylor | Initial version - native Node.js deployment strategy |

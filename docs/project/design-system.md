@@ -21,6 +21,7 @@ Source of truth for visual design, UI components, and interaction patterns. AI a
 [Define core design principles - typically 3-5 principles]
 
 Example:
+
 1. **Accessibility First** - WCAG 2.1 AA minimum
 2. **Consistency** - Predictable UI patterns
 3. **Clarity** - Clear visual hierarchy
@@ -38,8 +39,8 @@ Example: Modern, minimal aesthetic with mobile-first responsive design and perfo
 
 ```yaml
 Brand Colors:
-  primary: "#0066CC"        # Main brand color
-  secondary: "#FF6B35"      # Accent color
+  primary: "#0066CC" # Main brand color
+  secondary: "#FF6B35" # Accent color
 
 Semantic Colors:
   success: "#10B981"
@@ -48,9 +49,9 @@ Semantic Colors:
   info: "#3B82F6"
 
 Neutrals:
-  gray-50: "#F9FAFB"       # Lightest
-  gray-500: "#6B7280"      # Mid
-  gray-900: "#111827"      # Darkest
+  gray-50: "#F9FAFB" # Lightest
+  gray-500: "#6B7280" # Mid
+  gray-900: "#111827" # Darkest
   # ... (define full scale as needed)
 
 Accessibility:
@@ -93,13 +94,13 @@ Guidelines:
 Base Unit: 4px (0.25rem)
 
 Scale:
-  1: "0.25rem"    # 4px
-  2: "0.5rem"     # 8px
-  4: "1rem"       # 16px
-  6: "1.5rem"     # 24px
-  8: "2rem"       # 32px
-  12: "3rem"      # 48px
-  16: "4rem"      # 64px
+  1: "0.25rem" # 4px
+  2: "0.5rem" # 8px
+  4: "1rem" # 16px
+  6: "1.5rem" # 24px
+  8: "2rem" # 32px
+  12: "3rem" # 48px
+  16: "4rem" # 64px
   # ... (extend as needed)
 
 Usage:
@@ -114,18 +115,18 @@ Usage:
 ```yaml
 Container:
   max-width: "1280px"
-  padding: "1rem"           # Mobile
-  padding-lg: "2rem"        # Desktop
+  padding: "1rem" # Mobile
+  padding-lg: "2rem" # Desktop
 
 Grid:
   columns: 12
   gap: "1.5rem"
 
 Breakpoints:
-  sm: "640px"               # Mobile landscape
-  md: "768px"               # Tablet
-  lg: "1024px"              # Desktop
-  xl: "1280px"              # Large desktop
+  sm: "640px" # Mobile landscape
+  md: "768px" # Tablet
+  lg: "1024px" # Desktop
+  xl: "1280px" # Large desktop
 ```
 
 ### Elevation & Shadows
@@ -147,12 +148,12 @@ Usage:
 
 ```yaml
 Radius:
-  sm: "0.125rem"    # 2px
-  base: "0.25rem"   # 4px
-  md: "0.375rem"    # 6px
-  lg: "0.5rem"      # 8px
-  xl: "0.75rem"     # 12px
-  full: "9999px"    # Pills/avatars
+  sm: "0.125rem" # 2px
+  base: "0.25rem" # 4px
+  md: "0.375rem" # 6px
+  lg: "0.5rem" # 8px
+  xl: "0.75rem" # 12px
+  full: "9999px" # Pills/avatars
 
 Components:
   buttons: "base"
@@ -260,7 +261,8 @@ Container:
 
 Structure:
   header: { border-bottom: "1px solid gray-200", padding-bottom: "1rem" }
-  body: { padding: "1.5rem 0", max-height: "calc(100vh - 12rem)", overflow: "auto" }
+  body:
+    { padding: "1.5rem 0", max-height: "calc(100vh - 12rem)", overflow: "auto" }
   footer: { border-top: "1px solid gray-200", padding-top: "1rem" }
 ```
 
@@ -363,6 +365,7 @@ Progress Bar:
 ## Accessibility
 
 ### Standards
+
 - WCAG 2.1 AA compliance minimum
 - Keyboard navigation for all interactive elements
 - Screen reader support with semantic HTML and ARIA labels
@@ -370,6 +373,7 @@ Progress Bar:
 - Touch targets: 44x44px minimum on mobile
 
 ### Focus Indicators
+
 - Always visible
 - 2px offset from element
 - Primary color with sufficient contrast
@@ -457,16 +461,19 @@ Naming Convention:
 ## References
 
 ### Design Tools
+
 - Design software: [Figma/Sketch/etc.]
 - Icon library: [Heroicons/Lucide/etc.]
 - Prototype tool: [Link]
 
 ### External Resources
+
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Material Design](https://material.io/)
 - [Apple HIG](https://developer.apple.com/design/)
 
 ### Related Documentation
+
 - Design assets: `docs/project/design/`
 - ADRs: `docs/project/adrs/`
 - Writing style: `docs/project/writing-style.md` (optional)
@@ -476,6 +483,7 @@ Naming Convention:
 ### Updating This Document
 
 **When to Update**:
+
 - Adding new components or variants
 - Changing design tokens (colors, spacing, typography)
 - Updating interaction patterns or animations
@@ -496,6 +504,7 @@ Naming Convention:
    - Design token structure decisions
 
    Example:
+
    ```bash
    /adr "design system framework selection"
    ```
@@ -512,6 +521,7 @@ Naming Convention:
 ### AI Assistant Instructions
 
 **When implementing UI**:
+
 1. **Always reference this document first** for colors, spacing, typography
 2. **Follow component specifications exactly** - don't invent new patterns
 3. **Update this document** when adding new components or variants
@@ -522,11 +532,13 @@ Naming Convention:
 8. **Ask before creating new patterns** - propose additions before implementing
 
 **For strategic design decisions** (framework choice, accessibility approach, token structure):
+
 ```bash
 /adr "design decision topic"
 ```
 
 The `/adr` command will:
+
 - Create an ADR documenting the decision and rationale
 - Update this design-system.md file with the chosen approach
 - Ensure decisions are tracked with context and consequences

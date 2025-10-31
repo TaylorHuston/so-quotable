@@ -20,6 +20,7 @@ The AI Toolkit provides a structured, AI-assisted development workflow:
 ```
 
 This starts a conversation to fill in the gaps in your project brief. It will ask about:
+
 - The problem you're solving
 - Your solution approach
 - Target audience
@@ -33,6 +34,7 @@ This starts a conversation to fill in the gaps in your project brief. It will as
 ```
 
 Create a feature epic through natural conversation. For example:
+
 - "Create a quote generator that overlays text on images"
 - "Build user authentication system"
 
@@ -45,6 +47,7 @@ Once you have epics with tasks:
 ```
 
 This creates a detailed, phase-based implementation plan with:
+
 - Test requirements first
 - Implementation phases
 - Success criteria
@@ -56,6 +59,7 @@ This creates a detailed, phase-based implementation plan with:
 ```
 
 Execute a specific phase from the task plan. The AI will:
+
 - Write tests first (TDD)
 - Implement the phase
 - Run tests
@@ -68,6 +72,7 @@ Execute a specific phase from the task plan. The AI will:
 ```
 
 See your current project status:
+
 - Active epics and tasks
 - Recent work
 - Next steps
@@ -156,6 +161,7 @@ All commands work with natural language:
 ### Test-First Development
 
 The `/implement` command enforces TDD:
+
 1. Write tests first
 2. Implement to pass tests
 3. Fix failures automatically
@@ -191,4 +197,4 @@ For more details on each command, check the pm/ and docs/ directories.
 
 ---
 
-*This is a living guide. As you discover better workflows, update this file!*
+_This is a living guide. As you discover better workflows, update this file!_

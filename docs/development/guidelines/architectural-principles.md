@@ -14,6 +14,7 @@ This document defines the core architectural principles guiding the design and d
 - Maximize cohesion within components
 
 **Example:**
+
 - Presentation layer (UI components)
 - Business logic layer (services, use cases)
 - Data access layer (repositories, database)
@@ -28,6 +29,7 @@ This document defines the core architectural principles guiding the design and d
 ### 3. Scalability
 
 Design for growth:
+
 - Horizontal scaling capability
 - Efficient resource usage
 - Caching strategies
@@ -54,6 +56,7 @@ Design for growth:
 ### 6. Maintainability
 
 Code should be:
+
 - Readable and self-documenting
 - Consistently formatted
 - Well-tested
@@ -73,21 +76,25 @@ Code should be:
 ### Preferred Patterns
 
 **Repository Pattern**
+
 - Abstract data access logic
 - Easier testing with mocks
 - Centralized data queries
 
 **Service Layer**
+
 - Encapsulate business logic
 - Reusable across different interfaces
 - Easier to test
 
 **Dependency Injection**
+
 - Loose coupling
 - Better testability
 - Easier to swap implementations
 
 **Factory Pattern**
+
 - Object creation abstraction
 - Centralized object instantiation
 - Flexibility in object creation
@@ -129,6 +136,7 @@ When choosing technologies:
 See [ADR-001](../../project/adrs/ADR-001-initial-tech-stack.md) for API architecture rationale.
 
 **Function-Based API** (Convex):
+
 - Type-safe TypeScript functions instead of REST
 - Queries (read), Mutations (write), Actions (external calls)
 - Clear, descriptive function names (list, get, create, update, remove)
@@ -137,6 +145,7 @@ See [ADR-001](../../project/adrs/ADR-001-initial-tech-stack.md) for API architec
 - End-to-end type safety
 
 **External APIs** (Cloudinary):
+
 - RESTful design for third-party integrations
 - Proper HTTP method usage
 - Meaningful status codes
@@ -238,4 +247,4 @@ See [ADR-002](../../project/adrs/ADR-002-testing-framework.md) for testing frame
 
 ---
 
-*Review and update these principles regularly as the project evolves.*
+_Review and update these principles regularly as the project evolves._

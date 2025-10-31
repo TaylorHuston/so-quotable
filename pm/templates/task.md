@@ -13,18 +13,23 @@ updated: YYYY-MM-DD
 **Status**: pending
 
 ## Description
+
 Clear description of what needs to be done.
 
 ## Acceptance Criteria
+
 - [ ] Criterion 1
 - [ ] Criterion 2
 - [ ] Criterion 3
 
 ## Technical Notes
+
 Implementation details, approach, or technical considerations.
 
 ## Dependencies
+
 - None / List dependencies
 
 ## Testing
+
 How this should be tested.

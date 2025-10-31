@@ -19,6 +19,7 @@ Use these templates when creating new epics, tasks, or bug reports. The ai-toolk
 ## Template Variables
 
 Templates use the following placeholders that get replaced:
+
 - `XXX` - ID number
 - `YYYY-MM-DD` - Date
 - `Epic Title` - Actual epic/task/bug title

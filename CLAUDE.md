@@ -6,6 +6,7 @@ This file provides context for AI assistants working on this project.
 
 1. Never commit without explicit instruction to do so
 2. Always review all project documentation and guidelines before starting a batch of work
+3. Always have the code reviewer review any changes
 
 ## Project Context
 
@@ -46,10 +47,12 @@ quoteable/
 ## Development Environment Setup
 
 **Prerequisites**:
+
 - Node.js 18.18.0 (use nvm/fnm for version management)
 - npm 9.0.0+
 
 **Initial Setup**:
+
 ```bash
 # Use correct Node.js version
 nvm use  # Reads from .nvmrc
@@ -100,6 +103,7 @@ See [GETTING-STARTED.md](./GETTING-STARTED.md) for the complete AI-assisted deve
 **Phase**: Initial Setup & Architecture (2025-10-30)
 
 **Completed**:
+
 - ✅ Project structure initialized with ai-toolkit
 - ✅ Tech stack decided and documented (ADR-001)
 - ✅ Testing framework decided and documented (ADR-002)
@@ -112,6 +116,7 @@ See [GETTING-STARTED.md](./GETTING-STARTED.md) for the complete AI-assisted deve
 **Current Task**: TASK-001 - Initialize Next.js Project (feature/TASK-001-initialize-nextjs)
 
 **Next Steps**:
+
 1. Initialize Next.js project with TypeScript (.nvmrc, package.json engines)
 2. Set up Convex backend and deploy to dev environment
 3. Configure Cloudinary account and integration
@@ -120,6 +125,7 @@ See [GETTING-STARTED.md](./GETTING-STARTED.md) for the complete AI-assisted deve
 6. Set up MVP monitoring (health check, Vercel Analytics)
 
 **Current Priorities**:
+
 - Backend-first development approach
 - TDD/BDD workflow with comprehensive test coverage
 - Type-safe end-to-end development with TypeScript
@@ -128,4 +134,4 @@ See [GETTING-STARTED.md](./GETTING-STARTED.md) for the complete AI-assisted deve
 
 ---
 
-*This file helps AI assistants understand your project. Keep it updated as your project evolves.*
+_This file helps AI assistants understand your project. Keep it updated as your project evolves._
