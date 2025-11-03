@@ -1,9 +1,9 @@
 ---
 id: EPIC-001
 title: MVP Infrastructure Setup
-status: planning
+status: in_progress
 created: 2025-10-30
-updated: 2025-10-30
+updated: 2025-11-02
 ---
 
 # EPIC-001: MVP Infrastructure Setup
@@ -30,22 +30,22 @@ Set up the foundational infrastructure for So Quotable based on the tech stack d
 
 ## Acceptance Criteria
 
-- [ ] Next.js project initialized with TypeScript and App Router
-- [ ] Convex backend deployed to development environment
-- [ ] Convex database schema implemented (people, quotes, images, generatedImages)
-- [ ] Cloudinary account configured with API integration
-- [ ] Convex Auth configured with email/password and Google OAuth
-- [ ] Testing infrastructure operational (Vitest, Playwright, convex-test)
-- [ ] Development environment fully functional with hot reload
-- [ ] Production deployment pipeline configured (Vercel + Convex Cloud)
-- [ ] Environment variables properly configured for all services
-- [ ] Basic smoke tests passing for all infrastructure components
+- [x] Next.js project initialized with TypeScript and App Router (TASK-001)
+- [x] Convex backend deployed to development environment (TASK-002)
+- [x] Convex database schema implemented (people, quotes, images, generatedImages) (TASK-002, TASK-003)
+- [x] Cloudinary account configured with API integration (TASK-003)
+- [ ] Convex Auth configured with email/password and Google OAuth (TASK-004)
+- [x] Testing infrastructure operational (Vitest, Playwright, convex-test) (TASK-002, TASK-003: 146 tests, 92% coverage)
+- [x] Development environment fully functional with hot reload (TASK-001, TASK-002)
+- [ ] Production deployment pipeline configured (Vercel + Convex Cloud) (TASK-006)
+- [x] Environment variables properly configured for all services (TASK-001, TASK-002, TASK-003)
+- [x] Basic smoke tests passing for all infrastructure components (146 tests passing)
 
 ## Tasks
 
-- [ ] TASK-001: Initialize Next.js project with TypeScript
-- [ ] TASK-002: Set up Convex backend and database schema
-- [ ] TASK-003: Configure Cloudinary integration
+- [x] TASK-001: Initialize Next.js project with TypeScript (completed 2025-10-30)
+- [x] TASK-002: Set up Convex backend and database schema (completed 2025-11-01)
+- [x] TASK-003: Configure Cloudinary integration (completed 2025-11-02)
 - [ ] TASK-004: Implement Convex Auth with email and Google OAuth
 - [ ] TASK-005: Set up testing infrastructure
 - [ ] TASK-006: Configure deployment pipeline

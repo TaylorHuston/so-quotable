@@ -22,8 +22,10 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "cloudinary": "^2.8.0",
     "convex": "^1.28.0",
     "next": "16.0.1",
+    "next-cloudinary": "^6.17.0",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
@@ -38,6 +40,7 @@
     "@vitest/coverage-v8": "^4.0.6",
     "@vitest/ui": "^4.0.5",
     "convex-test": "^0.0.38",
+    "dotenv": "^17.2.3",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
     "eslint-config-prettier": "^10.1.8",
@@ -45,6 +48,7 @@
     "jsdom": "^27.0.1",
     "prettier": "^3.6.2",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
     "typescript": "^5",
     "vitest": "^4.0.5"
   }

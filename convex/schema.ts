@@ -52,4 +52,19 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index("by_person", ["personId"]),
+
+  generatedImages: defineTable({
+    // Required fields
+    quoteId: v.id("quotes"),
+    imageId: v.id("images"),      // Base image used
+    cloudinaryId: v.string(),      // Generated image ID in Cloudinary
+    url: v.string(),               // Shareable URL
+    transformation: v.string(),    // Transformation params for regeneration
+    expiresAt: v.number(),         // When Cloudinary will delete (timestamp)
+
+    // Timestamp
+    createdAt: v.number(),
+  })
+    .index("by_quote", ["quoteId"])
+    .index("by_expires", ["expiresAt"]),
 });
