@@ -2,16 +2,19 @@
 id: TASK-003
 title: Configure Cloudinary integration
 epic: EPIC-001
-status: completed
+status: merged
 created: 2025-10-30
 updated: 2025-11-02
 completed: 2025-11-02
+merged: 2025-11-02
+merged_to: develop
+branch: feature/TASK-003-cloudinary-integration
 ---
 
 # TASK-003: Configure Cloudinary integration
 
 **Epic**: EPIC-001 - MVP Infrastructure Setup
-**Status**: completed ✅
+**Status**: merged ✅ (merged to develop on 2025-11-02)
 
 ## Description
 
