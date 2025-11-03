@@ -2,15 +2,16 @@
 id: TASK-004
 title: Implement Convex Auth with email and Google OAuth
 epic: EPIC-001
-status: todo
+status: complete
 created: 2025-10-30
-updated: 2025-10-30
+updated: 2025-11-03
+completed: 2025-11-03
 ---
 
 # TASK-004: Implement Convex Auth with email and Google OAuth
 
 **Epic**: EPIC-001 - MVP Infrastructure Setup
-**Status**: todo
+**Status**: complete ✅
 
 ## Description
 
@@ -18,17 +19,17 @@ Set up Convex Auth to handle user authentication with email/password and Google 
 
 ## Acceptance Criteria
 
-- [ ] Convex Auth configured and initialized
-- [ ] Email/password authentication working
-- [ ] Google OAuth integration configured and functional
-- [ ] User registration flow implemented
-- [ ] Login/logout functionality working
-- [ ] Password reset flow configured (email-based)
-- [ ] Protected routes implemented in Next.js
-- [ ] Backend functions secured with authentication checks
-- [ ] User profile data stored and accessible
-- [ ] Session persistence across page refreshes
-- [ ] Auth UI components created (login, register, profile)
+- [x] Convex Auth configured and initialized ✅ (Phase 1)
+- [x] Email/password authentication working ✅ (Phase 2 - signUp/signIn/signOut auto-generated)
+- [x] Google OAuth integration configured and functional ✅ (Phase 3 backend + Phase 4 frontend - tested and working)
+- [x] User registration flow implemented ✅ (Phase 2 backend + Phase 4 RegisterForm with password strength)
+- [x] Login/logout functionality working ✅ (Phase 2 backend + Phase 4 LoginForm + sign out button)
+- [ ] Password reset flow configured ⏭️ DEFERRED (post-MVP - see PLAN.md)
+- [x] Protected routes implemented in Next.js ✅ (Phase 4 - middleware with open redirect protection)
+- [x] Backend functions secured with authentication checks ✅ (Phase 2 - getCurrentUser, email verification)
+- [x] User profile data stored and accessible ✅ (Phase 1 schema, Phase 2 getCurrentUser query, Phase 3 OAuth profile, Phase 4 UserProfile display)
+- [x] Session persistence across page refreshes ✅ (Phase 1 config, Phase 2 tested, Phase 4 verified with httpOnly cookies)
+- [x] Auth UI components created (login, register, profile) ✅ (Phase 4 - LoginForm, RegisterForm, UserProfile, GoogleIcon)
 
 ## Technical Notes
 

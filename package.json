@@ -22,6 +22,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@convex-dev/auth": "^0.0.90",
     "cloudinary": "^2.8.0",
     "convex": "^1.28.0",
     "next": "16.0.1",
@@ -47,6 +48,7 @@
     "happy-dom": "^20.0.10",
     "jsdom": "^27.0.1",
     "prettier": "^3.6.2",
+    "shadcn": "^3.5.0",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",
     "typescript": "^5",

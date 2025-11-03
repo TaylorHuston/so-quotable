@@ -41,6 +41,9 @@ Thumbs.db
 .env.*.local
 .env.production
 
+# Google OAuth credentials (never commit these)
+client_secret_*.json
+
 # Logs
 *.log
 npm-debug.log*
