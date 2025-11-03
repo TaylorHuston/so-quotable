@@ -100,7 +100,7 @@ See [GETTING-STARTED.md](./GETTING-STARTED.md) for the complete AI-assisted deve
 
 ## Current Focus
 
-**Phase**: Initial Setup & Architecture (2025-10-30)
+**Phase**: MVP Infrastructure Setup (2025-10-30 to 2025-11-02)
 
 **Completed**:
 
@@ -112,25 +112,74 @@ See [GETTING-STARTED.md](./GETTING-STARTED.md) for the complete AI-assisted deve
 - ✅ Architecture overview updated with deployment details
 - ✅ Documentation synchronized across all ADRs
 - ✅ Branch structure created (main, develop, feature branches)
+- ✅ TASK-001: Next.js project initialized with TypeScript
+- ✅ TASK-002: Convex backend setup with comprehensive testing (97.36% coverage)
+- ✅ TASK-003: Cloudinary integration complete (92% coverage, 146 tests)
 
-**Current Task**: TASK-001 - Initialize Next.js Project (feature/TASK-001-initialize-nextjs)
+**Current Task**: Ready for TASK-004 - Convex Auth implementation
 
 **Next Steps**:
 
-1. Initialize Next.js project with TypeScript (.nvmrc, package.json engines)
-2. Set up Convex backend and deploy to dev environment
-3. Configure Cloudinary account and integration
-4. Implement database schema in Convex
-5. Set up testing infrastructure (Vitest, Playwright, convex-test)
-6. Set up MVP monitoring (health check, Vercel Analytics)
+1. ✅ ~~Initialize Next.js project with TypeScript (.nvmrc, package.json engines)~~
+2. ✅ ~~Set up Convex backend and deploy to dev environment~~
+3. ✅ ~~Configure Cloudinary account and integration~~
+4. ✅ ~~Implement database schema in Convex (people, quotes, images, generatedImages)~~
+5. ✅ ~~Set up testing infrastructure (Vitest, Playwright, convex-test)~~
+6. Implement Convex Auth with email/password and OAuth
+7. Set up MVP monitoring (health check, Vercel Analytics)
+8. Configure deployment pipeline
 
 **Current Priorities**:
 
-- Backend-first development approach
-- TDD/BDD workflow with comprehensive test coverage
+- Backend-first development approach (TASK-002 ✅, TASK-003 ✅)
+- TDD/BDD workflow with comprehensive test coverage (97.36% → 92% with Cloudinary)
 - Type-safe end-to-end development with TypeScript
 - MVP-critical infrastructure (Node version management, CI/CD basics, health checks)
 - Native Node.js development (no Docker for MVP)
+
+## Cloudinary Integration (TASK-003 Complete)
+
+**Account**: Cloud name `dggww7kzb`, Free tier (25GB storage/bandwidth)
+
+**Upload Presets**:
+- `base-images`: Permanent person photos (folder: so-quotable/people)
+- `generated-images`: Temporary quote images with 30-day auto-deletion (folder: so-quotable/generated)
+
+**Key Files**:
+- `convex/cloudinary.ts`: Server-side upload action (uses "use node" directive)
+- `convex/generatedImages.ts`: Database CRUD for generated quote images
+- `src/lib/cloudinary-transformations.ts`: URL transformation helpers (pure functions)
+- `scripts/verify-cloudinary-integration.ts`: Comprehensive verification script
+
+**Features Implemented**:
+1. **Server-Side Upload**: Convex action for signed Cloudinary uploads
+2. **Database Integration**: Automatic metadata storage (images, generatedImages tables)
+3. **URL Transformations**: Text overlays, image optimization, resize, background overlays
+4. **Auto-Deletion**: Generated images automatically deleted after 30 days
+5. **CDN Delivery**: Automatic format/quality optimization (WebP for Chrome, JPEG for Safari)
+
+**Environment Variables** (set in Convex dashboard for actions):
+- `CLOUDINARY_CLOUD_NAME`
+- `CLOUDINARY_API_KEY`
+- `CLOUDINARY_API_SECRET`
+- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` (for client-side URL building)
+
+**Testing**: 146 tests passing, 92% coverage
+- convex/generatedImages.ts: 100% coverage (18 tests)
+- src/lib/cloudinary-transformations.ts: 100% coverage (60 tests)
+- convex/cloudinary.ts: 62.5% coverage (10 validation tests, upload requires real API)
+
+**Gotchas**:
+- Must use "use node" directive in convex/cloudinary.ts for Cloudinary SDK
+- Environment variables for actions must be set in Convex dashboard (not .env.local)
+- Transformation order matters: resize → background → text → optimize
+- Commas must be URL-encoded in text overlays (they separate transformation parameters)
+
+**Post-MVP Enhancements**:
+- Cleanup job via Convex cron to sync generatedImages table with Cloudinary deletions
+- Cloudinary webhooks for real-time deletion tracking
+- Custom fonts for text overlays
+- Advanced transformations (facial recognition, smart cropping)
 
 ---
 

@@ -1,5 +1,20 @@
 import type { NextConfig } from "next";
 
+// Validate required environment variables at build time
+const requiredEnvVars = [
+  "NEXT_PUBLIC_CONVEX_URL",
+  "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME",
+] as const;
+
+for (const envVar of requiredEnvVars) {
+  if (!process.env[envVar]) {
+    throw new Error(
+      `Missing required environment variable: ${envVar}\n` +
+        `Please check your .env.local file and ensure all variables from .env.local.example are set.`
+    );
+  }
+}
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -10,8 +25,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // TODO(TASK-005): Add runtime environment variable validation
-  // Convex validates NEXT_PUBLIC_CONVEX_URL at build time via client initialization
 };
 
 export default nextConfig;

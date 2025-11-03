@@ -2,6 +2,18 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
 /**
+ * Get a single image by ID
+ */
+export const get = query({
+  args: {
+    id: v.id("images"),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
+  },
+});
+
+/**
  * Get all images for a person (uses by_person index)
  */
 export const getByPerson = query({

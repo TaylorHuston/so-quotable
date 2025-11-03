@@ -11,6 +11,53 @@ describe("images CRUD operations", () => {
     t = convexTest(schema, modules);
   });
 
+  describe("images.get query", () => {
+    it("should return image by ID", async () => {
+      // Given: An image exists
+      const personId = await t.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test-person",
+      });
+
+      const imageId = await t.mutation(api.images.create, {
+        personId,
+        cloudinaryId: "test-cloud-id",
+        url: "https://example.com/test.jpg",
+      });
+
+      // When: Getting image by ID
+      const image = await t.query(api.images.get, { id: imageId });
+
+      // Then: Should return the image
+      expect(image).not.toBeNull();
+      expect(image!._id).toBe(imageId);
+      expect(image!.cloudinaryId).toBe("test-cloud-id");
+      expect(image!.url).toBe("https://example.com/test.jpg");
+    });
+
+    it("should return null for non-existent image", async () => {
+      // Given: A non-existent image ID
+      const personId = await t.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test-person",
+      });
+
+      const imageId = await t.mutation(api.images.create, {
+        personId,
+        cloudinaryId: "temp",
+        url: "https://example.com/temp.jpg",
+      });
+
+      await t.mutation(api.images.remove, { id: imageId });
+
+      // When: Getting deleted image
+      const image = await t.query(api.images.get, { id: imageId });
+
+      // Then: Should return null
+      expect(image).toBeNull();
+    });
+  });
+
   describe("images.getByPerson query", () => {
     it("should return all images for a person using index", async () => {
       // Given: A person with multiple images
