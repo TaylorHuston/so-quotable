@@ -1,7 +1,37 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { authTables } from "@convex-dev/auth/server";
 
 export default defineSchema({
+  // Auth tables with extended users table
+  ...authTables,
+  users: defineTable({
+    // Base fields from authTables
+    name: v.optional(v.string()),
+    email: v.optional(v.string()),
+    emailVerificationTime: v.optional(v.number()),
+    phone: v.optional(v.string()),
+    phoneVerificationTime: v.optional(v.number()),
+    image: v.optional(v.string()),
+    isAnonymous: v.optional(v.boolean()),
+
+    // Email verification fields
+    verificationToken: v.optional(v.string()),
+    tokenExpiry: v.optional(v.number()),
+
+    // Extended fields for So Quotable
+    slug: v.string(),
+    role: v.union(v.literal("user"), v.literal("admin")),
+
+    // Timestamps
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("email", ["email"])
+    .index("phone", ["phone"])
+    .index("by_slug", ["slug"])
+    .index("by_verificationToken", ["verificationToken"]),
+
   people: defineTable({
     // Required fields
     name: v.string(),

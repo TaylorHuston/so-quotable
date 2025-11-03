@@ -2,6 +2,14 @@
 
 This file provides context for AI assistants working on this project.
 
+## AI Toolkit Version
+
+This project uses the AI Toolkit plugin for structured development workflows.
+
+- **Plugin Version**: 0.11.2
+- **Last Updated**: 2025-11-03
+- **Update Status**: 
+
 ## Critical Rules
 
 1. Never commit without explicit instruction to do so
