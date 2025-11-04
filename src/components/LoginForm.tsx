@@ -2,10 +2,12 @@
 
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { GoogleIcon } from "./GoogleIcon";
 
 export function LoginForm() {
   const { signIn } = useAuthActions();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -23,9 +25,11 @@ export function LoginForm() {
       formData.append("flow", "signIn");
 
       await signIn("password", formData);
+
+      // Successful login - redirect to dashboard
+      router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Sign in failed");
-    } finally {
       setLoading(false);
     }
   };

@@ -61,8 +61,8 @@ export default function TestConvexPage() {
                 Convex Dashboard
               </a>
             </li>
-            <li>Navigate to the "people" table</li>
-            <li>Click "Insert" and create a new person</li>
+            <li>Navigate to the &ldquo;people&rdquo; table</li>
+            <li>Click &ldquo;Insert&rdquo; and create a new person</li>
             <li>Watch the count above update automatically!</li>
           </ol>
         </div>

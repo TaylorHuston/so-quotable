@@ -3,6 +3,7 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import Image from "next/image";
 
 export function UserProfile() {
   const { signOut } = useAuthActions();
@@ -60,10 +61,12 @@ export function UserProfile() {
         {/* Profile Picture */}
         <div className="flex-shrink-0">
           {user.image ? (
-            <img
+            <Image
               src={user.image}
               alt={user.name || "User"}
-              className="w-16 h-16 rounded-full border-2 border-gray-200"
+              width={64}
+              height={64}
+              className="rounded-full border-2 border-gray-200"
             />
           ) : (
             <div className="w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center text-white text-2xl font-semibold">

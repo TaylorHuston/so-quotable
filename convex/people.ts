@@ -101,7 +101,14 @@ export const update = mutation({
     }
 
     // Build update object with trimmed strings
-    const updateData: any = {
+    const updateData: {
+      updatedAt: number;
+      name?: string;
+      slug?: string;
+      bio?: string;
+      birthDate?: string;
+      deathDate?: string;
+    } = {
       updatedAt: Date.now(),
     };
 

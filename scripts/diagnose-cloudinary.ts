@@ -60,9 +60,9 @@ async function testUploadWithFolder() {
       console.log('   URL:', result2.secure_url);
       console.log('   Folder:', result2.folder || 'NO FOLDER METADATA');
       console.log('');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log('❌ Failed with preset:');
-      console.log('   Error:', error.message);
+      console.log('   Error:', (error as Error).message);
       console.log('   This might mean the preset doesn\'t exist or isn\'t configured for signed uploads');
       console.log('');
     }
@@ -79,11 +79,12 @@ async function testUploadWithFolder() {
     console.log('   Folder:', result3.folder || 'NO FOLDER METADATA');
     console.log('');
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const err = error as Error & { http_code?: number };
     console.error('❌ Upload test failed:');
-    console.error('   Error:', error.message);
-    if (error.http_code) {
-      console.error('   HTTP Code:', error.http_code);
+    console.error('   Error:', err.message);
+    if (err.http_code) {
+      console.error('   HTTP Code:', err.http_code);
     }
     console.log('');
   }
@@ -104,7 +105,7 @@ async function listResources() {
       console.log('   This is normal if you haven\'t uploaded anything yet');
     } else {
       console.log(`Found ${result.resources.length} resources:\n`);
-      result.resources.forEach((resource: any, index: number) => {
+      result.resources.forEach((resource: Record<string, unknown>, index: number) => {
         console.log(`${index + 1}. ${resource.public_id}`);
         console.log(`   Format: ${resource.format}`);
         console.log(`   Created: ${resource.created_at}`);
@@ -121,19 +122,19 @@ async function listResources() {
       const folders = await cloudinary.api.root_folders();
       if (folders.folders && folders.folders.length > 0) {
         console.log('📁 Root folders in your account:');
-        folders.folders.forEach((folder: any) => {
+        folders.folders.forEach((folder: Record<string, unknown>) => {
           console.log(`   - ${folder.name} (${folder.path})`);
         });
       } else {
         console.log('ℹ️  No root folders found');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log('ℹ️  Could not list folders (this API might be disabled on free tier)');
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Failed to list resources:');
-    console.error('   Error:', error.message);
+    console.error('   Error:', (error as Error).message);
   }
 }
 
@@ -145,7 +146,7 @@ async function checkUploadPresets() {
 
     if (presets.presets && presets.presets.length > 0) {
       console.log(`Found ${presets.presets.length} upload presets:\n`);
-      presets.presets.forEach((preset: any) => {
+      presets.presets.forEach((preset: Record<string, unknown> & { settings?: { folder?: string } }) => {
         console.log(`📌 ${preset.name}`);
         console.log(`   Unsigned: ${preset.unsigned ? 'Yes' : 'No (Signed)'}`);
         if (preset.settings?.folder) {
@@ -162,9 +163,9 @@ async function checkUploadPresets() {
       console.log('   2. Create "base-images" preset with folder: so-quotable/people');
       console.log('   3. Create "generated-images" preset with folder: so-quotable/generated');
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('❌ Failed to check presets:');
-    console.error('   Error:', error.message);
+    console.error('   Error:', (error as Error).message);
     console.log('   Note: Preset checking requires admin API access');
   }
 }
@@ -183,7 +184,7 @@ async function checkUploadPresets() {
     console.log('3. Verify the folder structure matches expectations');
     console.log('4. If presets are missing folder config, update them in Settings → Upload');
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('\n❌ Diagnostic failed:');
     console.error(error);
   }

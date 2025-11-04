@@ -33,7 +33,7 @@ async function verifyUploadPresets() {
 
     // Check for required presets
     for (const presetName of requiredPresets) {
-      const preset = presets.find((p: any) => p.name === presetName);
+      const preset = presets.find((p: Record<string, unknown>) => p.name === presetName);
 
       if (preset) {
         console.log(`✅ "${presetName}" preset found`);
@@ -49,7 +49,7 @@ async function verifyUploadPresets() {
 
     // Check if all required presets exist
     const allPresetsExist = requiredPresets.every((presetName) =>
-      presets.some((p: any) => p.name === presetName)
+      presets.some((p: Record<string, unknown>) => p.name === presetName)
     );
 
     if (allPresetsExist) {

@@ -2,6 +2,7 @@
 
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { GoogleIcon } from "./GoogleIcon";
 
 type PasswordStrength = "weak" | "medium" | "strong";
@@ -22,6 +23,7 @@ function calculatePasswordStrength(password: string): PasswordStrength {
 
 export function RegisterForm() {
   const { signIn } = useAuthActions();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -64,9 +66,11 @@ export function RegisterForm() {
       formData.append("flow", "signUp");
 
       await signIn("password", formData);
+
+      // Successful registration - redirect to dashboard
+      router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
-    } finally {
       setLoading(false);
     }
   };

@@ -67,7 +67,9 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
         t.action(api.cloudinary.uploadToCloudinary, {
           file: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
           preset: "base-images",
-        } as any)
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore - Testing validation: intentionally omitting personId
+        })
       ).rejects.toThrow("personId is required");
     });
 
@@ -101,7 +103,9 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
         t.action(api.cloudinary.uploadToCloudinary, {
           file: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
           personId,
-          preset: "invalid-preset" as any,
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore - Testing validation: intentionally using invalid preset
+          preset: "invalid-preset",
         })
       ).rejects.toThrow();
     });
@@ -128,7 +132,9 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
           imageId,
           preset: "generated-images",
           transformation: "test",
-        } as any)
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore - Testing validation: intentionally omitting quoteId
+        })
       ).rejects.toThrow("quoteId and imageId are required");
     });
 
@@ -152,7 +158,9 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
           quoteId,
           preset: "generated-images",
           transformation: "test",
-        } as any)
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore - Testing validation: intentionally omitting imageId
+        })
       ).rejects.toThrow("quoteId and imageId are required");
     });
 
@@ -182,8 +190,9 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
           quoteId,
           imageId,
           preset: "generated-images",
-          // transformation missing
-        } as any)
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore - Testing validation: intentionally omitting transformation
+        })
       ).rejects.toThrow("transformation is required");
     });
 
