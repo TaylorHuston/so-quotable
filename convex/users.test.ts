@@ -1,6 +1,7 @@
 import { convexTest } from "convex-test";
 import { describe, it, expect, beforeEach } from "vitest";
 import { api } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 import schema from "./schema";
 import { modules } from "./test.setup";
 
@@ -331,7 +332,7 @@ describe("users table schema and CRUD operations", () => {
 
     it("should return null when user not found in database", async () => {
       // Given: A non-existent user ID
-      const fakeUserId = "j57cu1paqwkycsvvhdwrcstg316q96pk" as any;
+      const fakeUserId = "j57cu1paqwkycsvvhdwrcstg316q96pk" as Id<"users">;
 
       // When: Calling getCurrentUser with fake user ID
       const tAuth = t.withIdentity({ subject: fakeUserId });

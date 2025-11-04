@@ -1,6 +1,7 @@
 import { convexTest } from "convex-test";
 import { describe, it, expect, beforeEach } from "vitest";
 import { api } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 import schema from "./schema";
 import { modules } from "./test.setup";
 
@@ -114,7 +115,7 @@ describe("email verification", () => {
 
     it("should throw error when user not found", async () => {
       // Given: A non-existent user
-      const fakeUserId = "j57cu1paqwkycsvvhdwrcstg316q96pk" as any;
+      const fakeUserId = "j57cu1paqwkycsvvhdwrcstg316q96pk" as Id<"users">;
 
       // When: Generating token with fake user
       const tAuth = t.withIdentity({ subject: fakeUserId });
@@ -223,7 +224,7 @@ describe("email verification", () => {
 
     it("should not verify already verified email", async () => {
       // Given: A user with already verified email
-      const userId = await t.run(async (ctx) => {
+      const _userId = await t.run(async (ctx) => {
         const now = Date.now();
         return await ctx.db.insert("users", {
           email: "already@example.com",
@@ -317,7 +318,7 @@ describe("email verification", () => {
 
     it("should throw error when user not found", async () => {
       // Given: A non-existent user
-      const fakeUserId = "j57cu1paqwkycsvvhdwrcstg316q96pk" as any;
+      const fakeUserId = "j57cu1paqwkycsvvhdwrcstg316q96pk" as Id<"users">;
 
       // When: Resending with fake user
       const tAuth = t.withIdentity({ subject: fakeUserId });

@@ -1,5 +1,11 @@
 name: Test
 
+# E2E Trigger Strategy:
+# - Run on all pushes and pull requests to main/develop
+# - E2E tests run on every PR to catch regressions early
+# - Currently using chromium only (cross-browser testing is post-MVP)
+# - Sequential execution (--workers=1) for CI stability
+
 on:
   push:
   pull_request:
@@ -29,6 +35,20 @@ jobs:
 
       - name: Run tests
         run: npm run test:run
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: npm run test:e2e:ci
+
+      - name: Upload Playwright test traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
 
       - name: Build application
         run: npm run build

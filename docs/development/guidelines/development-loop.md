@@ -335,7 +335,7 @@ Every issue directory (`pm/issues/TASK-###-name/` or `BUG-###-name/`) can contai
 
 **HANDOFF Entry** (passing work to another agent):
 ```markdown
-## YYYY-MM-DD HH:MM - agent-name → next-agent
+## YYYY-MM-DD HH:MM - [AUTHOR: agent-name] → [NEXT: next-agent]
 
 Brief summary of what was done (5-10 lines max).
 
@@ -348,7 +348,7 @@ Files: [key/files/changed.js]
 
 **COMPLETE Entry** (phase fully done, no more handoffs):
 ```markdown
-## YYYY-MM-DD HH:MM - agent-name (Phase X.Y COMPLETE)
+## YYYY-MM-DD HH:MM - [AUTHOR: agent-name] (Phase X.Y COMPLETE)
 
 Phase complete summary (5-10 lines).
 
@@ -362,13 +362,12 @@ Files: [key/files/changed.js]
 
 **Required Elements:**
 - **Timestamp**: Always run `date '+%Y-%m-%d %H:%M'` - never estimate
-- **Agent identifier**: Name of the agent that did the work (or @username for humans via `/comment`)
-- **Handoff arrow**: `→ next-agent` for handoffs, or `(Phase X.Y COMPLETE)` for completion
-- **Summary**: What was done, implementation approach (5-10 lines ideal)
-- **Gotchas**: Unexpected issues, edge cases found, important discoveries
-- **Lessons**: What worked, what to avoid, alternative approaches
-- **Files**: Key files modified (helps locate code changes)
-- **RESEARCH reference**: Optional link to detailed analysis if created
+- **Agent identifier**: Name of the agent (or @username for humans via `/comment`)
+- **Arrow notation**: Use `→` for handoffs to show work flow
+- **Brief summary**: What YOU did (not entire phase history) - keep scannable
+- **Gotchas/Lessons**: Only if significant (don't force it)
+- **Files**: Key files modified (helps locate changes via diff)
+- **Handoff note**: Who receives work and why (for handoffs only)
 
 ### WORKLOG Best Practices
 
@@ -382,33 +381,26 @@ Files: [key/files/changed.js]
 
 **Handoff entry:**
 ```markdown
-## 2025-01-15 14:30 - backend-specialist → code-reviewer
+## 2025-01-15 14:30 - [AUTHOR: backend-specialist] → [NEXT: code-reviewer]
 
-Implemented user authentication endpoint with JWT tokens. Used bcrypt for password
-hashing (12 rounds) and Redis for token storage (24hr expiry).
+Implemented JWT auth endpoint with bcrypt hashing (12 rounds) and Redis token storage.
 
-Gotcha: Redis connection pooling required - single connection caused bottleneck under load
-Lesson: JWT secret rotation strategy needed - added to TASK-002
+Gotcha: Redis connection pooling required - single connection bottleneck
 Files: src/auth/login.ts, src/middleware/jwt.ts, tests/auth.test.ts
 
-→ Passing to code-reviewer for quality validation
+→ Passing to code-reviewer for security validation
 ```
 
 **Complete entry:**
 ```markdown
-## 2025-01-15 16:00 - backend-specialist (Phase 1.2 COMPLETE)
+## 2025-01-15 15:35 - [AUTHOR: code-reviewer] (Phase 2.3 COMPLETE)
 
-User authentication endpoint complete with JWT tokens and Redis session storage.
-Code review passed (score: 92/100), all tests passing (24 tests, 98% coverage).
+Re-review approved (score: 94/100). All security issues resolved.
 
 Status:
-- ✅ Tests passing (24 tests, 98% coverage)
-- ✅ Quality gates met (code review: 92/100)
-- ✅ PLAN.md updated (phase 1.2 checked off)
-
-Files: src/auth/login.ts, src/middleware/jwt.ts, tests/auth.test.ts
-
-See RESEARCH.md #jwt-vs-session for storage decision rationale
+- ✅ Tests passing (48/48)
+- ✅ Security validated
+- ✅ PLAN.md checkbox updated
 ```
 
 ### When to Create RESEARCH.md

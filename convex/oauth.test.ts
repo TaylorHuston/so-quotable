@@ -1,6 +1,5 @@
 import { convexTest } from "convex-test";
 import { describe, it, expect, beforeEach } from "vitest";
-import { api } from "./_generated/api";
 import schema from "./schema";
 import { modules } from "./test.setup";
 
@@ -132,7 +131,7 @@ describe("OAuth Integration - Google Provider", () => {
     it("should link Google account to existing email/password user", async () => {
       // Given: An existing user with email/password authentication
       const email = "existing.user@example.com";
-      const password = "SecurePass123!";
+      const _password = "SecurePass123!"; // Not used in test but part of user context
 
       // Create user via email/password first
       // Note: In real scenario, this would be done via signIn mutation
@@ -374,11 +373,11 @@ describe("OAuth Integration - Google Provider", () => {
 
       // When: Same email tries to sign in with Google OAuth
       // Convex Auth will link accounts automatically (same email)
-      const googleProfile = {
+      const _googleProfile = {
         email: email,
         name: "OAuth User",
         picture: "https://example.com/photo.jpg",
-      };
+      }; // Profile data for context
 
       // Then: Should link to existing account (not create duplicate)
       const user = await t.run(async (ctx) => {

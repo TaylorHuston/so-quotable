@@ -167,7 +167,7 @@ describe("images CRUD operations", () => {
       });
 
       // When: Creating image with full data
-      const imageId = await t.mutation(api.images.create, {
+      const _imageId = await t.mutation(api.images.create, {
         personId,
         cloudinaryId: "full-cloud-id",
         url: "https://example.com/full.jpg",
@@ -194,7 +194,7 @@ describe("images CRUD operations", () => {
       });
 
       // When: Creating image with whitespace
-      const imageId = await t.mutation(api.images.create, {
+      const _imageId = await t.mutation(api.images.create, {
         personId,
         cloudinaryId: "  cloud-id-with-spaces  ",
         url: "  https://example.com/test.jpg  ",

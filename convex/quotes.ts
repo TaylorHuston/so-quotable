@@ -114,7 +114,13 @@ export const update = mutation({
     }
 
     // Build update object
-    const updateData: any = {
+    const updateData: {
+      updatedAt: number;
+      text?: string;
+      source?: string;
+      sourceUrl?: string;
+      verified?: boolean;
+    } = {
       updatedAt: Date.now(),
     };
 
