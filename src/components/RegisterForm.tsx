@@ -103,9 +103,14 @@ export function RegisterForm() {
 
     try {
       await signIn("google");
+
+      // Wait a moment for auth state to propagate (Convex Auth race condition fix)
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Successful Google sign-up - redirect to dashboard
+      router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Google sign up failed");
-    } finally {
       setLoading(false);
     }
   };

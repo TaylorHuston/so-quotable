@@ -1,3 +1,33 @@
+## 2025-11-06 14:35 - [AUTHOR: frontend-specialist] (Phase 6 COMPLETE)
+
+**Phase 6**: Fix Google OAuth Redirect to Dashboard
+
+Implemented explicit dashboard redirect after successful Google OAuth authentication to match email/password behavior.
+
+**Root Cause**:
+- Email/password handlers called `router.push("/dashboard")` after authentication
+- Google OAuth handlers only called `await signIn("google")` without redirect
+- Result: OAuth users landed on homepage instead of dashboard
+
+**Solution**:
+- Updated `LoginForm.tsx` `handleGoogleSignIn` handler
+- Updated `RegisterForm.tsx` `handleGoogleSignUp` handler
+- Added `router.push("/dashboard")` after OAuth completion
+- Added 100ms delay for Convex Auth state propagation (consistent with email/password)
+- Preserved error handling - only redirects on success
+
+**Status**:
+- ✅ Implementation complete
+- ✅ Type check passed
+- ✅ Pattern consistent with email/password auth
+- ⏳ Manual testing pending (Phase 7)
+
+**Files**: src/components/LoginForm.tsx, src/components/RegisterForm.tsx
+
+**Gotcha**: OAuth redirect happens client-side after Convex Auth completes, not server-side via callback URL configuration.
+
+---
+
 ## 2025-11-06 13:10 - Phase 8 MVP-Critical Fixes (COMPLETE)
 
 **Objective**: Apply MVP-critical security and code quality fixes identified in Phase 8.0 validation.

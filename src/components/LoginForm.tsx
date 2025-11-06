@@ -43,9 +43,14 @@ export function LoginForm() {
 
     try {
       await signIn("google");
+
+      // Wait a moment for auth state to propagate (Convex Auth race condition fix)
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Successful Google sign-in - redirect to dashboard
+      router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Google sign in failed");
-    } finally {
       setLoading(false);
     }
   };
