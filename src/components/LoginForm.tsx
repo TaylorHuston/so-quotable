@@ -26,6 +26,9 @@ export function LoginForm() {
 
       await signIn("password", formData);
 
+      // Wait a moment for auth state to propagate (Convex Auth race condition fix)
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       // Successful login - redirect to dashboard
       router.push("/dashboard");
     } catch (err) {

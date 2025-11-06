@@ -3,6 +3,8 @@
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useConvex } from "convex/react";
+import { api } from "../../convex/_generated/api";
 import { GoogleIcon } from "./GoogleIcon";
 import { validatePassword } from "@/lib/password-validation";
 
@@ -30,6 +32,7 @@ function calculatePasswordStrength(password: string): PasswordStrength {
 export function RegisterForm() {
   const { signIn } = useAuthActions();
   const router = useRouter();
+  const convex = useConvex();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -64,12 +67,27 @@ export function RegisterForm() {
     setLoading(true);
 
     try {
+      // Check for existing user BEFORE calling signIn
+      // Convex Auth doesn't provide user-friendly duplicate email errors
+      const existingUser = await convex.query(api.users.getUserByEmail, {
+        email: email.toLowerCase(),
+      });
+
+      if (existingUser) {
+        setError("An account with this email already exists");
+        setLoading(false);
+        return;
+      }
+
       const formData = new FormData();
       formData.append("email", email);
       formData.append("password", password);
       formData.append("flow", "signUp");
 
       await signIn("password", formData);
+
+      // Wait a moment for auth state to propagate (Convex Auth race condition fix)
+      await new Promise(resolve => setTimeout(resolve, 100));
 
       // Successful registration - redirect to dashboard
       router.push("/dashboard");

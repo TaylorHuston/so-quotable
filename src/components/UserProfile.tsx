@@ -4,11 +4,12 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 function AuthenticatedProfile() {
+  const router = useRouter();
   const { signOut } = useAuthActions();
   const user = useQuery(api.users.getCurrentUser);
-  const debugInfo = useQuery(api.users.debugAuth);
 
   if (user === undefined) {
     // Loading state
@@ -28,12 +29,6 @@ function AuthenticatedProfile() {
     return (
       <div className="p-4 bg-white rounded-lg shadow" data-auth-state="error">
         <p className="text-gray-600">Authentication error: User not found</p>
-        {debugInfo && (
-          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-xs">
-            <p className="font-bold text-red-900">DEBUG INFO:</p>
-            <pre className="mt-2 text-red-800">{JSON.stringify(debugInfo, null, 2)}</pre>
-          </div>
-        )}
       </div>
     );
   }
@@ -41,8 +36,9 @@ function AuthenticatedProfile() {
   const handleSignOut = async () => {
     try {
       await signOut();
+      router.push("/login");
     } catch (err) {
-      console.error("Sign out failed:", err);
+      console.error("[UserProfile] Sign out failed:", err);
     }
   };
 

@@ -104,9 +104,12 @@ git push origin main    # Auto-deploys to Vercel production
 # Preview deployments created automatically for PRs
 ```
 
-## Workflow
+## Resources
 
-See [GETTING-STARTED.md](./GETTING-STARTED.md) for the complete AI-assisted development workflow.
+The first places to check when you get stuck or need documentation:
+- https://deepwiki.com/get-convex/convex-backend
+- https://deepwiki.com/get-convex/convex-auth/
+- https://labs.convex.dev/auth
 
 ## Current Focus
 

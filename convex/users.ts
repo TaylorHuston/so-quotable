@@ -1,29 +1,23 @@
 import { query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { v } from "convex/values";
 
 /**
- * DEBUG: Compare both auth APIs to diagnose the issue
+ * Check if a user exists with the given email
+ *
+ * Used for duplicate email detection during registration.
+ * Returns the user if found, null otherwise.
  */
-export const debugAuth = query({
-  args: {},
-  handler: async (ctx) => {
-    // Try the old API
-    const identity = await ctx.auth.getUserIdentity();
-    console.log("[debugAuth] identity:", identity);
+export const getUserByEmail = query({
+  args: { email: v.string() },
+  handler: async (ctx, { email }) => {
+    // Query by email index (case-insensitive)
+    const user = await ctx.db
+      .query("users")
+      .withIndex("email", (q) => q.eq("email", email.toLowerCase()))
+      .first();
 
-    // Try the new API
-    const userId = await getAuthUserId(ctx);
-    console.log("[debugAuth] userId:", userId);
-
-    // Check LocalStorage tokens (can't access from backend, but log what we have)
-    console.log("[debugAuth] ctx.auth:", Object.keys(ctx.auth));
-
-    return {
-      identityExists: identity !== null,
-      identitySubject: identity?.subject || null,
-      userId: userId,
-      userIdExists: userId !== null,
-    };
+    return user;
   },
 });
 
@@ -39,10 +33,7 @@ export const getCurrentUser = query({
     // Get the authenticated user ID using Convex Auth helper
     const userId = await getAuthUserId(ctx);
 
-    console.log("[getCurrentUser] userId:", userId);
-
     if (userId === null) {
-      console.log("[getCurrentUser] No userId found");
       return null;
     }
 
@@ -50,11 +41,8 @@ export const getCurrentUser = query({
     const user = await ctx.db.get(userId);
 
     if (!user) {
-      console.log("[getCurrentUser] User not found in database");
       return null;
     }
-
-    console.log("[getCurrentUser] User found:", user.email);
 
     // Return user profile
     return {

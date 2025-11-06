@@ -129,8 +129,10 @@ test.describe("Authentication Flows", () => {
       await page.click('button[type="submit"]');
 
       // Verify error message appears after submission
+      // RegisterForm displays specific validation errors from password-validation.ts
+      // For password "weak" (4 chars), first error is length requirement
       await expect(
-        page.locator("text=Please choose a stronger password")
+        page.locator("text=Password must be at least 12 characters long")
       ).toBeVisible({ timeout: 5000 });
 
       // User should remain on registration page
@@ -191,8 +193,12 @@ test.describe("Authentication Flows", () => {
 
       // Assert: Verify error message appears
       // Convex Auth should return error for duplicate account
-      const errorMessage = page.locator('[class*="bg-red"]');
+      // The error is caught and displayed in the error div with bg-red-100 class
+      const errorMessage = page.locator('.bg-red-100');
       await expect(errorMessage).toBeVisible({ timeout: 5000 });
+
+      // Verify error message contains meaningful text (Convex Auth error)
+      await expect(errorMessage).toContainText(/account|email|exists|already/i, { timeout: 5000 });
 
       // User should remain on registration page
       expect(await getCurrentPath(page)).toBe("/register");

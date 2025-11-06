@@ -2,7 +2,7 @@
 
 ## Project: So Quotable
 
-**Last Updated**: 2025-10-30
+**Last Updated**: 2025-11-05
 
 ---
 
@@ -148,10 +148,11 @@ See [ADRs](./adrs/README.md) for detailed decision records.
 
 **Convex Auth** (Authentication):
 
-- Email/password authentication
-- OAuth providers (Google, GitHub, etc.)
-- Built on Auth.js
-- Integrated with Convex backend
+- Email/password authentication with password requirements enforcement
+- OAuth providers (Google OAuth configured, GitHub available)
+- Built on Auth.js with Convex integration
+- JWT-based token authentication with public/private key pairs
+- See [Authentication Architecture](#authentication-architecture) section for detailed configuration
 
 ---
 
@@ -215,6 +216,185 @@ See [security-guidelines.md](../development/guidelines/security-guidelines.md) f
 5. **Data Encryption**: HTTPS, encrypted storage of sensitive data
 6. **Rate Limiting**: Prevent abuse and DDoS
 7. **File Upload Security**: Validate and scan uploaded images
+
+---
+
+## Authentication Architecture
+
+### Overview
+
+Authentication is implemented using **Convex Auth** (@convex-dev/auth v0.0.90), which provides:
+
+- Email/password authentication with custom password requirements
+- OAuth integration (Google configured, other providers available)
+- JWT-based token authentication
+- Server-side session management
+- Built on Auth.js with Convex-specific integration
+
+### Critical Setup Requirements
+
+**IMPORTANT**: Convex Auth requires three environment variables to function correctly:
+
+1. **`JWT_PRIVATE_KEY`** - RSA private key (PKCS#8 format) for signing JWT tokens
+2. **`JWKS`** - JSON Web Key Set containing the public key for verifying JWT signatures
+3. **`SITE_URL`** - Application URL for OAuth callbacks (e.g., `http://localhost:3000`)
+
+**Setup Method**: Use the official CLI to generate properly paired keys:
+
+```bash
+npx @convex-dev/auth
+```
+
+The CLI automatically:
+- Generates matched JWT_PRIVATE_KEY and JWKS (critical for token verification)
+- Sets SITE_URL
+- Creates `convex/auth.config.ts` configuration file
+- Configures tsconfig.json for Auth.js compatibility
+
+**WARNING**: Do NOT manually generate JWT keys - the CLI ensures proper key pairing. Manual generation often results in signature verification failures.
+
+### Password Requirements
+
+Enforced via `validatePasswordRequirements` in `convex/auth.ts`:
+
+- Minimum 12 characters
+- At least one uppercase letter (A-Z)
+- At least one lowercase letter (a-z)
+- At least one number (0-9)
+- At least one special character: `!@#$%^&*()_+-=[]{};\':\"\\|,.<>/?`
+
+Frontend validation (in `src/lib/password-validation.ts`) mirrors backend requirements exactly to provide immediate user feedback.
+
+### Session Configuration
+
+Configured in `convex/auth.ts`:
+
+```typescript
+session: {
+  totalDurationMs: 24 * 60 * 60 * 1000,     // 24 hours default
+  inactiveDurationMs: 24 * 60 * 60 * 1000,  // 24 hours inactivity timeout
+}
+
+jwt: {
+  durationMs: 60 * 60 * 1000,  // 1 hour token validity
+}
+```
+
+### Rate Limiting
+
+Configured to prevent brute force attacks:
+
+```typescript
+signIn: {
+  maxFailedAttempsPerHour: 5,  // 5 attempts = ~12 min lockout
+}
+```
+
+After 5 failed attempts, users can retry once every 12 minutes (60 min / 5 attempts).
+
+### Authentication Flow
+
+**Client-Side (Next.js App Router)**:
+
+1. **Server Provider**: `ConvexAuthNextjsServerProvider` wraps root layout (enables SSR auth)
+2. **Client Provider**: `ConvexAuthNextjsProvider` provides auth context to components
+3. **Middleware**: `convexAuthNextjsMiddleware` handles route protection and redirects
+
+**Backend (Convex Functions)**:
+
+```typescript
+import { getAuthUserId } from "@convex-dev/auth/server";
+
+export const myQuery = query({
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) {
+      throw new Error("Not authenticated");
+    }
+    // Query logic with authenticated user
+  }
+});
+```
+
+**Key API**: Always use `getAuthUserId()` from `@convex-dev/auth/server`, NOT `ctx.auth.getUserIdentity()` (generic Convex API).
+
+### Token Management
+
+- **Storage**: JWT tokens stored in browser LocalStorage (keys: `__convexAuthJWT_*`, `__convexAuthRefreshToken_*`)
+- **Transmission**: Tokens sent via HTTP headers with each Convex query/mutation
+- **Verification**: Server verifies signatures using JWKS public key
+- **Refresh**: Automatic token refresh handled by Convex Auth middleware
+
+### OAuth Configuration
+
+**Google OAuth Setup**:
+
+Environment variables in Convex Dashboard:
+- `AUTH_GOOGLE_ID` - Google OAuth client ID
+- `AUTH_GOOGLE_SECRET` - Google OAuth client secret
+
+Google Cloud Console configuration:
+- Authorized redirect URI: `https://{deployment}.convex.site/api/auth/callback/google`
+
+**Provider Configuration** (`convex/auth.ts`):
+
+```typescript
+import Google from "@auth/core/providers/google";
+
+providers: [
+  Google  // Uses default profile mapping
+]
+```
+
+### Files Structure
+
+**Backend**:
+- `convex/auth.ts` - Main auth configuration (providers, session, JWT, rate limiting)
+- `convex/auth.config.ts` - Domain configuration (auto-generated by CLI)
+- `convex/http.ts` - HTTP routes for auth endpoints
+- `convex/users.ts` - User profile queries using `getAuthUserId()`
+
+**Frontend**:
+- `src/app/layout.tsx` - Server provider wrapper
+- `src/app/providers/ConvexClientProvider.tsx` - Client provider
+- `src/middleware.ts` - Next.js middleware for route protection
+- `src/components/LoginForm.tsx` - Sign-in UI
+- `src/components/RegisterForm.tsx` - Registration UI with password validation
+- `src/components/UserProfile.tsx` - Authenticated user display
+- `src/lib/password-validation.ts` - Password validation helper (mirrors backend)
+
+### Common Issues and Solutions
+
+**Issue**: "Missing environment variable JWKS"
+- **Cause**: JWKS not set in Convex Dashboard
+- **Solution**: Run `npx @convex-dev/auth` to generate paired keys
+
+**Issue**: User appears "Not signed in" despite valid tokens
+- **Cause**: JWT signature verification fails due to mismatched keys
+- **Solution**: Regenerate both JWT_PRIVATE_KEY and JWKS using CLI
+
+**Issue**: `getAuthUserId()` returns null on valid requests
+- **Cause**: Using `ctx.auth.getUserIdentity()` instead of `getAuthUserId()`
+- **Solution**: Import and use `getAuthUserId()` from `@convex-dev/auth/server`
+
+**Issue**: Component shows unauthenticated state briefly after login
+- **Cause**: Query runs before Convex client finishes authenticating
+- **Solution**: Use `useConvexAuth()` and skip queries while `isLoading === true`
+
+### Security Features
+
+- **CSRF Protection**: Enabled via Convex Auth middleware
+- **HTTP-only Cookies**: Managed automatically by middleware (tokens never exposed to client JS)
+- **Secure Cookies**: `httpOnly`, `secure`, `sameSite=strict` flags set automatically
+- **Token Expiration**: 1-hour JWT tokens with automatic refresh
+- **Rate Limiting**: 5 failed attempts per hour per account
+- **Password Hashing**: Handled automatically by Convex Auth (bcrypt)
+
+### References
+
+- Convex Auth Docs: https://labs.convex.dev/auth
+- Next.js Integration: https://labs.convex.dev/auth/setup
+- Implementation: See TASK-004 in `pm/issues/TASK-004-convex-auth/`
 
 ---
 
