@@ -1,18 +1,19 @@
 "use client";
 
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useQuery } from "convex/react";
+import { Authenticated, Unauthenticated, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import Image from "next/image";
 
-export function UserProfile() {
+function AuthenticatedProfile() {
   const { signOut } = useAuthActions();
   const user = useQuery(api.users.getCurrentUser);
+  const debugInfo = useQuery(api.users.debugAuth);
 
   if (user === undefined) {
     // Loading state
     return (
-      <div className="flex items-center gap-3 p-4 bg-white rounded-lg shadow">
+      <div className="flex items-center gap-3 p-4 bg-white rounded-lg shadow" data-auth-state="loading">
         <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse"></div>
         <div className="flex-1">
           <div className="h-4 bg-gray-200 rounded w-32 mb-2 animate-pulse"></div>
@@ -23,24 +24,16 @@ export function UserProfile() {
   }
 
   if (user === null) {
-    // Not signed in
+    // This shouldn't happen inside <Authenticated>, but handle it gracefully
     return (
-      <div className="p-4 bg-white rounded-lg shadow">
-        <p className="text-gray-600">Not signed in</p>
-        <div className="mt-3 flex gap-2">
-          <a
-            href="/login"
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Sign In
-          </a>
-          <a
-            href="/register"
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
-          >
-            Sign Up
-          </a>
-        </div>
+      <div className="p-4 bg-white rounded-lg shadow" data-auth-state="error">
+        <p className="text-gray-600">Authentication error: User not found</p>
+        {debugInfo && (
+          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded text-xs">
+            <p className="font-bold text-red-900">DEBUG INFO:</p>
+            <pre className="mt-2 text-red-800">{JSON.stringify(debugInfo, null, 2)}</pre>
+          </div>
+        )}
       </div>
     );
   }
@@ -56,7 +49,7 @@ export function UserProfile() {
   const isVerified = user.emailVerified;
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
+    <div className="p-6 bg-white rounded-lg shadow-md" data-auth-state="authenticated" data-user-email={user.email}>
       <div className="flex items-start gap-4">
         {/* Profile Picture */}
         <div className="flex-shrink-0">
@@ -149,5 +142,40 @@ export function UserProfile() {
         </dl>
       </div>
     </div>
+  );
+}
+
+function UnauthenticatedProfile() {
+  return (
+    <div className="p-4 bg-white rounded-lg shadow" data-auth-state="unauthenticated">
+      <p className="text-gray-600" data-testid="not-signed-in">Not signed in</p>
+      <div className="mt-3 flex gap-2">
+        <a
+          href="/login"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Sign In
+        </a>
+        <a
+          href="/register"
+          className="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50"
+        >
+          Sign Up
+        </a>
+      </div>
+    </div>
+  );
+}
+
+export function UserProfile() {
+  return (
+    <>
+      <Authenticated>
+        <AuthenticatedProfile />
+      </Authenticated>
+      <Unauthenticated>
+        <UnauthenticatedProfile />
+      </Unauthenticated>
+    </>
   );
 }

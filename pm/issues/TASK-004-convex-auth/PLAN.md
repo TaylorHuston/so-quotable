@@ -521,3 +521,311 @@ TASK-004 is complete when:
 - ✅ E2E tests passing for all auth flows
 - ✅ Documentation updated
 - ✅ EPIC-001 updated to reflect completion (4/6 tasks, 67%)
+
+---
+
+# TASK-004 REOPENED: Critical Auth Fixes (2025-11-05)
+
+## Reopening Context
+
+**Date**: 2025-11-05
+**Branch**: feature/TASK-004-convex-auth-fixes
+**Reason**: Manual testing during TASK-007 revealed critical auth bugs missed during original completion
+
+### Critical Issues Discovered
+
+1. **JWT_PRIVATE_KEY Missing** ✅ FIXED (during TASK-007 investigation)
+2. **Password Validation Mismatch** ❌ NEEDS FIX
+3. **Google OAuth Redirect Broken** ❌ NEEDS FIX
+
+See WORKLOG.md lines 1066-1182 for detailed discovery context.
+
+---
+
+## Phase 5 - Fix Password Validation Frontend/Backend Sync
+
+**Objective**: Ensure frontend validation matches backend requirements to prevent confusing server errors.
+
+**Current State**:
+- Backend (convex/auth.ts:27-52): Requires 5 character types (uppercase, lowercase, number, special char, 12+ chars)
+- Frontend (RegisterForm.tsx:45-58): Only checks length and "weak" strength
+
+**Test-First Approach**: Pragmatic (requirements clear, write validation tests first)
+
+### 5.1 Write Password Validation Tests
+
+- [ ] 5.1.1 Create `src/lib/password-validation.test.ts`
+  - [ ] Test: Accepts password with all requirements met
+  - [ ] Test: Rejects password < 12 characters
+  - [ ] Test: Rejects password without uppercase letter
+  - [ ] Test: Rejects password without lowercase letter
+  - [ ] Test: Rejects password without number
+  - [ ] Test: Rejects password without special character
+  - [ ] Test: Returns specific error message for each violation
+  - [ ] Test: Handles edge cases (empty string, null, whitespace)
+
+### 5.2 Implement Password Validation Helper ✅
+
+- [x] 5.2.1 Create `src/lib/password-validation.ts`
+  - [x] Export `validatePassword(password: string)` function
+  - [x] Return: `{ valid: boolean, errors: string[] }`
+  - [x] Check all 5 requirements (length, uppercase, lowercase, number, special)
+  - [x] Match backend regex patterns exactly (from convex/auth.ts:34-51)
+  - [x] Return clear error messages for each violation
+  - **Result**: 28/28 tests pass, 100% coverage
+
+### 5.3 Update RegisterForm with New Validation ✅
+
+- [x] 5.3.1 Import `validatePassword` helper
+- [x] 5.3.2 Replace existing validation logic (lines 45-58)
+  - [x] Call `validatePassword(password)` before submission
+  - [x] Display first error from `errors` array
+  - [x] Keep existing password strength indicator (visual feedback)
+- [x] 5.3.3 Update password strength calculation
+  - [x] Mark as "weak" if any requirement missing
+  - [x] Mark as "medium" if all requirements met but <16 chars
+  - [x] Mark as "strong" if all requirements met and ≥16 chars
+  - **Result**: Frontend validation now matches backend exactly
+
+### 5.4 Run Tests and Validate ✅
+
+- [x] 5.4.1 Run unit tests: `npm test src/lib/password-validation.test.ts`
+  - **Result**: 28/28 tests pass
+- [x] 5.4.2 Verify all test cases pass
+  - **Result**: All 245 tests pass (including 28 password validation tests)
+- [x] 5.4.3 Check coverage: Should be 100% for password-validation.ts
+  - **Result**: 100% coverage (statements, branches, functions, lines)
+- [ ] 5.4.4 Manual browser test: Try submitting with invalid passwords
+  - [ ] No uppercase → See "Password must contain at least one uppercase letter"
+  - [ ] No number → See "Password must contain at least one number"
+  - [ ] No special char → See "Password must contain at least one special character"
+  - [ ] Valid password → Form submits successfully
+  - **Status**: Ready for user to test
+
+**Acceptance Criteria**:
+- [x] All password requirement checks match backend exactly
+- [x] Client-side validation prevents server errors
+- [x] Clear, specific error messages shown for each violation
+- [x] Unit tests achieve 100% coverage
+- [ ] Manual testing confirms UX improvement (requires user)
+
+**Estimated Time**: 45-60 minutes
+
+---
+
+## Phase 6 - Fix Google OAuth Redirect to Dashboard
+
+**Objective**: After successful Google OAuth, redirect user to dashboard (not homepage).
+
+**Current State**:
+- OAuth completes successfully but redirects to `/` (homepage)
+- Expected: Should redirect to `/dashboard` like email/password auth
+
+**Test-First Approach**: Manual (browser-based OAuth flow, E2E tests validate)
+
+### 6.1 Investigate OAuth Redirect Behavior
+
+- [ ] 6.1.1 Read Convex Auth OAuth documentation
+  - [ ] Check if redirect parameter is supported
+  - [ ] Verify OAuth callback handling in Next.js middleware
+- [ ] 6.1.2 Review existing OAuth implementations
+  - [ ] Check `src/components/LoginForm.tsx` lines 78-92 (Google sign-in)
+  - [ ] Check `src/components/RegisterForm.tsx` lines 78-93 (Google sign-up)
+  - [ ] Compare to email/password flow (has explicit `router.push("/dashboard")`)
+- [ ] 6.1.3 Check middleware redirect logic
+  - [ ] Read `src/middleware.ts` (if exists)
+  - [ ] Verify OAuth callback route handling
+
+### 6.2 Implement OAuth Redirect Fix
+
+**Option A (Recommended)**: Add explicit redirect after OAuth completes
+
+- [ ] 6.2.1 Update `LoginForm.tsx` `handleGoogleSignIn` (lines 41-52)
+  - [ ] Add `await signIn("google")` completion handling
+  - [ ] Add `router.push("/dashboard")` after successful OAuth
+  - [ ] Handle OAuth errors gracefully
+- [ ] 6.2.2 Update `RegisterForm.tsx` `handleGoogleSignUp` (lines 78-93)
+  - [ ] Add same redirect logic as LoginForm
+  - [ ] Ensure consistent behavior between sign-in and sign-up
+
+**Option B (If Option A doesn't work)**: Configure OAuth redirect parameter
+
+- [ ] 6.2.3 Check Convex Auth OAuth configuration (convex/auth.ts)
+  - [ ] Add redirect parameter to Google provider config
+  - [ ] Set default redirect to `/dashboard`
+
+**Option C (If middleware issue)**: Fix middleware OAuth callback handling
+
+- [ ] 6.2.4 Update middleware.ts to handle OAuth callback
+  - [ ] Detect OAuth callback route
+  - [ ] Redirect to `/dashboard` after successful auth verification
+
+### 6.3 Test OAuth Redirect Manually
+
+- [ ] 6.3.1 Clear browser cookies and local storage
+- [ ] 6.3.2 Navigate to http://localhost:3000/login
+- [ ] 6.3.3 Click "Sign in with Google" button
+  - [ ] Google OAuth consent screen appears
+  - [ ] Select Google account
+  - [ ] Consent to permissions
+- [ ] 6.3.4 Verify redirect to http://localhost:3000/dashboard
+- [ ] 6.3.5 Verify user is authenticated (check UserProfile displays)
+- [ ] 6.3.6 Repeat for sign-up flow (http://localhost:3000/register)
+
+**Acceptance Criteria**:
+- [ ] Google OAuth sign-in redirects to `/dashboard`
+- [ ] Google OAuth sign-up redirects to `/dashboard`
+- [ ] User sees authenticated state immediately after OAuth
+- [ ] No manual navigation required
+- [ ] Behavior consistent with email/password auth
+
+**Estimated Time**: 30-45 minutes
+
+---
+
+## Phase 7 - Comprehensive Manual Testing and Validation
+
+**Objective**: Validate all auth flows work correctly with fixes applied.
+
+**Test-First Approach**: Manual validation (browser-based, user-facing flows)
+
+### 7.1 Test Email/Password Auth Flows
+
+- [ ] 7.1.1 **Register Flow** (http://localhost:3000/register)
+  - [ ] Test invalid passwords (each requirement violation):
+    - [ ] No uppercase → Client-side error shown
+    - [ ] No lowercase → Client-side error shown
+    - [ ] No number → Client-side error shown
+    - [ ] No special char → Client-side error shown
+    - [ ] < 12 chars → Client-side error shown
+  - [ ] Test valid password (e.g., "TestPass123!@#")
+    - [ ] Form submits successfully
+    - [ ] Redirect to `/dashboard` occurs
+    - [ ] User profile displays correctly
+  - [ ] Test password mismatch
+    - [ ] Error: "Passwords do not match"
+  - [ ] Test existing email
+    - [ ] Error: "Account with this email already exists" (or similar)
+
+- [ ] 7.1.2 **Login Flow** (http://localhost:3000/login)
+  - [ ] Test valid credentials → Redirect to `/dashboard`
+  - [ ] Test invalid email → Error shown
+  - [ ] Test incorrect password → Error shown
+  - [ ] Test account that doesn't exist → Error shown
+
+- [ ] 7.1.3 **Logout Flow**
+  - [ ] From dashboard, click logout → Redirect to `/login`
+  - [ ] Verify session cleared (cannot access `/dashboard` without reauth)
+
+### 7.2 Test Google OAuth Flows
+
+- [ ] 7.2.1 **Google Sign-In** (http://localhost:3000/login)
+  - [ ] Click "Sign in with Google"
+  - [ ] Complete OAuth consent
+  - [ ] Verify redirect to `/dashboard` (not `/`)
+  - [ ] Verify user profile displays
+  - [ ] Logout and verify session cleared
+
+- [ ] 7.2.2 **Google Sign-Up** (http://localhost:3000/register)
+  - [ ] Click "Sign up with Google"
+  - [ ] Complete OAuth consent (new Google account)
+  - [ ] Verify redirect to `/dashboard`
+  - [ ] Verify user profile created
+
+### 7.3 Test Protected Routes
+
+- [ ] 7.3.1 Access `/dashboard` without authentication
+  - [ ] Redirect to `/login` with redirect parameter
+- [ ] 7.3.2 Access `/profile` without authentication
+  - [ ] Redirect to `/login`
+- [ ] 7.3.3 After login, verify original route restored
+  - [ ] Navigate to `/dashboard` → redirected to `/login`
+  - [ ] Login successfully → redirected back to `/dashboard`
+
+### 7.4 Run E2E Test Suite
+
+- [ ] 7.4.1 Ensure both dev servers running
+  - [ ] Terminal 1: `npm run dev` (Next.js)
+  - [ ] Terminal 2: `npx convex dev` (Convex backend)
+- [ ] 7.4.2 Run E2E tests: `npm run test:e2e`
+- [ ] 7.4.3 Verify all 22 auth tests pass (0 failures)
+- [ ] 7.4.4 If failures, investigate and fix before marking phase complete
+
+### 7.5 Document Manual Testing Results
+
+- [ ] 7.5.1 Update WORKLOG.md with test results
+  - [ ] List all flows tested
+  - [ ] Note any issues discovered
+  - [ ] Add timestamps and tester name
+- [ ] 7.5.2 Optional: Capture screenshots of key flows
+  - [ ] Registration with password validation errors
+  - [ ] Successful auth redirects
+  - [ ] OAuth flow completion
+
+**Acceptance Criteria**:
+- [ ] All email/password auth flows work correctly
+- [ ] Google OAuth redirects to dashboard
+- [ ] Protected routes enforce authentication
+- [ ] All E2E tests pass (22/22)
+- [ ] No server errors during normal auth flows
+- [ ] Manual testing documented in WORKLOG
+
+**Estimated Time**: 60-90 minutes
+
+---
+
+## Reopened Task Complexity Analysis
+
+**Complexity Score**: 3 points (Medium)
+
+**Breakdown**:
+- UI/UX implementation (password validation + OAuth redirect): 2 points
+- Testing requirements (comprehensive validation): 1 point
+
+**Indicators**:
+- ✅ Clear requirements (password validation specs from backend)
+- ✅ Isolated scope (frontend validation + redirect logic)
+- ✅ No database changes
+- ✅ No external API integrations (OAuth already configured)
+- ✅ Test-first applicable (password validation)
+
+**Decomposition**: Not needed (3 points is below 5-point threshold)
+
+**Estimated Total Effort**: 2-4 hours (per WORKLOG.md line 1158)
+- Phase 5 (Password): 1 hour
+- Phase 6 (OAuth): 30 minutes
+- Phase 7 (Testing): 1-2 hours
+
+---
+
+## Reopened Task Success Criteria
+
+TASK-004 reopened work is complete when:
+
+- [ ] Phase 5 (Password Validation) complete and tested
+- [ ] Phase 6 (OAuth Redirect) complete and tested
+- [ ] Phase 7 (Manual Testing) complete with all flows validated
+- [ ] All 22 E2E auth tests pass (0 failures)
+- [ ] No server errors during normal auth flows
+- [ ] WORKLOG.md updated with test results and evidence
+- [ ] Code review ≥90 (if new code added)
+- [ ] Ready to merge feature/TASK-004-convex-auth-fixes → develop
+
+---
+
+## References for Reopened Work
+
+**Discovery Context**:
+- WORKLOG.md lines 1066-1182 (reopening details and root cause analysis)
+- TASK-007 investigation findings (sanity check report)
+
+**Code Locations**:
+- Backend validation: `convex/auth.ts` lines 27-52
+- Frontend validation: `src/components/RegisterForm.tsx` lines 45-58
+- OAuth sign-in: `src/components/LoginForm.tsx` lines 41-52
+- OAuth sign-up: `src/components/RegisterForm.tsx` lines 78-93
+
+**Documentation**:
+- Convex Auth: https://labs.convex.dev/auth
+- Password Requirements: NIST SP 800-63B (backend already complies)
+- OAuth Best Practices: State parameter validation (already implemented)

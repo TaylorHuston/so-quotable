@@ -4,21 +4,27 @@ import { useAuthActions } from "@convex-dev/auth/react";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { GoogleIcon } from "./GoogleIcon";
+import { validatePassword } from "@/lib/password-validation";
 
 type PasswordStrength = "weak" | "medium" | "strong";
 
 function calculatePasswordStrength(password: string): PasswordStrength {
-  let score = 0;
+  // Use the validation helper to check if all requirements are met
+  const validation = validatePassword(password);
 
-  if (password.length >= 8) score++;
-  if (password.length >= 12) score++;
-  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
-  if (/[0-9]/.test(password)) score++;
-  if (/[^a-zA-Z0-9]/.test(password)) score++;
+  // If any requirement is missing, password is weak
+  if (!validation.valid) {
+    return "weak";
+  }
 
-  if (score <= 2) return "weak";
-  if (score <= 3) return "medium";
-  return "strong";
+  // All requirements met - check length for medium vs strong
+  // Medium: 12-15 characters
+  // Strong: 16+ characters
+  if (password.length >= 16) {
+    return "strong";
+  }
+
+  return "medium";
 }
 
 export function RegisterForm() {
@@ -47,13 +53,11 @@ export function RegisterForm() {
       return;
     }
 
-    if (password.length < 12) {
-      setError("Password must be at least 12 characters long");
-      return;
-    }
-
-    if (passwordStrength === "weak") {
-      setError("Please choose a stronger password");
+    // Validate password using the same logic as backend
+    const validation = validatePassword(password);
+    if (!validation.valid) {
+      // Display the first error (most important validation failure)
+      setError(validation.errors[0] || "Password does not meet requirements");
       return;
     }
 

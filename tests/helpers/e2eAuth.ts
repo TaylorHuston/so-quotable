@@ -9,8 +9,8 @@ import { Page } from "@playwright/test";
  * Auth Flow:
  * - Email/Password: LoginForm component with useAuthActions().signIn()
  * - Google OAuth: OAuth redirect flow via Convex Auth
- * - Session: Stored in `convex-token` cookie (validated in middleware.ts)
- * - Protected Routes: /dashboard, /profile, /create-quote (redirect to /login if unauthenticated)
+ * - Session: Stored in LocalStorage with keys like `__convexAuthJWT_*` and `__convexAuthRefreshToken_*`
+ * - Protected Routes: /dashboard, /profile, /create-quote (middleware currently disabled)
  *
  * @see src/components/LoginForm.tsx
  * @see src/components/RegisterForm.tsx
@@ -176,14 +176,19 @@ export async function loginWithGoogle(page: Page): Promise<void> {
  * expect(authenticated).toBe(true);
  */
 export async function isAuthenticated(page: Page): Promise<boolean> {
-  const cookies = await page.context().cookies();
-  return cookies.some((cookie) => cookie.name === "convex-token");
+  // Convex Auth stores tokens in LocalStorage, not cookies
+  // Check for the JWT token key pattern: __convexAuthJWT_{deploymentUrl}
+  const hasAuthToken = await page.evaluate(() => {
+    const keys = Object.keys(localStorage);
+    return keys.some(key => key.startsWith('__convexAuthJWT_'));
+  });
+  return hasAuthToken;
 }
 
 /**
  * Wait for authentication to complete
  *
- * Waits for the `convex-token` cookie to appear, indicating successful authentication.
+ * Waits for the Convex Auth JWT token to appear in LocalStorage, indicating successful authentication.
  * Useful after login/signup to ensure session is established before proceeding.
  *
  * @param page - Playwright Page object

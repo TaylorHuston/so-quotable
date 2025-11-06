@@ -19,7 +19,7 @@ import { Password } from "@convex-dev/auth/providers/Password";
  * Phase 1: Foundation - Password provider only
  * Phase 3: OAuth - Google provider will be activated
  */
-export const { auth, signIn, signOut, store } = convexAuth({
+export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [
     Password({
       id: "password",
@@ -75,15 +75,14 @@ export const { auth, signIn, signOut, store } = convexAuth({
     }),
 
     // Google OAuth (Phase 3)
+    // Customize profile to match our schema requirements
     Google({
-      id: "google",
-
-      // Profile customization for Google OAuth users
       profile(profile) {
-        const email = profile.email as string;
+        const email = (profile.email as string) || "";
         const name = (profile.name as string) || email.split("@")[0] || "user";
+        const image = profile.picture as string | undefined;
 
-        // Generate slug from email (same pattern as Password provider)
+        // Generate slug from email (will be made unique by database if needed)
         const emailPrefix = email.split("@")[0];
         const slug = (emailPrefix && emailPrefix.length > 0 ? emailPrefix : "user")
           .toLowerCase()
@@ -94,9 +93,7 @@ export const { auth, signIn, signOut, store } = convexAuth({
           name: name.trim(),
           slug,
           role: "user" as const,
-          // Google-authenticated users are pre-verified
-          emailVerificationTime: Date.now(),
-          image: profile.picture as string | undefined,
+          image,
           createdAt: Date.now(),
           updatedAt: Date.now(),
         };
