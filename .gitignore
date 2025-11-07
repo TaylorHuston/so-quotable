@@ -58,6 +58,7 @@ coverage/
 playwright-report/
 test-results/
 playwright/.cache/
+.playwright-mcp/
 
 # Claude Code (project settings only - plugins installed globally)
 .claude/settings.local.json

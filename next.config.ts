@@ -31,6 +31,12 @@ const nextConfig: NextConfig = {
     ],
   },
   async headers() {
+    // In development, Next.js requires 'unsafe-eval' for Fast Refresh
+    const isDev = process.env.NODE_ENV !== "production";
+    const scriptSrc = isDev
+      ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+      : "script-src 'self' 'unsafe-inline'";
+
     return [
       {
         source: "/:path*",
@@ -63,11 +69,11 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline'",
+              scriptSrc,
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: https://res.cloudinary.com https://lh3.googleusercontent.com",
               "font-src 'self' data:",
-              "connect-src 'self' https://*.convex.cloud https://*.convex.site",
+              "connect-src 'self' https://*.convex.cloud https://*.convex.site wss://*.convex.cloud wss://*.convex.site",
               "frame-src https://accounts.google.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",

@@ -48,6 +48,8 @@ export function RegisterForm() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation(); // Prevent event bubbling
+
     setError(null);
 
     // Validation
@@ -149,7 +151,7 @@ export function RegisterForm() {
         </div>
       )}
 
-      <form onSubmit={handleRegister} className="space-y-4">
+      <form onSubmit={handleRegister} className="space-y-4" noValidate>
         <div>
           <label
             htmlFor="email"
