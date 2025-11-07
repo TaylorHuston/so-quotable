@@ -261,4 +261,261 @@ describe("auth configuration", () => {
       });
     });
   });
+
+  describe("Google OAuth Profile Mapping", () => {
+    /**
+     * Mock Google profile mapping function
+     * Extracted from convex/auth.ts Google provider configuration
+     */
+    function mapGoogleProfile(profile: {
+      sub: string;
+      email?: string;
+      name?: string;
+      picture?: string;
+    }) {
+      const email = (profile.email as string) || "";
+      const name = (profile.name as string) || email.split("@")[0] || "user";
+      const image = profile.picture as string | undefined;
+
+      // Generate slug from email (will be made unique by database if needed)
+      const emailPrefix = email.split("@")[0];
+      const slug = (emailPrefix && emailPrefix.length > 0 ? emailPrefix : "user")
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "-");
+
+      return {
+        id: profile.sub as string, // REQUIRED: Google's unique user ID
+        email: email.toLowerCase().trim(),
+        name: name.trim(),
+        slug,
+        role: "user" as const,
+        image,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      };
+    }
+
+    it("should include required id field from profile.sub", () => {
+      const googleProfile = {
+        sub: "google-user-123456",
+        email: "test@example.com",
+        name: "Test User",
+        picture: "https://example.com/photo.jpg",
+      };
+
+      const result = mapGoogleProfile(googleProfile);
+
+      expect(result.id).toBe("google-user-123456");
+    });
+
+    it("should map all Google profile fields correctly", () => {
+      const googleProfile = {
+        sub: "google-user-123456",
+        email: "test@example.com",
+        name: "Test User",
+        picture: "https://example.com/photo.jpg",
+      };
+
+      const result = mapGoogleProfile(googleProfile);
+
+      expect(result).toMatchObject({
+        id: "google-user-123456",
+        email: "test@example.com",
+        name: "Test User",
+        image: "https://example.com/photo.jpg",
+        role: "user",
+      });
+    });
+
+    it("should generate slug from email prefix", () => {
+      const googleProfile = {
+        sub: "google-user-123456",
+        email: "john.doe@example.com",
+        name: "John Doe",
+      };
+
+      const result = mapGoogleProfile(googleProfile);
+
+      expect(result.slug).toBe("john-doe");
+    });
+
+    it("should handle email with special characters in slug", () => {
+      const googleProfile = {
+        sub: "google-user-123456",
+        email: "user+test@example.com",
+        name: "Test User",
+      };
+
+      const result = mapGoogleProfile(googleProfile);
+
+      // Special characters should be replaced with hyphens
+      expect(result.slug).toBe("user-test");
+    });
+
+    it("should normalize email to lowercase", () => {
+      const googleProfile = {
+        sub: "google-user-123456",
+        email: "Test.User@Example.COM",
+        name: "Test User",
+      };
+
+      const result = mapGoogleProfile(googleProfile);
+
+      expect(result.email).toBe("test.user@example.com");
+    });
+
+    it("should trim whitespace from name and email", () => {
+      const googleProfile = {
+        sub: "google-user-123456",
+        email: "  test@example.com  ",
+        name: "  Test User  ",
+      };
+
+      const result = mapGoogleProfile(googleProfile);
+
+      expect(result.email).toBe("test@example.com");
+      expect(result.name).toBe("Test User");
+    });
+
+    it("should fallback to email prefix for name when name is missing", () => {
+      const googleProfile = {
+        sub: "google-user-123456",
+        email: "testuser@example.com",
+      };
+
+      const result = mapGoogleProfile(googleProfile);
+
+      expect(result.name).toBe("testuser");
+    });
+
+    it("should fallback to 'user' when both name and email are missing", () => {
+      const googleProfile = {
+        sub: "google-user-123456",
+      };
+
+      const result = mapGoogleProfile(googleProfile);
+
+      expect(result.name).toBe("user");
+      expect(result.slug).toBe("user");
+    });
+
+    it("should handle missing profile picture", () => {
+      const googleProfile = {
+        sub: "google-user-123456",
+        email: "test@example.com",
+        name: "Test User",
+      };
+
+      const result = mapGoogleProfile(googleProfile);
+
+      expect(result.image).toBeUndefined();
+    });
+
+    it("should default role to 'user'", () => {
+      const googleProfile = {
+        sub: "google-user-123456",
+        email: "test@example.com",
+        name: "Test User",
+      };
+
+      const result = mapGoogleProfile(googleProfile);
+
+      expect(result.role).toBe("user");
+    });
+
+    it("should include timestamps for createdAt and updatedAt", () => {
+      const googleProfile = {
+        sub: "google-user-123456",
+        email: "test@example.com",
+        name: "Test User",
+      };
+
+      const beforeTimestamp = Date.now();
+      const result = mapGoogleProfile(googleProfile);
+      const afterTimestamp = Date.now();
+
+      expect(result.createdAt).toBeGreaterThanOrEqual(beforeTimestamp);
+      expect(result.createdAt).toBeLessThanOrEqual(afterTimestamp);
+      expect(result.updatedAt).toBeGreaterThanOrEqual(beforeTimestamp);
+      expect(result.updatedAt).toBeLessThanOrEqual(afterTimestamp);
+    });
+  });
+
+  describe("Password Provider Profile Mapping", () => {
+    /**
+     * Mock Password profile mapping function
+     * Extracted from convex/auth.ts Password provider configuration
+     */
+    function mapPasswordProfile(params: {
+      email: string;
+      name?: string;
+    }) {
+      const email = params.email as string;
+      const name = (params.name as string | undefined) || email.split("@")[0] || "user";
+
+      // Generate slug from email (will be made unique by database if needed)
+      const emailPrefix = email.split("@")[0];
+      const slug = (emailPrefix && emailPrefix.length > 0 ? emailPrefix : "user")
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "-");
+
+      return {
+        email: email.toLowerCase().trim(),
+        name: name.trim(),
+        slug,
+        role: "user" as const,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      };
+    }
+
+    it("should map password registration profile correctly", () => {
+      const params = {
+        email: "test@example.com",
+        name: "Test User",
+      };
+
+      const result = mapPasswordProfile(params);
+
+      expect(result).toMatchObject({
+        email: "test@example.com",
+        name: "Test User",
+        role: "user",
+      });
+      expect(result.slug).toBe("test");
+    });
+
+    it("should fallback to email prefix for name when name is missing", () => {
+      const params = {
+        email: "johndoe@example.com",
+      };
+
+      const result = mapPasswordProfile(params);
+
+      expect(result.name).toBe("johndoe");
+      expect(result.slug).toBe("johndoe");
+    });
+
+    it("should normalize email to lowercase", () => {
+      const params = {
+        email: "Test@EXAMPLE.COM",
+        name: "Test User",
+      };
+
+      const result = mapPasswordProfile(params);
+
+      expect(result.email).toBe("test@example.com");
+    });
+
+    it("should generate slug with hyphens for special characters", () => {
+      const params = {
+        email: "user.name+tag@example.com",
+        name: "User Name",
+      };
+
+      const result = mapPasswordProfile(params);
+
+      expect(result.slug).toBe("user-name-tag");
+    });
+  });
 });

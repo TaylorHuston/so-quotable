@@ -5,6 +5,36 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { GoogleIcon } from "./GoogleIcon";
 
+/**
+ * Parse Convex Auth errors into user-friendly messages
+ */
+function parseAuthError(err: unknown): string {
+  if (!(err instanceof Error)) {
+    return "Sign in failed. Please try again.";
+  }
+
+  const errorMessage = err.message;
+
+  // Invalid credentials (wrong password or wrong email)
+  if (errorMessage.includes("InvalidSecret") || errorMessage.includes("Account not found")) {
+    return "Invalid email or password";
+  }
+
+  // Rate limiting
+  if (errorMessage.includes("Too many requests")) {
+    return "Too many sign-in attempts. Please try again in a few minutes.";
+  }
+
+  // Account verification issues
+  if (errorMessage.includes("Email not verified")) {
+    return "Please verify your email before signing in";
+  }
+
+  // Generic fallback (strip stack trace and request IDs)
+  const cleanMessage = errorMessage.split("\n")[0]?.replace(/\[Request ID:.*?\]/g, "").trim();
+  return cleanMessage || "Sign in failed. Please try again.";
+}
+
 export function LoginForm() {
   const { signIn } = useAuthActions();
   const router = useRouter();
@@ -32,27 +62,21 @@ export function LoginForm() {
       // Successful login - redirect to dashboard
       router.push("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign in failed");
+      setError(parseAuthError(err));
       setLoading(false);
     }
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = () => {
     setError(null);
     setLoading(true);
 
-    try {
-      await signIn("google");
-
-      // Wait a moment for auth state to propagate (Convex Auth race condition fix)
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      // Successful Google sign-in - redirect to dashboard
-      router.push("/dashboard");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Google sign in failed");
+    // Note: For OAuth, signIn should redirect immediately
+    // Don't await it - just call it and let the redirect happen
+    void signIn("google").catch((err) => {
+      setError(parseAuthError(err));
       setLoading(false);
-    }
+    });
   };
 
   return (

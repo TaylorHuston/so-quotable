@@ -10,6 +10,36 @@ import { validatePassword } from "@/lib/password-validation";
 
 type PasswordStrength = "weak" | "medium" | "strong";
 
+/**
+ * Parse Convex Auth errors into user-friendly messages
+ */
+function parseAuthError(err: unknown): string {
+  if (!(err instanceof Error)) {
+    return "Registration failed. Please try again.";
+  }
+
+  const errorMessage = err.message;
+
+  // Duplicate account
+  if (errorMessage.includes("already exists") || errorMessage.includes("Account with this email")) {
+    return "An account with this email already exists";
+  }
+
+  // Password validation errors
+  if (errorMessage.includes("Password must")) {
+    return errorMessage.split("\n")[0] || "Password does not meet requirements";
+  }
+
+  // Rate limiting
+  if (errorMessage.includes("Too many requests")) {
+    return "Too many registration attempts. Please try again in a few minutes.";
+  }
+
+  // Generic fallback (strip stack trace and request IDs)
+  const cleanMessage = errorMessage.split("\n")[0]?.replace(/\[Request ID:.*?\]/g, "").trim();
+  return cleanMessage || "Registration failed. Please try again.";
+}
+
 function calculatePasswordStrength(password: string): PasswordStrength {
   // Use the validation helper to check if all requirements are met
   const validation = validatePassword(password);
@@ -94,27 +124,21 @@ export function RegisterForm() {
       // Successful registration - redirect to dashboard
       router.push("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed");
+      setError(parseAuthError(err));
       setLoading(false);
     }
   };
 
-  const handleGoogleSignUp = async () => {
+  const handleGoogleSignUp = () => {
     setError(null);
     setLoading(true);
 
-    try {
-      await signIn("google");
-
-      // Wait a moment for auth state to propagate (Convex Auth race condition fix)
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      // Successful Google sign-up - redirect to dashboard
-      router.push("/dashboard");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Google sign up failed");
+    // Note: For OAuth, signIn should redirect immediately
+    // Don't await it - just call it and let the redirect happen
+    void signIn("google").catch((err) => {
+      setError(parseAuthError(err));
       setLoading(false);
-    }
+    });
   };
 
   const getStrengthColor = (strength: PasswordStrength | null) => {

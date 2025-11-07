@@ -89,6 +89,7 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
           .replace(/[^a-z0-9]/g, "-");
 
         return {
+          id: profile.sub as string, // REQUIRED: Google's unique user ID
           email: email.toLowerCase().trim(),
           name: name.trim(),
           slug,
