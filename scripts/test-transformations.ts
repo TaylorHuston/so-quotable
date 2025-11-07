@@ -1,11 +1,15 @@
 /**
  * Manual Transformation Testing Script
  *
- * Generates sample Cloudinary transformation URLs for visual verification.
- * This script demonstrates how to use the transformation helpers to create
- * quote images with text overlays, backgrounds, and optimizations.
+ * Purpose: Generates sample Cloudinary transformation URLs for visual verification.
+ *          Demonstrates how to use transformation helpers to create quote images
+ *          with text overlays, backgrounds, and optimizations.
  *
- * Run: npx tsx scripts/test-transformations.ts
+ * Last Used: 2025-11-02 (TASK-003 Cloudinary transformation testing)
+ *
+ * Usage: npx tsx scripts/test-transformations.ts
+ *
+ * Output: Prints transformation URLs to console for visual verification in browser.
  */
 
 import {

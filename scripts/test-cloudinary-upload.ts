@@ -1,8 +1,10 @@
 /**
  * Manual Cloudinary Upload Test Script
  *
- * This script tests the uploadToCloudinary Convex action with actual API calls.
- * It requires valid Cloudinary credentials in your Convex environment.
+ * Purpose: Tests the uploadToCloudinary Convex action with actual API calls.
+ *          Verifies upload presets, database metadata storage, and Cloudinary integration.
+ *
+ * Last Used: 2025-11-02 (TASK-003 Cloudinary integration testing)
  *
  * Setup:
  * 1. Deploy Convex backend: npx convex dev
@@ -10,7 +12,8 @@
  *    - CLOUDINARY_CLOUD_NAME
  *    - CLOUDINARY_API_KEY
  *    - CLOUDINARY_API_SECRET
- * 3. Run this script: npx tsx scripts/test-cloudinary-upload.ts
+ *
+ * Usage: npx tsx scripts/test-cloudinary-upload.ts
  *
  * Tests:
  * - Upload base image (base-images preset)

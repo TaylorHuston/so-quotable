@@ -1,10 +1,14 @@
 /**
  * Cloudinary API Connection Verification Script
  *
- * Tests that Cloudinary credentials are properly configured and can authenticate
- * with the Cloudinary API.
+ * Purpose: Tests that Cloudinary credentials are properly configured and can
+ *          authenticate with the Cloudinary API. Shows account usage statistics.
+ *
+ * Last Used: 2025-11-02 (TASK-003 initial Cloudinary setup verification)
  *
  * Usage: npx tsx scripts/verify-cloudinary.ts
+ *
+ * Output: Account plan, credits, bandwidth, storage, and resource counts.
  */
 
 import { v2 as cloudinary } from "cloudinary";

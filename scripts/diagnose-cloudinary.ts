@@ -1,10 +1,18 @@
 /**
  * Cloudinary Diagnostic Script
  *
- * This script helps diagnose Cloudinary configuration issues:
- * 1. Verifies API credentials
- * 2. Tests direct upload with folder parameter
- * 3. Shows what's actually in your Cloudinary account
+ * Purpose: Diagnoses Cloudinary configuration issues by verifying credentials,
+ *          testing uploads with folder parameters, and showing account contents.
+ *
+ * Last Used: 2025-11-02 (TASK-003 Cloudinary integration troubleshooting)
+ *
+ * Usage: npx tsx scripts/diagnose-cloudinary.ts
+ *
+ * Tests:
+ * 1. Verifies API credentials from .env.local
+ * 2. Tests direct upload with/without presets
+ * 3. Lists resources in your Cloudinary account
+ * 4. Checks upload preset configuration
  */
 
 import { v2 as cloudinary } from 'cloudinary';
