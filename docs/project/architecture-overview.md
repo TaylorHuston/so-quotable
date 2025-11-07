@@ -2,7 +2,7 @@
 
 ## Project: So Quotable
 
-**Last Updated**: 2025-11-05
+**Last Updated**: 2025-11-06
 
 ---
 
@@ -676,6 +676,17 @@ See [ADR-002: Testing Framework](./adrs/ADR-002-testing-framework.md) and [testi
 - Co-located tests: `*.test.ts` next to source files
 - E2E tests: `tests/e2e/*.spec.ts`
 - Test fixtures: `tests/fixtures/`
+- Test helpers: `tests/helpers/` (e.g., `testCleanup.ts` for automatic data cleanup)
+
+**Test Data Management**:
+
+- **Unit Tests**: Use in-memory database via `convexTest` (automatic cleanup)
+- **E2E Tests**: Use live deployment with automatic cleanup via `afterAll` hooks
+- **Cleanup Pattern**: Test users matched by email patterns (`test-*@example.com`, `*@test.com`)
+- **Cleanup Utilities**:
+  - `convex/cleanupTestUsers.ts` - Mutation for batch deletion
+  - `tests/helpers/testCleanup.ts` - Helper functions
+  - `scripts/cleanup-all-test-users.ts` - Manual cleanup script
 
 ---
 

@@ -1,9 +1,9 @@
 ---
 # === Metadata ===
 template_type: "guideline"
-version: "1.0.0"
+version: "1.0.1"
 created: "2025-10-30"
-last_updated: "2025-10-31"
+last_updated: "2025-11-06"
 status: "Active"
 target_audience: ["AI Assistants", "Test Engineers", "Development Team"]
 description: "Testing approach, frameworks, and conventions for So Quotable"
@@ -148,14 +148,69 @@ describe("quotes", () => {
 });
 ```
 
+## Test Data Management
+
+### Unit Tests (Convex Functions)
+
+**In-Memory Database**: Unit tests use `convexTest` which creates an isolated, in-memory database for each test.
+
+```typescript
+import { convexTest } from "convex-test";
+
+beforeEach(() => {
+  t = convexTest(schema, modules); // Fresh database for each test
+});
+```
+
+**Cleanup**: Automatic - each test gets a fresh database, no cleanup needed.
+
+### E2E Tests (Playwright)
+
+**Live Database**: E2E tests use the real Convex deployment to test full user flows.
+
+**Cleanup Strategy**: Automatic cleanup after all tests complete via `afterAll` hook.
+
+```typescript
+test.describe("Authentication Flows", () => {
+  test.afterAll(async () => {
+    const result = await cleanupAllTestData();
+    console.log(`✓ ${result.deletedUsers} users cleaned up`);
+  });
+});
+```
+
+**Test Isolation**: Each test uses unique timestamped email addresses to avoid conflicts:
+
+```typescript
+const testEmail = `test-${Date.now()}@example.com`;
+```
+
+**Cleanup Implementation**:
+- `tests/helpers/testCleanup.ts` - Helper functions for data cleanup
+- `convex/cleanupTestUsers.ts` - Mutation that deletes test users and auth accounts
+- Pattern matching: `test-*@example.com`, `*@test.com`, etc.
+
+### Cleanup Utilities
+
+**Manual Cleanup Script**:
+```bash
+npx tsx scripts/cleanup-all-test-users.ts
+```
+
+**Verification Script**:
+```bash
+npx tsx scripts/verify-test-cleanup.ts
+```
+
 ## Best Practices
 
 - Use descriptive test names
 - Test behavior, not implementation
 - One assertion per test (when possible)
 - Avoid test interdependencies
-- Clean up after tests (afterEach/afterAll)
+- Clean up after tests (automatic for unit tests, afterAll hook for E2E tests)
 - Follow Given-When-Then pattern for clarity
+- Use unique identifiers (timestamps) for E2E test data isolation
 
 ## Coverage Goals
 
@@ -173,23 +228,46 @@ describe("quotes", () => {
 
 ## Test Organization
 
+**Co-located Tests**: Unit and integration tests live next to source files (`.test.ts` or `.test.tsx`).
+
 ```
+convex/
+├── quotes.ts              # Source
+├── quotes.test.ts         # Unit tests (co-located)
+├── people.ts
+├── people.test.ts
+├── cleanupTestUsers.ts    # Test data cleanup mutation
+└── test.setup.ts          # Shared test configuration
+
+src/
+├── components/
+│   ├── QuoteCard.tsx
+│   └── QuoteCard.test.tsx  # Component tests (co-located)
+└── lib/
+    ├── password-validation.ts
+    └── password-validation.test.ts
+
 tests/
-├── e2e/              # Playwright E2E tests
-│   ├── quote-creation.spec.ts
-│   └── search.spec.ts
-├── fixtures/         # Test data
+├── e2e/                    # Playwright E2E tests
+│   └── auth.spec.ts        # Auth flows with cleanup
+├── fixtures/               # Shared test data
 │   ├── quotes.ts
 │   └── people.ts
-├── helpers/          # Test utilities
-│   └── convex-helpers.ts
-└── unit/             # Unit/integration tests
-    ├── convex/       # Convex function tests
-    │   ├── quotes.test.ts
-    │   └── people.test.ts
-    └── components/   # Component tests
-        └── QuoteCard.test.tsx
+└── helpers/                # Test utilities
+    ├── e2eAuth.ts          # E2E auth helpers
+    ├── e2eNavigation.ts    # E2E navigation helpers
+    └── testCleanup.ts      # E2E data cleanup helpers
+
+scripts/
+├── cleanup-all-test-users.ts     # Manual cleanup script
+└── verify-test-cleanup.ts        # Cleanup verification
 ```
+
+**Benefits of Co-location**:
+- Tests stay in sync with source code
+- Easier to find relevant tests
+- Tests are updated when refactoring code
+- Clear which code is tested vs untested
 
 ## Examples
 

@@ -6,6 +6,7 @@ import {
   isAuthenticated,
 } from "../helpers/e2eAuth";
 import { goto, waitForPageLoad, getCurrentPath } from "../helpers/e2eNavigation";
+import { cleanupAllTestData } from "../helpers/testCleanup";
 
 /**
  * E2E Authentication Flow Tests
@@ -30,9 +31,9 @@ import { goto, waitForPageLoad, getCurrentPath } from "../helpers/e2eNavigation"
  * - Protected Routes: /dashboard, /profile, /create-quote (redirect to /login if unauthenticated)
  *
  * Test Isolation Strategy:
- * - Each test uses unique timestamped email addresses (no database cleanup needed)
+ * - Each test uses unique timestamped email addresses for isolation
  * - Tests are independent and can run in parallel
- * - Database grows with test data but doesn't affect test outcomes
+ * - Database cleanup happens automatically after all tests complete via afterAll hook
  *
  * @see src/components/LoginForm.tsx
  * @see src/components/RegisterForm.tsx
@@ -41,6 +42,14 @@ import { goto, waitForPageLoad, getCurrentPath } from "../helpers/e2eNavigation"
  */
 
 test.describe("Authentication Flows", () => {
+  // Cleanup all test data after all tests complete
+  test.afterAll(async () => {
+    console.log("\n🧹 Cleaning up test data...");
+    const result = await cleanupAllTestData();
+    console.log(
+      `✓ Cleanup complete: ${result.deletedUsers} users, ${result.deletedAccounts} accounts removed\n`
+    );
+  });
 
   test.describe("User Registration", () => {
     test("should successfully register a new user with valid credentials", async ({
