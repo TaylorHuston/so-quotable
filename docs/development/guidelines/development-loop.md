@@ -1092,6 +1092,25 @@ Bug: BUG-003 - Cart total calculation incorrect for discounted items
 7. Bug marked resolved, create PR
 ```
 
+## CHANGELOG Updates
+
+**After completing work, always update CHANGELOG.md:**
+
+- Features: Add to `[Unreleased] > Added`
+- Bug fixes: Add to `[Unreleased] > Fixed`
+- Breaking changes: Add to `[Unreleased] > Changed` with BREAKING note
+
+See [Versioning and Releases](./versioning-and-releases.md) for complete CHANGELOG guidelines and semantic versioning strategy.
+
+## Related Documentation
+
+- [API Guidelines](./api-guidelines.md) - REST/GraphQL API design patterns
+- [Coding Standards](./coding-standards.md) - Language-specific conventions
+- [Testing Standards](./testing-standards.md) - Test coverage and quality thresholds
+- [Security Guidelines](./security-guidelines.md) - Secure coding practices
+- [Versioning and Releases](./versioning-and-releases.md) - Semantic versioning and release process
+- [Git Workflow](./git-workflow.md) - Branch strategy and commit conventions
+
 ## General Development Loop Knowledge
 
 For development workflow best practices, Claude has extensive knowledge of:

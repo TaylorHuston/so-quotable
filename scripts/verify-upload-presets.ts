@@ -1,9 +1,14 @@
 /**
  * Upload Presets Verification Script
  *
- * Verifies that the required upload presets exist and are accessible.
+ * Purpose: Verifies that the required upload presets (base-images, generated-images)
+ *          exist and are properly configured with folders and signing modes.
+ *
+ * Last Used: 2025-11-02 (TASK-003 Phase 1 - Cloudinary preset verification)
  *
  * Usage: npx tsx scripts/verify-upload-presets.ts
+ *
+ * Output: Lists all presets and confirms required presets are configured correctly.
  */
 
 import { v2 as cloudinary } from "cloudinary";

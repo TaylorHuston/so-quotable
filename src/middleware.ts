@@ -1,66 +1,34 @@
-import { NextRequest, NextResponse } from "next/server";
+import {
+  convexAuthNextjsMiddleware,
+  createRouteMatcher,
+  nextjsMiddlewareRedirect,
+} from "@convex-dev/auth/nextjs/server";
 
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+// Define auth pages (always allow access to avoid race conditions)
+const isAuthPage = createRouteMatcher(["/", "/login", "/register"]);
 
-  // Protected routes that require authentication
-  const protectedRoutes = ["/dashboard", "/profile", "/create-quote"];
+// Define protected routes that require authentication
+const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/profile(.*)", "/create-quote(.*)"]);
 
-  // Public routes that should redirect to dashboard if already authenticated
-  const authRoutes = ["/login", "/register"];
-
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
-  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
-
-  // Check if user is authenticated by looking for the Convex auth token
-  // Convex stores the token in a cookie named `convex-token`
-  const authToken = request.cookies.get("convex-token");
-  const isAuthenticated = !!authToken;
-
-  // Redirect unauthenticated users from protected routes to login
-  if (isProtectedRoute && !isAuthenticated) {
-    const url = new URL("/login", request.url);
-    url.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(url);
+export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
+  // IMPORTANT: Always allow access to auth pages to avoid race conditions
+  // after signup/login. The auth pages handle their own client-side redirects.
+  // See: Convex Auth docs - known race condition when redirecting immediately after auth
+  if (isAuthPage(request)) {
+    return undefined;
   }
 
-  // Redirect authenticated users from auth routes to dashboard
-  if (isAuthRoute && isAuthenticated) {
-    const redirectParam = request.nextUrl.searchParams.get("redirect");
-
-    // Validate redirect parameter to prevent open redirect vulnerability
-    // Only allow relative paths starting with / (no external URLs)
-    let redirectPath = "/dashboard";
-    if (redirectParam && redirectParam.startsWith("/") && !redirectParam.startsWith("//")) {
-      // Additional validation: ensure it's a valid internal path
-      try {
-        const url = new URL(redirectParam, request.url);
-        if (url.origin === request.nextUrl.origin) {
-          redirectPath = redirectParam;
-        }
-      } catch {
-        // Invalid URL, use default
-      }
-    }
-
-    return NextResponse.redirect(new URL(redirectPath, request.url));
+  // For protected routes, redirect to login if not authenticated
+  if (isProtectedRoute(request) && !(await convexAuth.isAuthenticated())) {
+    return nextjsMiddlewareRedirect(request, "/login");
   }
 
-  return NextResponse.next();
-}
+  // All other routes allowed
+  return undefined;
+});
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\..*|_next).*)",
-  ],
+  // The following matcher runs middleware on all routes
+  // except static assets.
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };

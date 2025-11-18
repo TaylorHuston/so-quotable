@@ -2,18 +2,12 @@
 /**
  * Comprehensive Cloudinary Integration Verification Script
  *
- * Phase 4: Verification & Finalization - TASK-003
+ * Purpose: Performs end-to-end verification of the Cloudinary integration including
+ *          uploads, transformations, CDN delivery, and auto-deletion configuration.
  *
- * This script performs end-to-end verification of the Cloudinary integration:
- * 1. Upload sample person images (base-images preset)
- * 2. Generate quote images with transformations (generated-images preset)
- * 3. Verify CDN delivery and performance
- * 4. Verify auto-deletion configuration
- * 5. Test transformation quality (text overlays, optimization)
- * 6. Generate comprehensive verification report
+ * Last Used: 2025-11-02 (TASK-003 Phase 4 - Cloudinary integration finalization)
  *
- * Usage:
- *   tsx scripts/verify-cloudinary-integration.ts
+ * Usage: npx tsx scripts/verify-cloudinary-integration.ts
  *
  * Prerequisites:
  *   - Convex backend running (npx convex dev)
@@ -22,6 +16,14 @@
  *     - CLOUDINARY_API_KEY
  *     - CLOUDINARY_API_SECRET
  *   - Sample test data created (people, quotes)
+ *
+ * Tests:
+ * 1. Upload sample person images (base-images preset)
+ * 2. Generate quote images with transformations (generated-images preset)
+ * 3. Verify CDN delivery and performance
+ * 4. Verify auto-deletion configuration (30-day expiry)
+ * 5. Test transformation quality (text overlays, optimization)
+ * 6. Generate comprehensive verification report
  */
 
 import { fileURLToPath } from "url";

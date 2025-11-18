@@ -1,3 +1,40 @@
+/**
+ * Google logo SVG icon component
+ *
+ * Renders the official Google "G" logo with proper brand colors.
+ * Used in authentication buttons for "Sign in with Google" and "Sign up with Google".
+ *
+ * @param props - Component props
+ * @param props.className - Optional CSS classes for sizing (default: "w-5 h-5")
+ * @returns React component
+ *
+ * @example
+ * ```tsx
+ * // Default size (20x20px)
+ * <GoogleIcon />
+ *
+ * // Custom size
+ * <GoogleIcon className="w-6 h-6" />
+ *
+ * // In a button
+ * <button className="flex items-center gap-2">
+ *   <GoogleIcon />
+ *   Sign in with Google
+ * </button>
+ * ```
+ *
+ * **Brand Colors**:
+ * - Blue: #4285F4 (top right)
+ * - Green: #34A853 (bottom right)
+ * - Yellow: #FBBC05 (bottom left)
+ * - Red: #EA4335 (top left)
+ *
+ * **Usage**:
+ * - Login button: "Sign in with Google"
+ * - Registration button: "Sign up with Google"
+ *
+ * @see {@link https://developers.google.com/identity/branding-guidelines | Google Brand Guidelines}
+ */
 export function GoogleIcon({ className = "w-5 h-5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24">

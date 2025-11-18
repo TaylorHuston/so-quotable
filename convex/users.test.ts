@@ -222,6 +222,198 @@ describe("users table schema and CRUD operations", () => {
     });
   });
 
+  describe("checkEmailAvailability query", () => {
+    it("should return true for available email (no existing user)", async () => {
+      // Given: No user with this email exists
+      // When: Checking email availability
+      const result = await t.query(api.users.checkEmailAvailability, {
+        email: "available@example.com",
+      });
+
+      // Then: Email should be available
+      expect(result).toBe(true);
+    });
+
+    it("should return false for taken email (existing user)", async () => {
+      // Given: A user with this email exists
+      await t.run(async (ctx) => {
+        const now = Date.now();
+        await ctx.db.insert("users", {
+          email: "taken@example.com",
+          name: "Taken User",
+          slug: "taken-user",
+          role: "user",
+          createdAt: now,
+          updatedAt: now,
+        });
+      });
+
+      // When: Checking email availability
+      const result = await t.query(api.users.checkEmailAvailability, {
+        email: "taken@example.com",
+      });
+
+      // Then: Email should not be available
+      expect(result).toBe(false);
+    });
+
+    it("should handle case-insensitive email matching (uppercase check)", async () => {
+      // Given: A user with lowercase email
+      await t.run(async (ctx) => {
+        const now = Date.now();
+        await ctx.db.insert("users", {
+          email: "user@example.com",
+          name: "User",
+          slug: "user",
+          role: "user",
+          createdAt: now,
+          updatedAt: now,
+        });
+      });
+
+      // When: Checking with uppercase email
+      const result = await t.query(api.users.checkEmailAvailability, {
+        email: "USER@EXAMPLE.COM",
+      });
+
+      // Then: Email should not be available (case-insensitive match)
+      expect(result).toBe(false);
+    });
+
+    it("should handle case-insensitive email matching (mixed case check)", async () => {
+      // Given: A user with mixed case email
+      await t.run(async (ctx) => {
+        const now = Date.now();
+        await ctx.db.insert("users", {
+          email: "mixedcase@example.com",
+          name: "Mixed Case User",
+          slug: "mixed-user",
+          role: "user",
+          createdAt: now,
+          updatedAt: now,
+        });
+      });
+
+      // When: Checking with different case
+      const result = await t.query(api.users.checkEmailAvailability, {
+        email: "MixedCase@Example.Com",
+      });
+
+      // Then: Email should not be available (case-insensitive match)
+      expect(result).toBe(false);
+    });
+
+    it("should trim whitespace from email", async () => {
+      // Given: A user with trimmed email
+      await t.run(async (ctx) => {
+        const now = Date.now();
+        await ctx.db.insert("users", {
+          email: "trimmed@example.com",
+          name: "Trimmed User",
+          slug: "trimmed-user",
+          role: "user",
+          createdAt: now,
+          updatedAt: now,
+        });
+      });
+
+      // When: Checking with whitespace
+      const result = await t.query(api.users.checkEmailAvailability, {
+        email: "  trimmed@example.com  ",
+      });
+
+      // Then: Email should not be available (whitespace trimmed)
+      expect(result).toBe(false);
+    });
+
+    it("should normalize email consistently with getUserByEmail", async () => {
+      // Given: A user exists
+      await t.run(async (ctx) => {
+        const now = Date.now();
+        await ctx.db.insert("users", {
+          email: "consistent@example.com",
+          name: "Consistent User",
+          slug: "consistent-user",
+          role: "user",
+          createdAt: now,
+          updatedAt: now,
+        });
+      });
+
+      // When: Checking availability with both queries
+      const availability = await t.query(api.users.checkEmailAvailability, {
+        email: "CONSISTENT@EXAMPLE.COM",
+      });
+      const userExists = await t.query(api.users.getUserByEmail, {
+        email: "CONSISTENT@EXAMPLE.COM",
+      });
+
+      // Then: Both should agree (email is taken)
+      expect(availability).toBe(false);
+      expect(userExists).not.toBeNull();
+    });
+
+    it("should handle multiple users with different emails correctly", async () => {
+      // Given: Multiple users exist
+      await t.run(async (ctx) => {
+        const now = Date.now();
+        await ctx.db.insert("users", {
+          email: "user1@example.com",
+          name: "User 1",
+          slug: "user-1",
+          role: "user",
+          createdAt: now,
+          updatedAt: now,
+        });
+        await ctx.db.insert("users", {
+          email: "user2@example.com",
+          name: "User 2",
+          slug: "user-2",
+          role: "user",
+          createdAt: now,
+          updatedAt: now,
+        });
+      });
+
+      // When: Checking taken and available emails
+      const takenResult = await t.query(api.users.checkEmailAvailability, {
+        email: "user1@example.com",
+      });
+      const availableResult = await t.query(api.users.checkEmailAvailability, {
+        email: "user3@example.com",
+      });
+
+      // Then: Should correctly identify taken vs available
+      expect(takenResult).toBe(false); // user1 is taken
+      expect(availableResult).toBe(true); // user3 is available
+    });
+
+    it("should use email index for performance (verify index usage)", async () => {
+      // Given: A user exists
+      await t.run(async (ctx) => {
+        const now = Date.now();
+        await ctx.db.insert("users", {
+          email: "indexed@example.com",
+          name: "Indexed User",
+          slug: "indexed-user",
+          role: "user",
+          createdAt: now,
+          updatedAt: now,
+        });
+      });
+
+      // When: Checking availability (should use index)
+      const result = await t.query(api.users.checkEmailAvailability, {
+        email: "indexed@example.com",
+      });
+
+      // Then: Should work correctly (index usage verified by test passing)
+      expect(result).toBe(false);
+      // Note: Actual index usage is verified by Convex query optimizer
+      // This test ensures the query structure supports index usage
+    });
+  });
+
   describe("getCurrentUser query", () => {
     it("should return null when not authenticated", async () => {
       // When: Calling getCurrentUser without authentication

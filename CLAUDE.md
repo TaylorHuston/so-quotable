@@ -8,8 +8,8 @@ This project uses the AI Toolkit plugin for structured development workflows.
 
 **Toolkit Version Information:**
 
-- **Plugin Version**: 0.14.0
-- **Last Updated**: 2025-11-03
+- **Plugin Version**: 0.18.0
+- **Last Updated**: 2025-11-05
 - **Template Customizations**: None (update this list when you customize guideline files) 
 
 ## Critical Rules
@@ -104,9 +104,12 @@ git push origin main    # Auto-deploys to Vercel production
 # Preview deployments created automatically for PRs
 ```
 
-## Workflow
+## Resources
 
-See [GETTING-STARTED.md](./GETTING-STARTED.md) for the complete AI-assisted development workflow.
+The first places to check when you get stuck or need documentation:
+- https://deepwiki.com/get-convex/convex-backend
+- https://deepwiki.com/get-convex/convex-auth/
+- https://labs.convex.dev/auth
 
 ## Current Focus
 

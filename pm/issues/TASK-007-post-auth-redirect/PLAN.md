@@ -60,7 +60,8 @@ router.push("/dashboard");
 
 **Cons**:
 - Adds small delay (usually <200ms)
-- Polling is not elegant (but works)
+- Polling is not elegant (but works
+
 
 ### Option 2: Use Convex Auth Hook
 
