@@ -275,7 +275,7 @@ describe("password reset", () => {
       });
 
       // When: Resetting password with valid token
-      const result = await t.mutation(api.passwordReset.resetPasswordWithToken, {
+      const result = await t.mutation(api.passwordResetActions.resetPasswordWithToken, {
         token: "valid-reset-token-12345678901234",
         newPassword: "NewPassword123!",
       });
@@ -311,7 +311,7 @@ describe("password reset", () => {
       });
 
       // When: Trying to reset with weak password
-      const result = await t.mutation(api.passwordReset.resetPasswordWithToken, {
+      const result = await t.mutation(api.passwordResetActions.resetPasswordWithToken, {
         token: "weak-token-123456789012345",
         newPassword: "weak",
       });
@@ -338,7 +338,7 @@ describe("password reset", () => {
       });
 
       // When: Trying to reset with expired token
-      const result = await t.mutation(api.passwordReset.resetPasswordWithToken, {
+      const result = await t.mutation(api.passwordResetActions.resetPasswordWithToken, {
         token: "expired-token-123456789012345",
         newPassword: "NewPassword123!",
       });
@@ -365,7 +365,7 @@ describe("password reset", () => {
       });
 
       // When: Trying to reset with wrong token
-      const result = await t.mutation(api.passwordReset.resetPasswordWithToken, {
+      const result = await t.mutation(api.passwordResetActions.resetPasswordWithToken, {
         token: "wrong-token",
         newPassword: "NewPassword123!",
       });
@@ -377,7 +377,7 @@ describe("password reset", () => {
 
     it("should reject token with invalid format", async () => {
       // When: Trying to reset with short token
-      const result = await t.mutation(api.passwordReset.resetPasswordWithToken, {
+      const result = await t.mutation(api.passwordResetActions.resetPasswordWithToken, {
         token: "short",
         newPassword: "NewPassword123!",
       });
@@ -389,7 +389,7 @@ describe("password reset", () => {
 
     it("should handle non-existent token", async () => {
       // When: Trying to reset with non-existent token
-      const result = await t.mutation(api.passwordReset.resetPasswordWithToken, {
+      const result = await t.mutation(api.passwordResetActions.resetPasswordWithToken, {
         token: "nonexistent-token-12345678901234",
         newPassword: "NewPassword123!",
       });
@@ -416,7 +416,7 @@ describe("password reset", () => {
       });
 
       // When: Resetting password successfully
-      const result1 = await t.mutation(api.passwordReset.resetPasswordWithToken, {
+      const result1 = await t.mutation(api.passwordResetActions.resetPasswordWithToken, {
         token: "single-use-token-12345678901234",
         newPassword: "NewPassword123!",
       });
@@ -424,7 +424,7 @@ describe("password reset", () => {
       expect(result1.success).toBe(true);
 
       // And: Trying to use same token again
-      const result2 = await t.mutation(api.passwordReset.resetPasswordWithToken, {
+      const result2 = await t.mutation(api.passwordResetActions.resetPasswordWithToken, {
         token: "single-use-token-12345678901234",
         newPassword: "AnotherPassword123!",
       });
@@ -438,7 +438,7 @@ describe("password reset", () => {
   describe("sendPasswordResetEmail action", () => {
     it("should send password reset email in test mode", async () => {
       // When: Sending password reset email with test API key
-      const result = await t.action(api.passwordReset.sendPasswordResetEmail, {
+      const result = await t.action(api.passwordResetActions.sendPasswordResetEmail, {
         email: "sendreset@example.com",
         token: "reset-token-123456789012345",
       });
@@ -455,7 +455,7 @@ describe("password reset", () => {
       // When: Trying to send email
       // Then: Should throw error
       await expect(
-        t.action(api.passwordReset.sendPasswordResetEmail, {
+        t.action(api.passwordResetActions.sendPasswordResetEmail, {
           email: "test@example.com",
           token: "test-token",
         })
@@ -472,7 +472,7 @@ describe("password reset", () => {
       // When: Trying to send email
       // Then: Should throw error
       await expect(
-        t.action(api.passwordReset.sendPasswordResetEmail, {
+        t.action(api.passwordResetActions.sendPasswordResetEmail, {
           email: "test@example.com",
           token: "test-token",
         })

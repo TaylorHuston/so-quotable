@@ -355,7 +355,7 @@ describe("email verification", () => {
       );
 
       const result = await tAuth.action(
-        api.emailVerification.sendVerificationEmail,
+        api.emailVerificationActions.sendVerificationEmail,
         {
           userId,
           token, // Use actual token

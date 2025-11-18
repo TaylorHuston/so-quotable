@@ -92,7 +92,7 @@ export default function ResetPasswordPage() {
   const router = useRouter();
   const convex = useConvex();
   const { signIn } = useAuthActions();
-  const resetPasswordWithToken = useAction(api.passwordReset.resetPasswordWithToken);
+  const resetPasswordWithToken = useAction(api.passwordResetActions.resetPasswordWithToken);
 
   const [token, setToken] = useState<string | null>(null);
   const [newPassword, setNewPassword] = useState("");
@@ -323,8 +323,15 @@ export default function ResetPasswordPage() {
           </div>
         )}
 
+        {/* Error Message */}
+        {message && status === "error" && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            {message}
+          </div>
+        )}
+
         {/* Form State */}
-        {status !== "success" && status !== "error" && token && (
+        {status !== "success" && token && (
           <>
             <h2 className="text-2xl font-bold mb-2 text-center">
               Reset Your Password
@@ -332,12 +339,6 @@ export default function ResetPasswordPage() {
             <p className="text-gray-600 mb-6 text-center">
               Enter your new password below.
             </p>
-
-            {message && status === "error" && (
-              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-                {message}
-              </div>
-            )}
 
             <form onSubmit={handleSubmit} className="space-y-4" noValidate>
               <div>
