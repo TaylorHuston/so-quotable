@@ -7,6 +7,19 @@ import { GoogleIcon } from "./GoogleIcon";
 
 /**
  * Parse Convex Auth errors into user-friendly messages
+ *
+ * Transforms technical Convex Auth error messages into clear, actionable
+ * messages for end users. Handles common authentication errors including
+ * invalid credentials, rate limiting, and verification issues.
+ *
+ * @param err - The error object from Convex Auth
+ * @returns User-friendly error message
+ *
+ * **Error Mappings**:
+ * - InvalidSecret/Account not found → "Invalid email or password"
+ * - Too many requests → "Too many sign-in attempts. Please try again in a few minutes."
+ * - Email not verified → "Please verify your email before signing in"
+ * - Other errors → Cleaned message without stack traces
  */
 function parseAuthError(err: unknown): string {
   if (!(err instanceof Error)) {
@@ -35,6 +48,66 @@ function parseAuthError(err: unknown): string {
   return cleanMessage || "Sign in failed. Please try again.";
 }
 
+/**
+ * Login form component with email/password and Google OAuth authentication
+ *
+ * Provides a user-friendly login interface with error handling, loading states,
+ * and both traditional email/password authentication and Google OAuth sign-in.
+ *
+ * @returns React component
+ *
+ * @example
+ * ```tsx
+ * // In a page component
+ * import { LoginForm } from "@/components/LoginForm";
+ *
+ * export default function LoginPage() {
+ *   return (
+ *     <div className="min-h-screen flex items-center justify-center">
+ *       <LoginForm />
+ *     </div>
+ *   );
+ * }
+ * ```
+ *
+ * **Features**:
+ * - Email/password authentication with validation
+ * - Google OAuth single sign-on
+ * - User-friendly error messages
+ * - Loading states during authentication
+ * - Automatic redirect to dashboard on success
+ * - Link to registration page for new users
+ *
+ * **Authentication Flow**:
+ * 1. User enters email and password
+ * 2. Form submits to Convex Auth (signIn with "password" provider)
+ * 3. On success: 100ms delay for auth state propagation, then redirect to /dashboard
+ * 4. On failure: Display user-friendly error message
+ *
+ * **Google OAuth Flow**:
+ * 1. User clicks "Sign in with Google"
+ * 2. Redirect to Google OAuth consent screen
+ * 3. User approves access
+ * 4. Redirect back to app with auth code
+ * 5. Convex Auth validates and creates session
+ *
+ * **Error Handling**:
+ * - Invalid credentials: "Invalid email or password"
+ * - Rate limiting: "Too many sign-in attempts. Please try again in a few minutes."
+ * - Network errors: Generic fallback message
+ *
+ * **Accessibility**:
+ * - Proper label associations (htmlFor/id)
+ * - Required field validation
+ * - Disabled state during loading
+ * - Semantic HTML form structure
+ *
+ * **Known Issues**:
+ * - 100ms delay after sign-in to work around Convex Auth race condition
+ *   (auth state may not be immediately available after signIn resolves)
+ *
+ * @see {@link https://labs.convex.dev/auth | Convex Auth Documentation}
+ */
 export function LoginForm() {
   const { signIn } = useAuthActions();
   const router = useRouter();
@@ -110,12 +183,20 @@ export function LoginForm() {
         </div>
 
         <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Password
-          </label>
+          <div className="flex items-center justify-between mb-1">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Password
+            </label>
+            <a
+              href="/forgot-password"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Forgot password?
+            </a>
+          </div>
           <input
             id="password"
             type="password"

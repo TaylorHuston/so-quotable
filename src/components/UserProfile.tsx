@@ -6,6 +6,29 @@ import { api } from "../../convex/_generated/api";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
+/**
+ * Profile display for authenticated users
+ *
+ * Shows user information including avatar, name, email, verification status,
+ * and account metadata. Handles loading and error states gracefully.
+ *
+ * @returns React component
+ *
+ * **Features**:
+ * - User avatar (from OAuth) or generated initial
+ * - Name, email, and username (slug) display
+ * - Email verification badge
+ * - Admin role badge (if applicable)
+ * - Sign out button
+ * - Account creation and update dates
+ *
+ * **States**:
+ * - Loading: Skeleton UI while fetching user data
+ * - Error: Fallback message if user not found
+ * - Success: Full profile display
+ *
+ * @internal Only used within UserProfile component
+ */
 function AuthenticatedProfile() {
   const router = useRouter();
   const { signOut } = useAuthActions();
@@ -14,7 +37,7 @@ function AuthenticatedProfile() {
   if (user === undefined) {
     // Loading state
     return (
-      <div className="flex items-center gap-3 p-4 bg-white rounded-lg shadow" data-auth-state="loading">
+      <div className="flex items-center gap-3 p-4 bg-white rounded-lg shadow" data-auth-state="loading" data-testid="auth-state-loading">
         <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse"></div>
         <div className="flex-1">
           <div className="h-4 bg-gray-200 rounded w-32 mb-2 animate-pulse"></div>
@@ -27,7 +50,7 @@ function AuthenticatedProfile() {
   if (user === null) {
     // This shouldn't happen inside <Authenticated>, but handle it gracefully
     return (
-      <div className="p-4 bg-white rounded-lg shadow" data-auth-state="error">
+      <div className="p-4 bg-white rounded-lg shadow" data-auth-state="error" data-testid="auth-state-error">
         <p className="text-gray-600">Authentication error: User not found</p>
       </div>
     );
@@ -45,7 +68,7 @@ function AuthenticatedProfile() {
   const isVerified = user.emailVerified;
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md" data-auth-state="authenticated" data-user-email={user.email}>
+    <div className="p-6 bg-white rounded-lg shadow-md" data-auth-state="authenticated" data-testid="auth-state-authenticated" data-user-email={user.email}>
       <div className="flex items-start gap-4">
         {/* Profile Picture */}
         <div className="flex-shrink-0">
@@ -141,6 +164,15 @@ function AuthenticatedProfile() {
   );
 }
 
+/**
+ * Profile display for unauthenticated users
+ *
+ * Shows a simple message with links to sign in or sign up.
+ *
+ * @returns React component
+ *
+ * @internal Only used within UserProfile component
+ */
 function UnauthenticatedProfile() {
   return (
     <div className="p-4 bg-white rounded-lg shadow" data-auth-state="unauthenticated">
@@ -163,6 +195,65 @@ function UnauthenticatedProfile() {
   );
 }
 
+/**
+ * User profile component with authentication-aware display
+ *
+ * Displays user profile information for authenticated users or sign-in/sign-up
+ * prompts for unauthenticated users. Uses Convex Auth's Authenticated/Unauthenticated
+ * components for conditional rendering.
+ *
+ * @returns React component
+ *
+ * @example
+ * ```tsx
+ * // In a dashboard page
+ * import { UserProfile } from "@/components/UserProfile";
+ *
+ * export default function Dashboard() {
+ *   return (
+ *     <div className="container mx-auto p-4">
+ *       <UserProfile />
+ *     </div>
+ *   );
+ * }
+ * ```
+ *
+ * **Features**:
+ * - Automatic authentication state detection
+ * - Loading states with skeleton UI
+ * - Profile avatar (OAuth image or generated initial)
+ * - Email verification status indicator
+ * - Admin role badge
+ * - Sign out functionality with redirect
+ * - Account metadata (creation date, last update)
+ *
+ * **Authenticated View**:
+ * - User avatar (64x64 image or initial letter)
+ * - Name with verification badge (if email verified)
+ * - Email address
+ * - Username (@slug)
+ * - Admin badge (if role === "admin")
+ * - Sign out button
+ * - Account timestamps
+ *
+ * **Unauthenticated View**:
+ * - "Not signed in" message
+ * - Sign In button (links to /login)
+ * - Sign Up button (links to /register)
+ *
+ * **Data Attributes** (for testing):
+ * - data-auth-state: "loading" | "authenticated" | "unauthenticated" | "error"
+ * - data-user-email: User's email (authenticated only)
+ * - data-testid: Test identifiers for assertions
+ *
+ * **Sign Out Flow**:
+ * 1. User clicks "Sign Out" button
+ * 2. Calls Convex Auth signOut()
+ * 3. Redirects to /login page
+ * 4. Errors logged to console (gracefully handled)
+ *
+ * @see {@link https://labs.convex.dev/auth | Convex Auth - Conditional Rendering}
+ */
 export function UserProfile() {
   return (
     <>

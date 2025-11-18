@@ -19,6 +19,12 @@ export default defineSchema({
     verificationToken: v.optional(v.string()),
     tokenExpiry: v.optional(v.number()),
 
+    // Password reset fields
+    passwordResetToken: v.optional(v.string()),
+    passwordResetTokenExpiry: v.optional(v.number()),
+    passwordResetRequests: v.optional(v.number()),
+    lastPasswordResetRequest: v.optional(v.number()),
+
     // Extended fields for So Quotable
     slug: v.string(),
     role: v.union(v.literal("user"), v.literal("admin")),
@@ -30,7 +36,8 @@ export default defineSchema({
     .index("email", ["email"])
     .index("phone", ["phone"])
     .index("by_slug", ["slug"])
-    .index("by_verificationToken", ["verificationToken"]),
+    .index("by_verificationToken", ["verificationToken"])
+    .index("by_passwordResetToken", ["passwordResetToken"]),
 
   people: defineTable({
     // Required fields

@@ -1,23 +1,68 @@
 import { convexAuth } from "@convex-dev/auth/server";
 import Google from "@auth/core/providers/google";
 import { Password } from "@convex-dev/auth/providers/Password";
+import { normalizeEmail } from "../src/lib/email-utils";
+import { generateSlug } from "../src/lib/slug-utils";
 
 /**
  * Convex Auth configuration for So Quotable
  *
- * Providers:
- * - Password: Email/password authentication with email verification
- * - Google: OAuth authentication via Google
+ * Provides authentication via email/password and Google OAuth with NIST-compliant
+ * password requirements and secure session management.
  *
- * Security Configuration:
+ * @example
+ * ```typescript
+ * // Backend usage (Convex functions)
+ * import { auth } from "./auth";
+ *
+ * export const myQuery = query({
+ *   args: {},
+ *   handler: async (ctx) => {
+ *     const userId = await auth.getUserId(ctx);
+ *     if (!userId) throw new Error("Not authenticated");
+ *     // ... your logic
+ *   }
+ * });
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // Frontend usage (React components)
+ * import { useAuthActions } from "@convex-dev/auth/react";
+ *
+ * function LoginForm() {
+ *   const { signIn } = useAuthActions();
+ *
+ *   const handleLogin = async () => {
+ *     const formData = new FormData();
+ *     formData.append("email", email);
+ *     formData.append("password", password);
+ *     formData.append("flow", "signIn");
+ *     await signIn("password", formData);
+ *   };
+ * }
+ * ```
+ *
+ * **Authentication Providers**:
+ * - Password: Email/password with NIST-compliant validation
+ * - Google: OAuth 2.0 authentication
+ *
+ * **Security Features**:
  * - Session: 24 hours default, 7 days with "remember me"
  * - JWT: 1 hour token validity
- * - Rate Limiting: 5 failed attempts → 15min lockout per hour (default: 10/hour)
+ * - Rate Limiting: 5 failed attempts → 15min lockout (12min between attempts)
  * - CSRF Protection: Enabled via Convex Auth
- * - Cookies: httpOnly, secure, sameSite=strict (via Convex Auth)
+ * - Cookies: httpOnly, secure, sameSite=strict
  *
- * Phase 1: Foundation - Password provider only
- * Phase 3: OAuth - Google provider will be activated
+ * **Password Requirements** (NIST Special Publication 800-63B):
+ * - Minimum 12 characters
+ * - At least 1 uppercase letter
+ * - At least 1 lowercase letter
+ * - At least 1 number
+ * - At least 1 special character
+ *
+ * @see {@link https://labs.convex.dev/auth | Convex Auth Documentation}
+ * @see {@link https://pages.nist.gov/800-63-3/sp800-63b.html | NIST Password Guidelines}
  */
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
   providers: [
@@ -57,14 +102,11 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         const email = params.email as string;
         const name = (params.name as string | undefined) || email.split("@")[0] || "user";
 
-        // Generate slug from email (will be made unique by database if needed)
-        const emailPrefix = email.split("@")[0];
-        const slug = (emailPrefix && emailPrefix.length > 0 ? emailPrefix : "user")
-          .toLowerCase()
-          .replace(/[^a-z0-9]/g, "-");
+        // Generate slug from email using utility (will be made unique by database if needed)
+        const slug = generateSlug(email);
 
         return {
-          email: email.toLowerCase().trim(),
+          email: normalizeEmail(email),
           name: name.trim(),
           slug,
           role: "user" as const,
@@ -82,15 +124,12 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
         const name = (profile.name as string) || email.split("@")[0] || "user";
         const image = profile.picture as string | undefined;
 
-        // Generate slug from email (will be made unique by database if needed)
-        const emailPrefix = email.split("@")[0];
-        const slug = (emailPrefix && emailPrefix.length > 0 ? emailPrefix : "user")
-          .toLowerCase()
-          .replace(/[^a-z0-9]/g, "-");
+        // Generate slug from email using utility (will be made unique by database if needed)
+        const slug = generateSlug(email);
 
         return {
           id: profile.sub as string, // REQUIRED: Google's unique user ID
-          email: email.toLowerCase().trim(),
+          email: normalizeEmail(email),
           name: name.trim(),
           slug,
           role: "user" as const,
