@@ -8,8 +8,8 @@ This project uses the AI Toolkit plugin for structured development workflows.
 
 **Toolkit Version Information:**
 
-- **Plugin Version**: 0.18.0
-- **Last Updated**: 2025-11-05
+- **Plugin Version**: 0.30.0
+- **Last Updated**: 2025-11-18
 - **Template Customizations**: None (update this list when you customize guideline files) 
 
 ## Critical Rules

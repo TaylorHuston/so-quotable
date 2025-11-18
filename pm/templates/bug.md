@@ -1,7 +1,6 @@
 ---
 # === Metadata ===
 template_type: "pm-template"
-version: "1.0.0"
 created: "2025-10-30"
 last_updated: "2025-10-30"
 status: "Active"
@@ -54,6 +53,8 @@ sections:
 
 ## Environment
 {environment}
+
+**Note**: See pm-guide.md "Agile Plan Updates" if bug scope evolves during investigation.
 
 ---
 
