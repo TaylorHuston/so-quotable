@@ -8,6 +8,7 @@
 - Phase 1.1: `d6adaa5` - Vercel GitHub connection verified (complete)
 - Phase 1.2: `be41e16` - Node.js version pinned to 20.x (complete)
 - Phase 1.3: `e944800` - Vercel Analytics enabled (complete)
+- Phase 2.1: `ffd6a6c` - Production environment variables documentation (ready for execution)
 
 ---
 
@@ -231,3 +232,76 @@ User enabled Vercel Analytics in dashboard (Settings → Analytics → Enable).
 - ✅ Phase 1.3: Vercel Analytics enabled
 
 → Ready for Phase 2 (Environment Variables Management) - will fix build errors
+
+---
+
+## 2025-11-19 19:00 - [AUTHOR: devops-engineer] → [NEXT: @user]
+
+Phase 2.1 documentation complete. Comprehensive guide created for configuring production environment variables in Vercel and Convex dashboard.
+
+**Analysis Summary**:
+
+**Required Environment Variables** (8 Vercel + 5 Convex):
+- NEXT_PUBLIC_CONVEX_URL: Production Convex backend URL (requires deployment first)
+- AUTH_SECRET: Session encryption key (must generate new for production)
+- CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: Image service
+- GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET: OAuth authentication
+- RESEND_API_KEY: Email verification service
+
+**Critical Dependencies Identified**:
+1. **Production Convex Deployment**: MUST run `npx convex deploy` FIRST to get production URL
+   - Current: Only dev deployment exists (https://cheery-cow-298.convex.cloud)
+   - Required: Create production deployment to get production URL
+   - Impact: Cannot set NEXT_PUBLIC_CONVEX_URL without production deployment
+
+2. **Dual Configuration Required**: Variables must be set in BOTH locations:
+   - Vercel: For Next.js frontend access
+   - Convex Dashboard: For Convex actions (email, uploads) access
+   - 5 variables duplicated: AUTH_SECRET, CLOUDINARY credentials, RESEND_API_KEY
+
+3. **Google OAuth Redirect URI**: Must add production redirect to Google Cloud Console:
+   - Add: `https://so-quoteable.vercel.app/api/auth/callback/google`
+   - Keep: `http://localhost:3000/api/auth/callback/google` (for dev)
+
+**Deliverables**:
+- **docs/deployment/environment-setup.md** (600+ lines):
+  - Step-by-step setup instructions
+  - Variable-by-variable guide with security classifications
+  - How to obtain each credential from service dashboards
+  - Verification procedures and functional tests
+  - Troubleshooting guide for common errors
+  - Security best practices and secret rotation procedures
+
+- **docs/deployment/phase-2-1-verification-checklist.md** (400+ lines):
+  - Interactive checklist for user execution
+  - Prerequisites verification (account access, credentials)
+  - Step-by-step setup with checkboxes
+  - 5 verification tests (Vercel config, Convex config, OAuth, deployment, functional)
+  - Acceptance criteria checklist
+  - Troubleshooting quick reference
+
+**Security Considerations**:
+- AUTH_SECRET: Generate NEW for production (DO NOT reuse dev secret)
+- Variable scoping: Only "Production" checked in Vercel (not Preview/Development)
+- Secret rotation: Documented quarterly rotation procedure
+- Incident response: Documented compromise response protocol
+
+**User Action Required**:
+1. Follow Phase 2.1 verification checklist step-by-step
+2. Start with `npx convex deploy` to create production deployment
+3. Generate new AUTH_SECRET with `openssl rand -base64 32`
+4. Gather credentials from Cloudinary, Google Cloud, Resend dashboards
+5. Configure 8 variables in Vercel Settings → Environment Variables
+6. Configure 5 variables in Convex production deployment Settings
+7. Update Google OAuth redirect URIs
+8. Test deployment to verify all variables work
+
+**Estimated Time**: 30-45 minutes
+
+Files:
+- docs/deployment/environment-setup.md (new, 823 lines total with checklist)
+- docs/deployment/phase-2-1-verification-checklist.md (new)
+
+Commit: `ffd6a6c` - Phase 2.1 documentation
+
+→ Passing to @user for Phase 2.1 execution (see phase-2-1-verification-checklist.md)
