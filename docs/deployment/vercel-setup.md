@@ -50,7 +50,7 @@ The So Quotable repository is connected to Vercel for automatic deployments foll
 
 ### Automated Tests ✅
 
-All automated tests passing (see `scripts/verify-vercel-connection.sh`):
+**Phase 1.1 - GitHub Connection** (see `scripts/verify-vercel-connection.sh`):
 - ✅ Vercel project configuration exists (`.vercel/project.json`)
 - ✅ Project is linked to Vercel (Project ID verified)
 - ✅ GitHub remote is configured
@@ -58,11 +58,25 @@ All automated tests passing (see `scripts/verify-vercel-connection.sh`):
 - ✅ Vercel authentication successful
 - ✅ Node.js version configured (`.nvmrc` and `package.json` engines)
 
+**Phase 1.2 - Build Configuration** (see `scripts/verify-vercel-build-config.sh`):
+- ✅ Next.js framework installed (v16.0.1+)
+- ✅ Next.js configuration file exists (next.config.ts)
+- ✅ TypeScript configuration present (tsconfig.json)
+- ✅ Node.js version properly configured (.nvmrc + package.json engines)
+- ✅ Build command configured (`next build --webpack`)
+- ✅ Output directory is default (.next)
+- ✅ Package manager lockfile present (package-lock.json)
+- ✅ Vercel project linked
+- ✅ Environment variables configured locally (.env.local)
+- ✅ Incremental builds support enabled
+- ✅ .gitignore properly configured for caching
+- ✅ Build performance optimizations enabled
+
 ### Manual Verification Required
 
-The following settings must be verified in the Vercel dashboard. Please complete this checklist:
+The following settings must be verified in the Vercel dashboard.
 
-#### Deployment Settings Checklist
+#### Phase 1.1 - Deployment Settings Checklist
 
 Access: [Vercel Dashboard](https://vercel.com/) → Projects → so-quoteable → Settings → Git
 
@@ -134,6 +148,77 @@ Complete these tests to verify the deployment pipeline works end-to-end:
   - Expected: Vercel bot comments on PR with preview URL
   - Expected: Comment updates on subsequent pushes
   - Cleanup: Close PR after verification (don't merge)
+
+#### Phase 1.2 - Build Configuration Checklist
+
+Access: [Vercel Dashboard](https://vercel.com/) → Projects → so-quoteable → Settings → Build & Development Settings
+
+**Detailed Checklist**: See [Phase 1.2 Verification Checklist](./phase-1-2-verification-checklist.md) for comprehensive verification steps.
+
+**Quick Verification** (Essential checks):
+
+- [ ] **1. Framework Preset**
+  - Navigate to: Settings → Build & Development Settings → Framework Preset
+  - Verify: "Next.js" is auto-detected
+  - Expected: Framework shows "Next.js" with auto-detect indicator
+
+- [ ] **2. Node.js Version**
+  - Navigate to: Settings → Build & Development Settings → Node.js Version
+  - Verify: "20.x" is selected
+  - Expected: Matches package.json engines.node (>=20.9.0)
+
+- [ ] **3. Build Command**
+  - Navigate to: Settings → Build & Development Settings → Build Command
+  - Verify: Field is empty (uses package.json script)
+  - Expected: Vercel will run `npm run build` which executes `next build --webpack`
+
+- [ ] **4. Output Directory**
+  - Navigate to: Settings → Build & Development Settings → Output Directory
+  - Verify: Field is empty (uses Next.js default)
+  - Expected: Vercel will use `.next` directory
+
+- [ ] **5. Install Command**
+  - Navigate to: Settings → Build & Development Settings → Install Command
+  - Verify: Field is empty (uses npm default)
+  - Expected: Vercel will run `npm ci` or `npm install`
+
+- [ ] **6. Incremental Builds**
+  - Navigate to: Settings → Build & Development Settings
+  - Verify: "Automatically enable Incremental Builds" is ON
+  - Expected: Toggle should be enabled (default for Next.js)
+
+**Test Build Deployment**:
+
+- [ ] **Test 4: Trigger Build and Verify**
+  ```bash
+  # Make a trivial change and push
+  git checkout feature/TASK-006-deployment-pipeline
+  echo "# Build config test" >> README.md
+  git add README.md
+  git commit -m "test: verify build configuration"
+  git push origin feature/TASK-006-deployment-pipeline
+  ```
+
+  **Verify in deployment logs**:
+  - ✅ Framework detection: "Detected Next.js"
+  - ✅ Node.js version: "Node.js 20.x"
+  - ✅ Build command: Shows `npm run build` or default
+  - ✅ Build success: Deployment completes without errors
+  - ✅ Build time: First build 2-5 min, subsequent builds <2 min
+
+- [ ] **Test 5: Verify Build Caching**
+  ```bash
+  # Make another small change
+  echo "# Cache test" >> README.md
+  git add README.md
+  git commit -m "test: verify build caching"
+  git push origin feature/TASK-006-deployment-pipeline
+  ```
+
+  **Verify caching effectiveness**:
+  - ✅ Second build is 50-80% faster
+  - ✅ Logs show "Build cache restored"
+  - ✅ Dependencies not reinstalled (unless package.json changed)
 
 ## Rollback Configuration
 
