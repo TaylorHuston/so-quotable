@@ -26,7 +26,7 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
 
 **Objective**: Connect GitHub repository to Vercel with automatic deployments and proper build settings.
 
-- [ ] 1.1 Connect GitHub repository to Vercel account
+- [x] 1.1 Connect GitHub repository to Vercel account
   - Main branch → production deployments
   - All branches → preview deployments
   - PR comments with preview URLs enabled
