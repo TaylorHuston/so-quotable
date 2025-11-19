@@ -31,7 +31,7 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
   - All branches → preview deployments
   - PR comments with preview URLs enabled
 
-- [ ] 1.2 Configure build settings for Next.js
+- [x] 1.2 Configure build settings for Next.js
   - Verify auto-detected framework settings (Next.js)
   - Confirm Node.js version from package.json engines field
   - Configure build command and output directory (auto-detected)
