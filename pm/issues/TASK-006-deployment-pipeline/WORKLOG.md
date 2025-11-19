@@ -131,3 +131,38 @@ Files:
 → Passing to @user for manual dashboard verification (see phase-1-2-verification-checklist.md)
 
 ---
+
+## 2025-11-19 18:26 - [AUTHOR: @user + assistant] → [STATUS: Phase 1.2 Issues Found & Fixed]
+
+**Test Deployment Triggered**: User manually published feature branch to test build configuration
+
+**Issues Discovered**:
+
+1. **Framework Detection Failed** ⚠️
+   - Expected: Vercel auto-detects Next.js
+   - Actual: Had to manually set Framework Preset to "Next.js" in dashboard
+   - Status: Fixed manually in Vercel dashboard
+   
+2. **Node.js Version Mismatch** ⚠️
+   - Expected: Node.js 20.x (per .nvmrc: 20.9.0)
+   - Actual: Vercel dashboard showed 22.x
+   - Root Cause: package.json ">=20.9.0" allows auto-upgrade
+   - Impact: Could cause compatibility issues with future Node 21/22
+
+**Fix Applied**:
+- ✅ Updated package.json: `"node": ">=20.9.0"` → `"node": "20.x"`
+- ⏳ User to update Vercel dashboard: Node.js Version → 20.x
+- Commit: `be41e16` - Pin Node.js version to 20.x
+
+**Build Log Analysis** (successful verification):
+- ✅ Next.js 16.0.1 detected correctly
+- ✅ Build command executed: `npm run build`
+- ✅ Build process working correctly
+- ✅ Failed on missing env vars (expected - Phase 2 will fix)
+
+**Lessons Learned**:
+1. Vercel framework auto-detection may not always work - verify manually
+2. Using ">=" in package.json engines allows unwanted upgrades - use "x" syntax
+3. Test deployments reveal configuration issues automated scripts can't catch
+
+→ Awaiting user confirmation: Vercel dashboard Node.js version updated to 20.x
