@@ -8,9 +8,13 @@ This project uses the AI Toolkit plugin for structured development workflows.
 
 **Toolkit Version Information:**
 
-- **Plugin Version**: 0.30.0
-- **Last Updated**: 2025-11-18
-- **Template Customizations**: None (update this list when you customize guideline files) 
+- **Plugin Version**: 0.32.0
+- **Last Updated**: 2025-11-19
+- **Template Customizations**:
+  - **pm/templates**: README.md, plan.md, task.md, epic.md (preserved project-specific templates)
+  - **conventions** (all 7 files): api-guidelines, architectural-principles, coding-standards, security-guidelines, testing-standards, ui-design-guidelines, versioning-and-releases
+  - **workflows** (4 files): agent-coordination, development-loop, git-workflow, worklog-format
+- **Migration Notes**: Migrated from v0.30.0 to v0.32.0 on 2025-11-19. Major restructuring: `docs/development/guidelines/` split into `conventions/`, `workflows/`, `misc/`; `pm/templates/` moved to `docs/development/templates/`. All customizations preserved in backup: `.toolkit-backup-20251118-233538/` 
 
 ## Critical Rules
 
