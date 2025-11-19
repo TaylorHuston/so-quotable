@@ -37,7 +37,7 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
   - Configure build command and output directory (auto-detected)
   - Enable incremental builds and caching for performance
 
-- [ ] 1.3 Enable Vercel Analytics for MVP monitoring
+- [x] 1.3 Enable Vercel Analytics for MVP monitoring
   - One-click enable in Vercel dashboard Settings → Analytics
   - No code changes required (built into Next.js 13+)
   - Provides page views, performance metrics, Web Vitals
