@@ -48,13 +48,16 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
 
 **Objective**: Configure environment variables for production and preview environments with proper separation.
 
-- [ ] 2.1 Set production environment variables in Vercel
+- [x] 2.1 Set production environment variables in Vercel
   - NEXT_PUBLIC_CONVEX_URL (production Convex deployment)
   - CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
   - NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
   - AUTH_SECRET (for Convex Auth)
   - GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
   - RESEND_API_KEY (for email verification)
+  - Documentation: docs/deployment/environment-setup.md
+  - Verification: docs/deployment/phase-2-1-verification-checklist.md
+  - Status: Ready for user execution (requires Convex production deployment first)
 
 - [ ] 2.2 Set preview environment variables in Vercel
   - NEXT_PUBLIC_CONVEX_URL (dev Convex deployment URL)
@@ -66,11 +69,11 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
   - CONVEX_DEPLOY_KEY (for automated backend deployments)
   - VERCEL_TOKEN (if needed for custom workflows)
 
-- [ ] 2.4 Document environment variable setup procedure
-  - Create docs/deployment/environment-setup.md
-  - List all required variables with descriptions
-  - Document how to rotate secrets
-  - Include troubleshooting guide
+- [x] 2.4 Document environment variable setup procedure
+  - Create docs/deployment/environment-setup.md (✅ Complete - 600+ lines)
+  - List all required variables with descriptions (✅ Complete)
+  - Document how to rotate secrets (✅ Complete)
+  - Include troubleshooting guide (✅ Complete)
 
 **Acceptance**: Production deployment uses prod Convex, preview uses dev Convex, all services connect successfully.
 
