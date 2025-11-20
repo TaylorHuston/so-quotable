@@ -8,6 +8,8 @@
 - Phase 1.1: `d6adaa5` - Vercel GitHub connection verified (complete)
 - Phase 1.2: `be41e16` - Node.js version pinned to 20.x (complete)
 - Phase 1.3: `e944800` - Vercel Analytics enabled (complete)
+- Phase 2.1: `1628421` - Production environment variables configured (complete)
+- Phase 2.2: `d6c0552` - Preview environment variables configured (complete)
 - Phase 2.1: `ffd6a6c` - Production environment variables documentation (ready for execution)
 
 ---
