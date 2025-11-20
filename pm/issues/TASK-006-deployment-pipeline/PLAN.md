@@ -65,7 +65,7 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
   - Same OAuth credentials (redirect URLs configured for both)
   - AUTH_SECRET (can be same as production for MVP)
 
-- [ ] 2.3 Configure GitHub Secrets for CI/CD
+- [x] 2.3 Configure GitHub Secrets for CI/CD
   - CONVEX_DEPLOY_KEY (for automated backend deployments)
   - VERCEL_TOKEN (if needed for custom workflows)
 
