@@ -81,7 +81,7 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
 
 **Objective**: Deploy Convex backend to production environment with automated deployment capability.
 
-- [ ] 3.1 Create production Convex deployment
+- [x] 3.1 Create production Convex deployment
   - Run `npx convex deploy --prod` from local environment
   - Verify production URL matches NEXT_PUBLIC_CONVEX_URL
   - Confirm database schema migrated to production
