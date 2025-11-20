@@ -87,11 +87,12 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
   - Confirm database schema migrated to production
   - Test production backend with Convex dashboard
 
-- [ ] 3.2 Configure automated Convex deployments
+- [x] 3.2 Configure automated Convex deployments
   - Generate CONVEX_DEPLOY_KEY from Convex dashboard
   - Add to GitHub Secrets
   - Document manual deployment procedure for emergencies
   - Test deployment key works from CI environment
+  - Note: Completed in Phase 2.3
 
 - [ ] 3.3 Verify Convex production backend functionality
   - Test queries, mutations, actions from production frontend
