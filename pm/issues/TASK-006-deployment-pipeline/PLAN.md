@@ -59,7 +59,7 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
   - Verification: docs/deployment/phase-2-1-verification-checklist.md
   - Status: Ready for user execution (requires Convex production deployment first)
 
-- [ ] 2.2 Set preview environment variables in Vercel
+- [x] 2.2 Set preview environment variables in Vercel
   - NEXT_PUBLIC_CONVEX_URL (dev Convex deployment URL)
   - Same Cloudinary credentials (shared for dev/staging)
   - Same OAuth credentials (redirect URLs configured for both)

@@ -305,3 +305,37 @@ Files:
 Commit: `ffd6a6c` - Phase 2.1 documentation
 
 → Passing to @user for Phase 2.1 execution (see phase-2-1-verification-checklist.md)
+
+---
+
+## 2025-11-19 22:00 - [AUTHOR: devops-engineer + @user] → [STATUS: Phase 2.2 Complete]
+
+**Preview Environment Variables Configured**: ✅ ALL SET
+
+Used automated CLI script to configure all preview environment variables.
+
+**Vercel Preview Variables (8 total)**: ✅
+- NEXT_PUBLIC_CONVEX_URL: https://cheery-cow-298.convex.cloud (dev deployment)
+- AUTH_SECRET: Same as dev (from .env.local)
+- CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+- GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+- RESEND_API_KEY
+
+**Automation Script Created**:
+- scripts/set-vercel-preview-env.sh: Automated preview variable setup
+
+**Environment Separation**:
+- Production deployments → steady-anaconda-957 (prod Convex)
+- Preview deployments → cheery-cow-298 (dev Convex)
+- This keeps production data isolated from testing/development
+
+**Verification**:
+- ✅ vercel env ls: All 8 preview variables present
+- ✅ All 8 production variables present (from Phase 2.1)
+- ✅ Total: 16 environment variables configured (8 preview + 8 production)
+
+**Phase 2.2 Status**: ✅ COMPLETE
+
+All preview environment variables configured. Preview deployments (PRs, branches) will use dev Convex backend.
+
+→ Ready for Phase 2.3 (Configure GitHub Secrets for CI/CD)
