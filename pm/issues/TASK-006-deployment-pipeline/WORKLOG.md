@@ -594,3 +594,23 @@ Files created:
 
 → Phase 4.3 COMPLETE via automation. Ready for Phase 4.4 (test E2E workflow)
 
+
+## 2025-11-20 23:25 - Phase 4.3 Updated - Main-Only Protection
+
+**Update**: Revised branch protection strategy per user feedback.
+
+**Change**: Only protect `main` branch, NOT `develop`
+
+**Rationale**:
+- develop = integration branch for fast feature merging
+- main = production branch requiring quality gates
+- Feature branches → develop: No protection (fast iteration)
+- develop → main: Protected (quality gate)
+
+**Actions taken**:
+- Removed branch protection from `develop` via gh API
+- Updated `scripts/setup-branch-protection.sh` to only configure main
+- Updated documentation to reflect main-only protection
+
+This aligns with standard Git Flow where develop is for integration and main is for production releases.
+

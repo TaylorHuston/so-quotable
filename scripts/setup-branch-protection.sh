@@ -56,24 +56,25 @@ EOF
   echo ""
 }
 
-# Configure main branch
+# Configure main branch only
 echo "=== Configuring main branch ==="
 configure_branch_protection "main"
 
-# Configure develop branch
-echo "=== Configuring develop branch ==="
-configure_branch_protection "develop"
-
 echo "=== Branch Protection Rules Setup Complete ==="
 echo ""
-echo "✅ Both main and develop branches now require:"
+echo "✅ Main branch now requires:"
 echo "   - E2E tests (e2e-preview) to pass"
 echo "   - Unit tests (test) to pass"
 echo "   - 1 approving review before merge"
 echo "   - Linear history (no merge commits)"
 echo "   - Conversation resolution"
 echo ""
+echo ""
+echo "ℹ️  Note: develop branch is NOT protected to allow fast integration"
+echo "   Feature branches → develop: No protection (fast iteration)"
+echo "   develop → main: Protected (quality gate for production)"
+echo ""
 echo "📋 To verify, visit:"
 echo "   https://github.com/${REPO_OWNER}/${REPO_NAME}/settings/branches"
 echo ""
-echo "🧪 Next: Test the workflow by creating a PR (Phase 4.4)"
+echo "🧪 Next: Test the workflow by creating a PR to main (Phase 4.4)"

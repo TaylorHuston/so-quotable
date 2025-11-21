@@ -15,9 +15,13 @@ Branch protection rules ensure code quality by requiring checks to pass and revi
 3. Click **Branches** in the left sidebar
 4. Under "Branch protection rules", click **Add rule** (or edit existing rule)
 
-### 2. Configure Protection Rule for `main`
+### 2. Configure Protection Rule for `main` (Production Branch)
 
 **Branch name pattern**: `main`
+
+**Why protect main only?**
+- `develop` → integration branch for fast feature merging (no protection needed)
+- `main` → production branch requiring quality gates (protection required)
 
 **Required Settings**:
 
@@ -42,15 +46,7 @@ Branch protection rules ensure code quality by requiring checks to pass and revi
 
 **Click "Create"** or **"Save changes"**
 
-### 3. Configure Protection Rule for `develop`
-
-Repeat the above steps for the `develop` branch with the same settings.
-
-**Branch name pattern**: `develop`
-
-Same required settings as `main` branch.
-
-### 4. Verification
+### 3. Verification
 
 After setting up the rules:
 
