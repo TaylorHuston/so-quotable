@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "VERCEL= CONVEX_URL=$NEXT_PUBLIC_CONVEX_URL npx convex codegen --typecheck=disable && next build --webpack",
+    "build": "VERCEL= npx convex codegen --typecheck=disable && next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
