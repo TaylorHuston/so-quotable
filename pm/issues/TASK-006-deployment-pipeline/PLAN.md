@@ -121,10 +121,11 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
   - Pass preview URL to test runner via environment variable
   - Note: NOT NEEDED - wait-for-vercel-preview action already handles this via GitHub Deployments API
 
-- [ ] 4.3 Set up PR protection rules
+- [x] 4.3 Set up PR protection rules
   - Require E2E test check to pass before merge
   - Require code review approval
   - Configure in GitHub repository settings
+  - Note: Documentation created (docs/deployment/pr-protection-setup.md) - requires manual GitHub configuration
 
 - [ ] 4.4 Test E2E workflow end-to-end
   - Create test PR with intentional test failure
