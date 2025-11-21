@@ -9,8 +9,7 @@
   },
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "npx convex deploy --typecheck=disable --cmd 'npm run build:next' --cmd-url-env-var-name NEXT_PUBLIC_CONVEX_URL",
-    "build:next": "next build --webpack",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
