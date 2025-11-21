@@ -494,3 +494,46 @@ Files modified:
 
 → Phase 3.3 COMPLETE. Ready for Phase 4 (E2E Test Automation Integration)
 
+
+## 2025-11-20 23:05 - Phase 4.1 Complete - E2E Preview Workflow Created
+
+**Phase 4.1**: Create GitHub Actions workflow for E2E tests ✅
+
+**Deliverables**:
+1. **GitHub Actions Workflow**: `.github/workflows/e2e-preview.yml`
+   - Triggers on pull requests to main/develop
+   - Waits for Vercel preview deployment to complete (max 5 min timeout)
+   - Runs Playwright E2E tests against live preview URL
+   - Reports results as PR check status
+   - Posts comment on PR with test results and preview URL
+
+2. **Playwright Configuration Update**: `playwright.config.ts`
+   - Supports `PLAYWRIGHT_TEST_BASE_URL` environment variable
+   - Automatically disables local dev server when testing against remote URL
+   - Falls back to localhost for local development
+
+**Key Features**:
+- Uses `patrickedqvist/wait-for-vercel-preview` action to wait for deployment
+- Configures base URL via environment variable
+- Uploads test artifacts on failure for debugging
+- Posts PR comment with test status and preview URL link
+- 15-minute timeout to prevent hanging workflows
+
+**Testing Strategy**:
+- E2E tests run against actual Vercel preview deployment
+- Validates deployed application, not just local builds
+- Ensures preview deployments are functional before merge
+
+**Acceptance Criteria**: ✅ PASSED
+- Workflow file created and configured ✅
+- Triggers on PR creation/update ✅
+- Waits for Vercel deployment ✅
+- Runs Playwright tests against preview URL ✅
+- Reports results as PR check ✅
+
+Files created/modified:
+- .github/workflows/e2e-preview.yml (new)
+- playwright.config.ts (modified)
+
+→ Phase 4.1 COMPLETE. Ready for Phase 4.2 (Configure Vercel deployment webhooks - optional for GitHub Actions integration)
+

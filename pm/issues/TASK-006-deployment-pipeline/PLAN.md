@@ -107,12 +107,13 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
 
 **Objective**: Integrate E2E tests with deployment pipeline to block merges when tests fail.
 
-- [ ] 4.1 Create GitHub Actions workflow for E2E tests
+- [x] 4.1 Create GitHub Actions workflow for E2E tests
   - File: .github/workflows/e2e-preview.yml
   - Trigger: Pull request creation/update
   - Wait for Vercel preview deployment to complete
   - Run Playwright E2E tests against preview URL
   - Report results as PR check status
+  - Note: Uses wait-for-vercel-preview action, posts PR comments with results
 
 - [ ] 4.2 Configure Vercel deployment webhooks
   - Set up webhook for deployment success events

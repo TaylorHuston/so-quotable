@@ -56,8 +56,10 @@ export default defineConfig({
   use: {
     /**
      * Base URL to use in actions like `await page.goto('/')`
+     * Falls back to localhost for local development
+     * Can be overridden with PLAYWRIGHT_TEST_BASE_URL for testing against Vercel previews
      */
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.PLAYWRIGHT_TEST_BASE_URL || 'http://localhost:3000',
 
     /**
      * Collect trace only when retrying the failed test
@@ -118,8 +120,9 @@ export default defineConfig({
    * - timeout: max time to wait for server to start (120s for Next.js build)
    *
    * Note: This automatically starts/stops the dev server, no manual setup needed
+   * Disabled when PLAYWRIGHT_TEST_BASE_URL is set (testing against remote deployments)
    */
-  webServer: {
+  webServer: process.env.PLAYWRIGHT_TEST_BASE_URL ? undefined : {
     command: 'npm run dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
