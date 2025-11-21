@@ -94,11 +94,12 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
   - Test deployment key works from CI environment
   - Note: Completed in Phase 2.3
 
-- [ ] 3.3 Verify Convex production backend functionality
+- [x] 3.3 Verify Convex production backend functionality
   - Test queries, mutations, actions from production frontend
   - Confirm authentication flows work end-to-end
   - Verify email sending works (Resend integration)
   - Check Convex dashboard shows production metrics
+  - Note: Production backend verified working. Known issue with /api/health endpoint (non-blocking, deferred to post-MVP)
 
 **Acceptance**: Production Convex backend is live, functional, and deployable via CI/CD.
 
