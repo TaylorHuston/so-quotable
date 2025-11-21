@@ -115,10 +115,11 @@ Configure complete CI/CD pipeline for So Quotable MVP following ADR-003 deployme
   - Report results as PR check status
   - Note: Uses wait-for-vercel-preview action, posts PR comments with results
 
-- [ ] 4.2 Configure Vercel deployment webhooks
+- [x] 4.2 Configure Vercel deployment webhooks
   - Set up webhook for deployment success events
   - Trigger E2E test workflow on preview deployment ready
   - Pass preview URL to test runner via environment variable
+  - Note: NOT NEEDED - wait-for-vercel-preview action already handles this via GitHub Deployments API
 
 - [ ] 4.3 Set up PR protection rules
   - Require E2E test check to pass before merge
