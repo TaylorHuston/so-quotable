@@ -1,6 +1,14 @@
 # Pull Request Protection Rules Setup
 
-This document guides you through configuring GitHub branch protection rules to require E2E tests to pass before merging PRs.
+**⚠️ UPDATED 2025-11-22: Free Tier Adaptation**
+
+This document was originally written for automated E2E testing against preview deployments. Since Convex free tier does not support preview deployment keys, we've simplified to **code review only** protection for the MVP phase.
+
+For automated E2E checks, upgrade to Convex Pro tier.
+
+---
+
+This document guides you through configuring GitHub branch protection rules to require reviews (and optionally E2E tests with Pro tier) before merging PRs.
 
 ## Overview
 
@@ -30,11 +38,12 @@ Branch protection rules ensure code quality by requiring checks to pass and revi
   - ✅ Dismiss stale pull request approvals when new commits are pushed
   - ⬜ Require review from Code Owners (optional for MVP)
 
-- ✅ **Require status checks to pass before merging**
-  - ✅ Require branches to be up to date before merging
-  - **Required checks** (search and add):
-    - `e2e-preview` (from `.github/workflows/e2e-preview.yml`)
-    - `test` (from `.github/workflows/test.yml`)
+- ⬜ **Require status checks to pass before merging** (optional for free tier)
+  - ⬜ Require branches to be up to date before merging
+  - **Required checks** (only if using Convex Pro tier with automated E2E):
+    - `e2e-preview` (from `.github/workflows/e2e-preview.yml`) - **Pro tier only**
+    - `test` (from `.github/workflows/test.yml`) - optional
+  - **Free tier**: Skip this section, rely on code review + local testing instead
 
 - ⬜ **Require conversation resolution before merging** (recommended)
 
