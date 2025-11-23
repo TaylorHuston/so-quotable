@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [0.5.0] - 2025-11-22
+
+### Added
+
 - User authentication with email/password and Google OAuth
 - User registration with password strength validation (NIST-compliant: 12+ chars, uppercase, lowercase, number, special)
 - Protected routes with server-side authentication middleware
