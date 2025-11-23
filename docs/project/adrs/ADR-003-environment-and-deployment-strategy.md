@@ -1,12 +1,12 @@
 ---
 # === Metadata ===
 template_type: "adr"
-version: "1.0.0"
+version: "1.1.0"
 created: "2025-10-30"
-last_updated: "2025-10-30"
-status: "Accepted"
+last_updated: "2025-11-22"
+status: "Accepted (Updated for Free Tier)"
 target_audience: ["AI Assistants", "DevOps Engineers", "Development Team"]
-description: "Development environment and deployment strategy for So Quotable MVP"
+description: "Development environment and deployment strategy for So Quotable MVP (adapted for Convex free tier)"
 
 # === ADR Metadata ===
 adr_number: "003"
@@ -25,6 +25,12 @@ tags: ["infrastructure", "deployment", "development-environment", "CI/CD", "DevO
 **Deciders**: Taylor (Project Owner), DevOps Engineer (Review)
 
 **Tags**: infrastructure, deployment, development-environment, CI/CD, DevOps
+
+---
+
+## Updates
+
+**2025-11-22**: Adapted deployment strategy for Convex free tier constraints. Preview deployments removed (requires Pro tier). Updated to use local E2E testing workflow with direct production deployment. See "Staging Strategy" and "E2E Testing Strategy" sections for details.
 
 ---
 
@@ -154,42 +160,56 @@ jobs:
 
 ### Staging Strategy
 
-**Preview Deployments (MVP Phase)**:
+**UPDATED 2025-11-22: Free Tier Adaptation**
 
-- Every PR gets unique Vercel preview URL
-- Automatic E2E tests run against preview URL
-- Ephemeral environments (destroyed after merge)
-- Sufficient for MVP and early growth
+After attempting to implement preview deployments, discovered that **Convex free tier does not support preview deployment keys** (requires Pro tier). Rather than fight platform constraints, adopted a pragmatic approach suitable for MVP development.
 
-**Future Dedicated Staging** (Post-MVP):
+**Current Approach (Free Tier)**:
 
+- **No preview deployments**: Convex free tier limitation
+- **Local E2E testing**: Run Playwright tests locally before production push
+- **Direct production deployment**: Push to `main` → automatic Vercel + Convex deployment
+- **Simplified workflow**: Local dev → local testing → production
+
+**Quality Gates**:
+1. Local E2E tests must pass (`npm run test:e2e`)
+2. Unit tests must pass (`npm run test:run`)
+3. TypeScript check must pass (`npm run type-check`)
+4. Manual verification in local environment
+
+**Future Options** (when upgrading to Convex Pro):
+- Implement preview deployments with preview deploy keys
+- Automated E2E tests in CI/CD against preview URLs
+- GitHub Actions workflow integration
+
+**Alternative Staging** (if needed before Pro upgrade):
 - Separate Vercel project for staging
-- Separate Convex deployment
+- Separate Convex deployment (using production-tier deploy key)
 - Auto-deploy from `develop` branch
-- Stable URL for stakeholder review
 
 ### E2E Testing Strategy
 
-**Vercel Preview Integration**:
+**Local Testing Workflow (Free Tier)**:
 
-```yaml
-# GitHub Actions webhook from Vercel
-on:
-  repository_dispatch:
-    types: ["vercel.deployment.success"]
+```bash
+# 1. Start local development environment
+npx convex dev              # Terminal 1: Convex dev backend
+npm run dev                 # Terminal 2: Next.js dev server
 
-jobs:
-  e2e:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run Playwright Tests
-        env:
-          BASE_URL: ${{ github.event.client_payload.url }}
-        run: npx playwright test
+# 2. Run E2E tests locally before production push
+npm run test:e2e            # Playwright tests against localhost:3000
+
+# 3. Deploy to production (if tests pass)
+git push origin main        # Auto-deploys to Vercel + Convex
 ```
 
-Tests run against **real Vercel preview deployments**, not local Docker containers.
+**Why Local Testing**:
+- Convex free tier does not support preview deployments
+- Local testing provides same validation as preview URL testing
+- Faster feedback loop (no wait for deployment)
+- Production deployment remains safe (tests verify functionality first)
+
+Tests run against **local development environment**, not preview deployments or Docker containers.
 
 ### Monitoring & Observability (MVP)
 
