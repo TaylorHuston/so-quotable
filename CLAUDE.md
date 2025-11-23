@@ -22,6 +22,15 @@ This project uses the AI Toolkit plugin for structured development workflows.
 2. Always review all project documentation and guidelines before starting a batch of work
 3. Always have the code reviewer review any changes
 
+## Tools
+Never forget that you have access to the following, utilize them as necessary
+
+1. Convex MCP
+2. Convex CLI
+3. Vercel MCP
+4. Vercel CLI
+5. GitHub CLI
+
 ## Project Context
 
 - **Project Name**: So Quotable
@@ -105,7 +114,7 @@ npm run build           # Build for production
 
 # Deployment
 git push origin main    # Auto-deploys to Vercel production
-# Preview deployments created automatically for PRs
+# Note: Preview deployments require Convex Pro tier (free tier uses local testing)
 ```
 
 ## Resources
@@ -134,29 +143,37 @@ The first places to check when you get stuck or need documentation:
 - ✅ TASK-003: Cloudinary integration complete (merged 2025-11-02, 92% coverage, 146 tests)
   - Code Review: 94/100 (Production Ready)
   - Security Audit: 85/100 (Secure for development)
+- ✅ TASK-004: Convex Auth implementation (email/password + Google OAuth, 94% coverage)
+- ✅ TASK-005: E2E testing infrastructure (Playwright)
+- ✅ TASK-006: Deployment pipeline configured (2025-11-22)
+  - Production deployment via Vercel + Convex Cloud
+  - Simplified workflow adapted for Convex free tier
+  - Local E2E testing before production push
 
 **Current Branch**: develop
 
-**Next Task**: TASK-004 - Convex Auth implementation (EPIC-001: 50% complete)
+**Phase Status**: MVP Infrastructure Complete ✅
 
-**Next Steps**:
+**Next Phase**: EPIC-002 - Core Quote Generation Features
 
-1. ✅ ~~Initialize Next.js project with TypeScript (.nvmrc, package.json engines)~~
-2. ✅ ~~Set up Convex backend and deploy to dev environment~~
-3. ✅ ~~Configure Cloudinary account and integration~~
-4. ✅ ~~Implement database schema in Convex (people, quotes, images, generatedImages)~~
-5. ✅ ~~Set up testing infrastructure (Vitest, Playwright, convex-test)~~
-6. Implement Convex Auth with email/password and OAuth
-7. Set up MVP monitoring (health check, Vercel Analytics)
-8. Configure deployment pipeline
+**Infrastructure Checklist**:
 
-**Current Priorities**:
+1. ✅ Initialize Next.js project with TypeScript (.nvmrc, package.json engines)
+2. ✅ Set up Convex backend and deploy to dev environment
+3. ✅ Configure Cloudinary account and integration
+4. ✅ Implement database schema in Convex (people, quotes, images, generatedImages)
+5. ✅ Set up testing infrastructure (Vitest, Playwright, convex-test)
+6. ✅ Implement Convex Auth with email/password and OAuth
+7. ✅ Set up MVP monitoring (health check, Vercel Analytics)
+8. ✅ Configure deployment pipeline (adapted for free tier)
 
-- Backend-first development approach (TASK-002 ✅, TASK-003 ✅)
-- TDD/BDD workflow with comprehensive test coverage (97.36% → 92% with Cloudinary)
+**Key Achievements**:
+
+- Backend-first development approach complete (TASK-002 ✅, TASK-003 ✅, TASK-004 ✅)
+- TDD/BDD workflow established with 94%+ test coverage
 - Type-safe end-to-end development with TypeScript
-- MVP-critical infrastructure (Node version management, CI/CD basics, health checks)
-- Native Node.js development (no Docker for MVP)
+- Production deployment operational (free tier optimized)
+- Native Node.js development (no Docker complexity)
 
 ## Cloudinary Integration (TASK-003 Complete)
 

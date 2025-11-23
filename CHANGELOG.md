@@ -36,6 +36,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Backend tests with convex-test
   - Component tests with React Testing Library
 
+- **Deployment Pipeline** (2025-11-22)
+  - Production deployment via Vercel + Convex Cloud
+  - Automatic deployment from `main` branch
+  - Health check monitoring (`/api/health`)
+  - Local E2E testing workflow before production push
+  - Simplified deployment adapted for Convex free tier constraints
+
 - **Performance Optimizations**
   - Password strength calculation with 300ms debounce (80-90% re-render reduction)
   - Optimized email availability check (30-50% payload reduction)
