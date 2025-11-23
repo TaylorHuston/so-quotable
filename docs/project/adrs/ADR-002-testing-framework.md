@@ -1,3 +1,21 @@
+---
+# === Metadata ===
+template_type: "adr"
+version: "1.0.0"
+created: "2025-10-30"
+last_updated: "2025-10-30"
+status: "Accepted"
+target_audience: ["AI Assistants", "Test Engineers", "Development Team"]
+description: "Testing framework and strategy for So Quotable with TDD/BDD approach"
+
+# === ADR Metadata ===
+adr_number: "002"
+title: "Testing Framework and Strategy"
+date: "2025-10-30"
+deciders: ["Taylor (Project Owner)"]
+tags: ["testing", "TDD", "BDD", "quality", "infrastructure"]
+---
+
 # ADR-002: Testing Framework and Strategy
 
 **Date**: 2025-10-30
@@ -26,12 +44,14 @@ So Quotable requires a comprehensive testing strategy that supports Test-Driven 
 ### Technical Context
 
 **Existing Stack** (from ADR-001):
+
 - Frontend: Next.js (App Router) + TypeScript
 - Backend: Convex (serverless functions: queries, mutations, actions)
 - Database: Convex (document database with TypeScript schema)
 - Images: Cloudinary
 
 **Testing Needs**:
+
 - Unit tests for pure functions and utilities
 - Integration tests for Convex functions + database
 - Component tests for React components
@@ -73,6 +93,7 @@ We will use a **unified Vitest stack** for comprehensive testing with a **backen
 ```
 
 **Distribution Rationale**:
+
 - **60% Backend**: Convex functions contain core business logic (quotes, search, verification)
 - **30% Frontend**: React components are mostly presentation (thin layer)
 - **10% E2E**: Critical paths (search → generate → share)
@@ -207,12 +228,14 @@ We will use a **unified Vitest stack** for comprehensive testing with a **backen
 **Description**: Traditional testing stack used by many Next.js projects
 
 **Pros**:
+
 - Larger ecosystem and community
 - More online resources and tutorials
 - Well-established best practices
 - Mature tooling and plugins
 
 **Cons**:
+
 - Slower test execution (2-5x slower than Vitest)
 - Requires ts-jest for TypeScript
 - More configuration needed
@@ -227,6 +250,7 @@ Vitest provides significantly faster feedback for TDD, which is critical for pro
 **Description**: BDD framework with Gherkin feature files and step definitions
 
 **Pros**:
+
 - Business-readable specifications (.feature files)
 - Stakeholder collaboration on requirements
 - Living documentation
@@ -234,6 +258,7 @@ Vitest provides significantly faster feedback for TDD, which is critical for pro
 - Reusable step definitions
 
 **Cons**:
+
 - Dual-file maintenance (.feature + .steps.ts)
 - Slower test execution (Gherkin parsing overhead)
 - Harder for AI to generate (two separate syntaxes)
@@ -249,12 +274,14 @@ The overhead of maintaining separate Gherkin files doesn't provide value for a s
 **Description**: Modern test runner with Cypress for E2E
 
 **Pros**:
+
 - Unified modern stack (both are fast)
 - Cypress has simpler API than Playwright
 - Time-travel debugging in Cypress
 - Good developer experience
 
 **Cons**:
+
 - Cypress is slower than Playwright
 - Less reliable (more flaky tests)
 - Weaker TypeScript support
@@ -315,24 +342,25 @@ quoteable/
 ### Sample Test Patterns
 
 **Convex Function Test** (convex/quotes.test.ts):
-```typescript
-import { convexTest } from 'convex-test';
-import { describe, it, expect } from 'vitest';
-import { api } from './_generated/api';
-import schema from './schema';
 
-describe('quotes.list query', () => {
-  it('should return all verified quotes', async () => {
+```typescript
+import { convexTest } from "convex-test";
+import { describe, it, expect } from "vitest";
+import { api } from "./_generated/api";
+import schema from "./schema";
+
+describe("quotes.list query", () => {
+  it("should return all verified quotes", async () => {
     const t = convexTest(schema);
 
     const personId = await t.run(async (ctx) => {
-      return await ctx.db.insert('people', { name: 'Albert Einstein' });
+      return await ctx.db.insert("people", { name: "Albert Einstein" });
     });
 
     await t.run(async (ctx) => {
-      await ctx.db.insert('quotes', {
+      await ctx.db.insert("quotes", {
         personId,
-        text: 'Imagination is more important than knowledge.',
+        text: "Imagination is more important than knowledge.",
         verified: true,
         createdAt: Date.now(),
       });
@@ -347,6 +375,7 @@ describe('quotes.list query', () => {
 ```
 
 **React Component Test** (src/components/QuoteCard/QuoteCard.test.tsx):
+
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
@@ -376,28 +405,36 @@ describe('QuoteCard component', () => {
 ```
 
 **E2E Test** (tests/e2e/quoteGeneration.spec.ts):
-```typescript
-import { test, expect } from '@playwright/test';
 
-test.describe('Quote Image Generation Flow', () => {
-  test('should generate quote image from search to download', async ({ page }) => {
+```typescript
+import { test, expect } from "@playwright/test";
+
+test.describe("Quote Image Generation Flow", () => {
+  test("should generate quote image from search to download", async ({
+    page,
+  }) => {
     // Given: User is on the homepage
-    await page.goto('/');
+    await page.goto("/");
 
     // When: User searches for a quote
-    await page.getByPlaceholder('Search quotes...').fill('imagination');
-    await page.getByRole('button', { name: 'Search' }).click();
+    await page.getByPlaceholder("Search quotes...").fill("imagination");
+    await page.getByRole("button", { name: "Search" }).click();
 
     // Then: Search results should appear
-    await expect(page.getByText(/imagination is more important/i)).toBeVisible();
+    await expect(
+      page.getByText(/imagination is more important/i)
+    ).toBeVisible();
 
     // When: User selects quote and generates image
     await page.getByText(/imagination is more important/i).click();
-    await page.getByAltText(/albert einstein/i).first().click();
-    await page.getByRole('button', { name: 'Generate Image' }).click();
+    await page
+      .getByAltText(/albert einstein/i)
+      .first()
+      .click();
+    await page.getByRole("button", { name: "Generate Image" }).click();
 
     // Then: Generated image should be downloadable
-    await expect(page.getByRole('link', { name: 'Download' })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Download" })).toBeVisible();
   });
 });
 ```
@@ -405,18 +442,19 @@ test.describe('Quote Image Generation Flow', () => {
 ### Configuration
 
 **vitest.config.ts**:
+
 ```typescript
-import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: 'jsdom',
+    environment: "jsdom",
     globals: true,
-    setupFiles: ['./tests/setup.ts'],
+    setupFiles: ["./tests/setup.ts"],
     coverage: {
-      provider: 'v8',
+      provider: "v8",
       thresholds: {
         lines: 80,
         functions: 80,
@@ -429,18 +467,19 @@ export default defineConfig({
 ```
 
 **playwright.config.ts**:
+
 ```typescript
-import { defineConfig } from '@playwright/test';
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: "./tests/e2e",
   use: {
-    baseURL: 'http://localhost:3000',
-    trace: 'on-first-retry',
+    baseURL: "http://localhost:3000",
+    trace: "on-first-retry",
   },
   webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
+    command: "npm run dev",
+    url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
   },
 });
@@ -502,16 +541,19 @@ Estimated effort: 1-2 weeks for ~50 scenarios
 ### Known Issues
 
 **convex-test:**
+
 - Each test gets isolated database (automatic cleanup)
 - Use `convexTest(schema)` per test for isolation
 - Generated types must match import paths
 
 **Next.js App Router:**
+
 - Server Components can't be tested with Testing Library
 - Test the underlying Convex queries instead
 - Client Components test normally
 
 **Playwright:**
+
 - Use `test.beforeEach` to reset database state
 - Store auth state between tests for efficiency
 - Run E2E tests sequentially in CI to avoid conflicts
@@ -519,6 +561,7 @@ Estimated effort: 1-2 weeks for ~50 scenarios
 ### Future Considerations
 
 **Post-MVP:**
+
 - Visual regression testing (Playwright screenshots)
 - Performance testing (Lighthouse CI)
 - Contract testing (API schemas)
@@ -528,6 +571,6 @@ Estimated effort: 1-2 weeks for ~50 scenarios
 
 ## Revision History
 
-| Date | Author | Description |
-|------|--------|-------------|
+| Date       | Author | Description                                  |
+| ---------- | ------ | -------------------------------------------- |
 | 2025-10-30 | Taylor | Initial version - testing framework decision |

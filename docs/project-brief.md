@@ -17,6 +17,7 @@ So Quotable provides a curated database approach to quote verification and image
 **Primary Users**: People actively engaged in online discussions (forums, social media, comment sections) who want to support their arguments with credible, verified quotes presented in a visually compelling format. These users value authenticity and are frustrated by the prevalence of misattributed quotes online. They're willing to take a few extra seconds to find the right verified quote rather than risk undermining their credibility with fake or misattributed content.
 
 **User Characteristics**:
+
 - Active participants in online discourse
 - Value credibility and factual accuracy
 - Prefer visual impact over plain text

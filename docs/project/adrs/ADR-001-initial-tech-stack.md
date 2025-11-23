@@ -1,3 +1,21 @@
+---
+# === Metadata ===
+template_type: "adr"
+version: "1.0.0"
+created: "2025-10-30"
+last_updated: "2025-10-30"
+status: "Accepted"
+target_audience: ["AI Assistants", "Code Architects", "Development Team"]
+description: "Initial tech stack selection for So Quotable MVP"
+
+# === ADR Metadata ===
+adr_number: "001"
+title: "Initial Tech Stack Selection"
+date: "2025-10-30"
+deciders: ["Taylor (Project Owner)"]
+tags: ["architecture", "tech-stack", "database", "infrastructure", "MVP"]
+---
+
 # ADR-001: Initial Tech Stack Selection
 
 **Date**: 2025-10-30
@@ -38,11 +56,13 @@ So Quotable is a web application for generating verified quote images. Users sel
 We will use the following tech stack for the MVP:
 
 ### Frontend
+
 - **Framework**: Next.js (App Router) with TypeScript
 - **Hosting**: Vercel
 - **Image Components**: `next-cloudinary` for optimized image delivery
 
 ### Backend
+
 - **Database & Functions**: Convex
   - Reactive TypeScript-first database
   - Serverless functions (queries, mutations, actions)
@@ -55,6 +75,7 @@ We will use the following tech stack for the MVP:
   - Free tier (no MAU limits initially)
 
 ### Image Storage & Processing
+
 - **Platform**: Cloudinary (Free Tier: 25GB storage, 25GB bandwidth/month)
 
 - **Base Images** (Person Photos):
@@ -70,11 +91,13 @@ We will use the following tech stack for the MVP:
   - Metadata tracked in Convex database
 
 ### Quote Generation Approach
+
 - **Client-Side Preview**: Canvas API for real-time editing
 - **Server-Side Generation**: Cloudinary transformations for final output
 - **Hybrid Workflow**: User edits in browser → generates final image via Cloudinary URL
 
 ### Data Model (MVP)
+
 - **People**: Manually curated database
 - **Quotes**: Pre-verified quotes with sources
 - **Images**: Multiple images per person (stored in Cloudinary)
@@ -173,6 +196,7 @@ We will use the following tech stack for the MVP:
 **Description**: Open-source Firebase alternative with PostgreSQL database, built-in auth, and storage.
 
 **Pros**:
+
 - Perfect fit for relational data model
 - PostgreSQL skills are highly transferable
 - Zero vendor lock-in (standard SQL database)
@@ -181,6 +205,7 @@ We will use the following tech stack for the MVP:
 - Can self-host if needed
 
 **Cons**:
+
 - Requires Docker for local development
 - More operational overhead (migrations, indexes, RLS policies)
 - Learning curve for PostgreSQL concepts
@@ -195,6 +220,7 @@ Higher operational overhead for solo developer. While PostgreSQL is more portabl
 **Description**: Google's mature BaaS platform with NoSQL database and comprehensive ecosystem.
 
 **Pros**:
+
 - Mature platform with extensive documentation
 - Scales automatically on Google infrastructure
 - Real-time updates built-in
@@ -202,6 +228,7 @@ Higher operational overhead for solo developer. While PostgreSQL is more portabl
 - Large community and ecosystem
 
 **Cons**:
+
 - **Poor fit for relational data** - requires denormalization
 - No built-in full-text search (would need Algolia - extra cost/complexity)
 - Expensive read/write pricing model (costs grow with usage)
@@ -218,12 +245,14 @@ Fundamentally wrong architecture for relational data. The people → quotes → 
 **Description**: Use Convex's built-in file storage for both base and generated images.
 
 **Pros**:
+
 - Everything in one platform (simpler mental model)
 - Lower vendor lock-in (only Convex)
 - No API keys to manage for second service
 - Cheaper at scale ($25/month vs $89/month for Cloudinary paid)
 
 **Cons**:
+
 - No image transformations (text overlay requires Canvas API)
 - No automatic optimization (manual WebP conversion needed)
 - No responsive images out of the box
@@ -241,6 +270,7 @@ Missing critical feature: server-side text overlay. Building Canvas API-based ov
 ### Initial Setup Checklist
 
 1. **Convex Setup**
+
    ```bash
    npm install convex
    npx convex dev
@@ -254,15 +284,17 @@ Missing critical feature: server-side text overlay. Building Canvas API-based ov
    - Configure upload presets
 
 3. **Next.js Integration**
+
    ```bash
    npm install next-cloudinary
    # Configure in next.config.js
    ```
 
 4. **Schema Definition**
+
    ```typescript
    // convex/schema.ts
-   people, quotes, images (cloudinaryId), generatedImages
+   (people, quotes, images(cloudinaryId), generatedImages);
    ```
 
 5. **Authentication Setup**
@@ -344,6 +376,6 @@ Current stack is sufficient for 10k-100k users. Re-evaluate at scale.
 
 ## Revision History
 
-| Date | Author | Description |
-|------|--------|-------------|
+| Date       | Author | Description                               |
+| ---------- | ------ | ----------------------------------------- |
 | 2025-10-30 | Taylor | Initial version - MVP tech stack decision |
