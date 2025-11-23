@@ -14,7 +14,7 @@ next-env.d.ts
 
 # Convex
 .convex/
-convex/_generated/
+# convex/_generated/ should be committed per official Convex examples
 
 # Build outputs
 dist/
