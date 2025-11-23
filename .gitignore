@@ -74,3 +74,4 @@ playwright/.cache/
 
 # Backup files
 *.backup
+.env.vercel.preview
