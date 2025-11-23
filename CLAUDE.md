@@ -8,13 +8,15 @@ This project uses the AI Toolkit plugin for structured development workflows.
 
 **Toolkit Version Information:**
 
-- **Plugin Version**: 0.32.0
-- **Last Updated**: 2025-11-19
+- **Plugin Version**: 0.36.0
+- **Last Updated**: 2025-11-23
 - **Template Customizations**:
-  - **pm/templates**: README.md, plan.md, task.md, epic.md (preserved project-specific templates)
-  - **conventions** (all 7 files): api-guidelines, architectural-principles, coding-standards, security-guidelines, testing-standards, ui-design-guidelines, versioning-and-releases
-  - **workflows** (4 files): agent-coordination, development-loop, git-workflow, worklog-format
-- **Migration Notes**: Migrated from v0.30.0 to v0.32.0 on 2025-11-19. Major restructuring: `docs/development/guidelines/` split into `conventions/`, `workflows/`, `misc/`; `pm/templates/` moved to `docs/development/templates/`. All customizations preserved in backup: `.toolkit-backup-20251118-233538/` 
+  - **conventions** (all 7 files): Fully customized with project-specific decisions (api-guidelines, architectural-principles, coding-standards, security-guidelines, testing-standards, ui-design-guidelines, versioning-and-releases)
+  - **workflows** (6 files): Updated to latest templates with v0.35.0 planning improvements and v0.36.0 WORKLOG enhancements (agent-coordination, development-loop, git-workflow, pm-file-formats, pm-workflows, worklog-format)
+  - **templates**: Migrated to `-template.md` naming convention, added spike-template.md and spike-workflow.md
+- **Migration Notes**:
+  - v0.30.0 → v0.32.0 (2025-11-19): Major restructuring: `docs/development/guidelines/` split into `conventions/`, `workflows/`, `misc/`; `pm/templates/` moved to `docs/development/templates/`. Backup: `.toolkit-backup-20251118-233538/`
+  - v0.32.0 → v0.36.0 (2025-11-23): Updated workflows and READMEs, migrated template naming convention, added spike workflow. All conventions kept (project-specific). 
 
 ## Critical Rules
 
@@ -123,102 +125,3 @@ The first places to check when you get stuck or need documentation:
 - https://deepwiki.com/get-convex/convex-backend
 - https://deepwiki.com/get-convex/convex-auth/
 - https://labs.convex.dev/auth
-
-## Current Focus
-
-**Phase**: MVP Infrastructure Setup (2025-10-30 to present)
-
-**Completed and Merged to Develop**:
-
-- ✅ Project structure initialized with ai-toolkit
-- ✅ Tech stack decided and documented (ADR-001)
-- ✅ Testing framework decided and documented (ADR-002)
-- ✅ Deployment strategy decided and documented (ADR-003)
-- ✅ DevOps review completed (monitoring, CI/CD, disaster recovery)
-- ✅ Architecture overview updated with deployment details
-- ✅ Documentation synchronized across all ADRs
-- ✅ Branch structure created (main, develop, feature branches)
-- ✅ TASK-001: Next.js project initialized with TypeScript (merged 2025-10-30)
-- ✅ TASK-002: Convex backend setup with comprehensive testing (merged 2025-11-01, 97.36% coverage)
-- ✅ TASK-003: Cloudinary integration complete (merged 2025-11-02, 92% coverage, 146 tests)
-  - Code Review: 94/100 (Production Ready)
-  - Security Audit: 85/100 (Secure for development)
-- ✅ TASK-004: Convex Auth implementation (email/password + Google OAuth, 94% coverage)
-- ✅ TASK-005: E2E testing infrastructure (Playwright)
-- ✅ TASK-006: Deployment pipeline configured (2025-11-22)
-  - Production deployment via Vercel + Convex Cloud
-  - Simplified workflow adapted for Convex free tier
-  - Local E2E testing before production push
-
-**Current Branch**: develop
-
-**Phase Status**: MVP Infrastructure Complete ✅
-
-**Next Phase**: EPIC-002 - Core Quote Generation Features
-
-**Infrastructure Checklist**:
-
-1. ✅ Initialize Next.js project with TypeScript (.nvmrc, package.json engines)
-2. ✅ Set up Convex backend and deploy to dev environment
-3. ✅ Configure Cloudinary account and integration
-4. ✅ Implement database schema in Convex (people, quotes, images, generatedImages)
-5. ✅ Set up testing infrastructure (Vitest, Playwright, convex-test)
-6. ✅ Implement Convex Auth with email/password and OAuth
-7. ✅ Set up MVP monitoring (health check, Vercel Analytics)
-8. ✅ Configure deployment pipeline (adapted for free tier)
-
-**Key Achievements**:
-
-- Backend-first development approach complete (TASK-002 ✅, TASK-003 ✅, TASK-004 ✅)
-- TDD/BDD workflow established with 94%+ test coverage
-- Type-safe end-to-end development with TypeScript
-- Production deployment operational (free tier optimized)
-- Native Node.js development (no Docker complexity)
-
-## Cloudinary Integration (TASK-003 Complete)
-
-**Account**: Cloud name `dggww7kzb`, Free tier (25GB storage/bandwidth)
-
-**Upload Presets**:
-- `base-images`: Permanent person photos (folder: so-quotable/people)
-- `generated-images`: Temporary quote images with 30-day auto-deletion (folder: so-quotable/generated)
-
-**Key Files**:
-- `convex/cloudinary.ts`: Server-side upload action (uses "use node" directive)
-- `convex/generatedImages.ts`: Database CRUD for generated quote images
-- `src/lib/cloudinary-transformations.ts`: URL transformation helpers (pure functions)
-- `scripts/verify-cloudinary-integration.ts`: Comprehensive verification script
-
-**Features Implemented**:
-1. **Server-Side Upload**: Convex action for signed Cloudinary uploads
-2. **Database Integration**: Automatic metadata storage (images, generatedImages tables)
-3. **URL Transformations**: Text overlays, image optimization, resize, background overlays
-4. **Auto-Deletion**: Generated images automatically deleted after 30 days
-5. **CDN Delivery**: Automatic format/quality optimization (WebP for Chrome, JPEG for Safari)
-
-**Environment Variables** (set in Convex dashboard for actions):
-- `CLOUDINARY_CLOUD_NAME`
-- `CLOUDINARY_API_KEY`
-- `CLOUDINARY_API_SECRET`
-- `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` (for client-side URL building)
-
-**Testing**: 146 tests passing, 92% coverage
-- convex/generatedImages.ts: 100% coverage (18 tests)
-- src/lib/cloudinary-transformations.ts: 100% coverage (60 tests)
-- convex/cloudinary.ts: 62.5% coverage (10 validation tests, upload requires real API)
-
-**Gotchas**:
-- Must use "use node" directive in convex/cloudinary.ts for Cloudinary SDK
-- Environment variables for actions must be set in Convex dashboard (not .env.local)
-- Transformation order matters: resize → background → text → optimize
-- Commas must be URL-encoded in text overlays (they separate transformation parameters)
-
-**Post-MVP Enhancements**:
-- Cleanup job via Convex cron to sync generatedImages table with Cloudinary deletions
-- Cloudinary webhooks for real-time deletion tracking
-- Custom fonts for text overlays
-- Advanced transformations (facial recognition, smart cropping)
-
----
-
-_This file helps AI assistants understand your project. Keep it updated as your project evolves._

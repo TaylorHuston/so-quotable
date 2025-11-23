@@ -10,7 +10,7 @@ description: "PM workflows for spec creation, task creation, and plan execution"
 
 # PM Workflows
 
-**Referenced by Commands:** `/spec`, `/plan`, `/implement`, `/advise`
+**Referenced by Commands:** `/spec`, `/spike`, `/plan`, `/implement`, `/advise`
 
 ## Overview
 
@@ -122,22 +122,84 @@ Implement JWT-based login endpoint with session management...
 
 ---
 
+### SPIKE.md - Technical Exploration
+
+**Purpose:** Answer "Can we?" or "Which approach?" questions through time-boxed exploration
+
+**Contains:**
+- Questions to answer
+- Time box and deadline
+- Approaches to explore (numbered)
+- Success criteria
+- SPIKE-SUMMARY.md with findings and recommendation
+
+**Who creates:** Developers via `/spike` command when technical uncertainty exists
+**Who manages:** Developers during exploration, AI during completion
+**Syncs with:** Nothing (purely local exploration, can reference in ADRs/specs)
+**Living document:** No - spike completes with findings summary
+
+**Scope:** Time-boxed research (4-8 hours typical), produces multiple PLAN-N.md files for different approaches
+
+**Key principle:** Produces knowledge and findings, NOT production code. Code is exploratory and often discarded.
+
+**When to use:**
+- ✅ Technical approach is uncertain (GraphQL vs REST)
+- ✅ Need to compare 2+ alternatives (Library A vs B)
+- ✅ Feasibility is unknown ("Can we even do this?")
+- ❌ Approach is clear from requirements
+- ❌ Just need to read documentation
+
+**Example:**
+```markdown
+# SPIKE-001: Should we use GraphQL or REST?
+
+## Questions to Answer
+1. Performance difference for our use case?
+2. Caching characteristics?
+3. Team learning curve?
+
+## Approaches to Explore
+### Approach 1: GraphQL with Apollo Server
+PLAN: PLAN-1.md, WORKLOG: WORKLOG-1.md
+
+### Approach 2: REST with Express
+PLAN: PLAN-2.md, WORKLOG: WORKLOG-2.md
+
+## SPIKE-SUMMARY.md (created after exploration)
+Recommendation: Use REST (simpler setup, adequate performance)
+```
+
+**Workflow:**
+1. `/spike "question"` → creates SPIKE.md
+2. `/plan --spike SPIKE-001` → creates PLAN-1.md, PLAN-2.md
+3. `/implement --spike SPIKE-001 --plan 1` → explore approach 1 (no commits)
+4. `/implement --spike SPIKE-001 --plan 2` → explore approach 2 (no commits)
+5. `/spike --complete SPIKE-001` → generates SPIKE-SUMMARY.md with recommendation
+
+**See:** spike-workflow.md for complete workflows, templates, and integration patterns
+
+---
+
 ### Content Decision Matrix
 
 **Use this to decide where content belongs:**
 
-| Content Type | SPEC.md | TASK.md | PLAN.md |
-|-------------|---------|---------|---------|
-| Feature description (user perspective) | ✅ | ❌ | ❌ |
-| Acceptance scenarios (BDD format) | ✅ | ❌ | ❌ |
-| Work item description | ❌ | ✅ | ❌ |
-| Acceptance criteria (checklist) | ❌ | ✅ | ❌ |
-| Technical constraints/notes | ❌ | ✅ | ❌ |
-| Phase breakdown | ❌ | ❌ | ✅ |
-| Implementation steps (checkboxes) | ❌ | ❌ | ✅ |
-| Scenario coverage mapping | ❌ | ❌ | ✅ |
-| Complexity analysis | ❌ | ❌ | ✅ |
-| Parent spec reference | ❌ | ✅ | ✅ |
+| Content Type | SPEC.md | TASK.md | SPIKE.md | PLAN.md |
+|-------------|---------|---------|----------|---------|
+| Feature description (user perspective) | ✅ | ❌ | ❌ | ❌ |
+| Acceptance scenarios (BDD format) | ✅ | ❌ | ❌ | ❌ |
+| Work item description | ❌ | ✅ | ❌ | ❌ |
+| Acceptance criteria (checklist) | ❌ | ✅ | ❌ | ❌ |
+| Technical constraints/notes | ❌ | ✅ | ❌ | ❌ |
+| Questions to answer | ❌ | ❌ | ✅ | ❌ |
+| Approaches to explore | ❌ | ❌ | ✅ | ❌ |
+| Time box and deadline | ❌ | ❌ | ✅ | ❌ |
+| Findings and recommendation | ❌ | ❌ | ✅ | ❌ |
+| Phase breakdown | ❌ | ❌ | ❌ | ✅ |
+| Implementation steps (checkboxes) | ❌ | ❌ | ❌ | ✅ |
+| Scenario coverage mapping | ❌ | ❌ | ❌ | ✅ |
+| Complexity analysis | ❌ | ❌ | ❌ | ✅ |
+| Parent spec reference | ❌ | ✅ | ❌ | ✅ |
 
 **Key Distinctions:**
 
@@ -145,18 +207,29 @@ Implement JWT-based login endpoint with session management...
    - SPEC = Feature-level (multi-task), user perspective, BDD scenarios
    - TASK = Work-item-level (single deployable change), acceptance criteria checklist
 
-2. **TASK vs PLAN:**
+2. **SPIKE vs TASK:**
+   - SPIKE = Exploration (answers questions), time-boxed, produces findings
+   - TASK = Implementation (delivers features), scope-driven, produces code
+
+3. **TASK vs PLAN:**
    - TASK = WHAT needs to be done (from PM perspective, stable)
    - PLAN = HOW it will be done (from implementation perspective, evolves)
 
-3. **Syncing:**
+4. **SPIKE vs PLAN:**
+   - SPIKE = Multiple PLAN-N.md files (one per approach to explore)
+   - TASK/BUG = Single PLAN.md (implementation phases)
+   - SPIKE PLAN.md has reminder: "This is exploration - code won't be committed"
+
+5. **Syncing:**
    - SPEC.md syncs with Jira epics (if Jira enabled)
    - TASK.md syncs with Jira issues (if Jira enabled)
+   - SPIKE.md NEVER syncs (purely local exploration)
    - PLAN.md NEVER syncs (purely local, AI-managed)
 
-4. **Living Documents:**
+6. **Living Documents:**
    - SPEC.md: Yes (use `/spec --update` after task completion)
    - TASK.md: No (acceptance criteria stay stable)
+   - SPIKE.md: No (completes with SPIKE-SUMMARY.md)
    - PLAN.md: Yes (updated as implementation progresses)
 
 **Example Scenario:**
@@ -164,6 +237,10 @@ Implement JWT-based login endpoint with session management...
 ```
 SPEC-001: User Authentication (feature-level)
 ├── Acceptance Scenario: "User logs in successfully" (BDD format)
+├── SPIKE-001: OAuth vs JWT (technical exploration - if needed)
+│   ├── PLAN-1.md (explore OAuth)
+│   ├── PLAN-2.md (explore JWT)
+│   └── SPIKE-SUMMARY.md (recommendation: JWT simpler for our needs)
 ├── TASK-001: User Login Flow (work item)
 │   ├── Acceptance Criteria: "User can log in with valid credentials"
 │   └── PLAN.md (implementation phases)
@@ -514,6 +591,98 @@ Next: /implement TASK-001 1.1
 
 **Flexibility:** If no parent spec exists, generate tests from TASK.md acceptance criteria instead.
 
+### Scenario Coverage Format
+
+When TASK references parent SPEC with acceptance scenarios, create detailed coverage mapping:
+
+**Format for Each Scenario:**
+
+```markdown
+### SPEC-{spec_id} Scenario {n}: {scenario_title}
+- **Given/When/Then**: {Brief summary of scenario}
+- **Coverage Mapping**: Phase {x.y} {implements_or_validates} {what} **because** {explanation}
+- **Test Strategy**: {Which specific tests validate this scenario}
+```
+
+**Example:**
+
+```markdown
+### SPEC-001 Scenario 4: Create and view ADR
+- **Given**: Workspace exists
+- **When**: Developer creates ADR with title and description
+- **Then**: ADR is saved to database with status
+- **And**: ADR appears in the ADRs list
+
+**Coverage Mapping**:
+- Phase 2.1 validates ADR creation with workspaceId foreign key **because** the scenario requires "ADR saved to database"
+- Phase 3 `getAll({ workspaceId })` enables UI to list ADRs **because** the scenario requires "ADR appears in ADRs list"
+
+**Test Strategy**:
+- Phase 2.1 tests validate all status enum values (PROPOSED, ACCEPTED, etc.)
+- Phase 3 tests verify workspace scoping isolation
+```
+
+**Key Elements:**
+- The **because** clause explains WHY that phase structure was chosen
+- Connects spec requirements to implementation decisions
+- Shows which tests validate the scenario
+- Makes traceability explicit and meaningful
+
+### Phase Structure Standards
+
+**3-Level Hierarchy:**
+- **Phase**: High-level objective (e.g., "Phase 2 - Create Mutation")
+- **Major Steps**: 2-4 per phase (e.g., "2.1 Write tests", "2.2 Implement mutation")
+- **Specific Validations**: 3-6 per major step (e.g., "2.1.1 Test successful creation with valid workspaceId")
+
+**Example:**
+```markdown
+### Phase 2 - Create Mutation
+- [ ] 2.1 Write tests for ADR creation
+  - [ ] 2.1.1 Test successful creation with valid workspaceId
+  - [ ] 2.1.2 Test creation with minimal fields (status defaults to PROPOSED)
+  - [ ] 2.1.3 Test invalid workspaceId (Prisma P2003 foreign key error)
+- [ ] 2.2 Implement create mutation
+  - [ ] 2.2.1 Create `adrRouter` with `createTRPCRouter`
+  - [ ] 2.2.2 Use `ctx.db.adr.create()` for database insert (note: lowercase 'adr' in Prisma client)
+```
+
+**Benefits:**
+- Granular progress tracking
+- Clear validation criteria
+- Easy to identify blockers
+- Natural commit points
+
+### Test Description Quality Standards
+
+Quality test descriptions make implementation intent crystal clear:
+
+**Standards:**
+1. **Be specific about validation target** - What exactly are you testing?
+2. **Include expected outcomes/error codes** - What should happen?
+3. **Show data isolation requirements** - What test data setup is needed? (e.g., "workspace A vs B")
+4. **Mention relevant constraints** - What technical constraints apply? (foreign keys, validations)
+
+**Examples:**
+
+✅ **Good - Strategically Tactical:**
+- "Test CASCADE DELETE from workspace (workspace deletion removes all ADRs)"
+- "Test invalid workspaceId (Prisma P2003 foreign key error)"
+- "Test workspace scoping (ADRs from workspace A not visible in workspace B's getAll query)"
+- "Test status transitions (PROPOSED → ACCEPTED → DEPRECATED)"
+
+❌ **Too Vague:**
+- "Test cascade delete"
+- "Test error handling"
+- "Test workspace scoping"
+- "Test status changes"
+
+❌ **Too Prescriptive:**
+- "Use beforeEach to create two workspaces and test that getAll filters correctly"
+- "Mock the database and assert that delete is called with correct params"
+
+**Why this matters:** Specific descriptions guide implementation without prescribing HOW, making plans strategically tactical.
+
 ### Test-First Phase Loop
 
 **MANDATORY:** Every phase follows strict test-first loop
@@ -631,21 +800,59 @@ Relevant Files: [filtered list for backend domain]
 
 **Key Principles:**
 
-**Strategic, Not Tactical:**
-- PLAN.md describes **WHAT** to build (objectives, outcomes)
-- Specialist agents decide **HOW** to build it (implementation details)
-- Implementation details adapt to current codebase state
-- Agents leverage WORKLOG for lessons learned and context
+**Strategic vs Tactical - The Nuance:**
 
-**Examples:**
-- ✅ Strategic: "1.2 Implement user model with password hashing"
-- ❌ Tactical: "1.2 Create User class with bcrypt.hash() in the setPassword method using 10 salt rounds"
+Plans describe **WHAT** to build with sufficient specificity that implementers know exactly what success looks like, without prescribing **HOW** to implement.
 
-**Why Strategic Wins:**
-- Specialist agents see current code state and can adapt
-- WORKLOG provides context about what worked/didn't work
+**Test Descriptions - Strategically Tactical:**
+
+The sweet spot is strategic objectives with tactical specificity:
+
+✅ **Good - Strategic with Tactical Specificity:**
+- "Test workspace scoping (ADRs from workspace A not visible in workspace B's getAll query)"
+- "Test invalid workspaceId (Prisma P2003 foreign key error)"
+- "Test CASCADE DELETE from workspace (workspace deletion removes all child ADRs)"
+- "Test status transitions (PROPOSED → ACCEPTED → DEPRECATED lifecycle)"
+
+❌ **Too Vague - Purely Strategic:**
+- "Test workspace scoping" - What does success look like?
+- "Test error handling" - Which errors? What outcomes?
+- "Test cascade delete" - What should cascade? To what?
+
+❌ **Too Prescriptive - Purely Tactical:**
+- "Use beforeEach to create two workspaces, insert ADRs with different workspaceIds, then assert getAll filters correctly"
+- "Mock Prisma client, call create with invalid CUID, catch P2003, verify error message contains 'Foreign key constraint'"
+
+**Implementation Steps - Strategic with Helpful Hints:**
+
+✅ **Good Examples:**
+- "1.2 Implement user model with password hashing"
+- "2.2 Use `ctx.db.adr.create()` for database insert (note: lowercase 'adr' in Prisma client)"
+- "5.2 Use `ctx.db.adr.delete()` (simple delete - no cascade concerns at this level)"
+
+❌ **Too Prescriptive:**
+- "1.2 Create User class with bcrypt.hash() in the setPassword method using 10 salt rounds"
+- "2.2 Import createTRPCRouter from @trpc/server, define publicProcedure with input validation using z.object..."
+
+**Implementation Hints - When to Include:**
+
+Helpful hints are facts about APIs/gotchas, NOT implementation prescriptions:
+
+✅ **Helpful Hints (Include These):**
+- "(note: lowercase model names in Prisma client)" - API fact
+- "(note: CASCADE DELETE from workspace automatically removes ADRs)" - behavior fact
+- "(note: status defaults to PROPOSED if not specified)" - default behavior
+
+❌ **Implementation Prescriptions (Avoid These):**
+- "(note: use bcrypt.hash() with 10 salt rounds)" - dictates implementation approach
+- "(note: wrap in try-catch and return TRPCError)" - prescribes error handling pattern
+
+**Why This Nuance Matters:**
+- Specialist agents see current code state and can adapt implementation approach
+- WORKLOG provides context about what worked/didn't work in previous phases
+- Tactical specificity in tests ensures validation is comprehensive
+- Helpful hints prevent wasted time on gotchas without constraining approach
 - Flexibility for better approaches discovered during implementation
-- Avoids outdated prescriptive steps
 
 **WORKLOG Integration:**
 - Agents read WORKLOG before each phase to understand context
@@ -710,10 +917,10 @@ SPEC-003: "Real-time Notifications"
 - `pm-file-formats.md` - File structure, naming conventions, directory organization
 
 **Templates (Source of Truth for File Structure):**
-- `templates/spec.md` - Feature spec template with YAML config
-- `templates/task.md` - Task template with YAML config
-- `templates/bug.md` - Bug template with YAML config
-- `templates/plan.md` - Plan template with YAML config
+- `templates/spec-template.md` - Feature spec template with YAML config
+- `templates/task-template.md` - Task template with YAML config
+- `templates/bug-template.md` - Bug template with YAML config
+- `templates/plan-template.md` - Plan template with YAML config
 - `templates/README.md` - Template usage guide and custom types
 
 **Workflow Guides:**

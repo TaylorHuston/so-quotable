@@ -2,22 +2,24 @@
 # === Metadata ===
 template_type: "guideline"
 created: "2025-11-05"
-last_updated: "2025-11-06"
+last_updated: "2025-11-18"
 status: "Active"
 target_audience: ["AI Assistants", "Developers"]
-description: "WORKLOG entry formats for standard workflow and troubleshooting contexts"
+description: "WORKLOG entry format definitions for standard workflow, troubleshooting, and investigation contexts"
 
 # === Configuration ===
 worklog_ordering: "reverse_chronological"    # Newest entries at TOP
-entry_philosophy: "stream_not_summarize"     # Write at handoffs, not after completion
-entry_length: "500_chars_ideal"              # ~5-10 lines per entry
+entry_philosophy: "context_rich_handoffs"    # Provide all context next agent needs
+entry_length: "information_complete"         # 10-20 lines average, focus on findings/gotchas
 ---
 
 # WORKLOG Format Guidelines
 
-**Purpose**: Document work flow between agents and across workflows with brief, scannable entries
+**Purpose**: Provide complete context for the next agent to continue work effectively
 
-**Philosophy**: Stream, don't summarize. Write entries as work happens (cross-agent handoffs), not retrospective summaries after phases complete.
+**Philosophy**: Context-rich handoffs. Each entry should contain ALL information the next agent needs - nothing more, nothing less. Focus heavily on key findings, gotchas, and lessons learned.
+
+**Entry Length**: Average 10-20 lines per entry. Brief entries miss critical context; overly long entries become noise. The test: "Can the next agent continue without re-reading code or re-discovering issues?"
 
 **Entry Ordering**: **CRITICAL** - Always maintain **reverse chronological order** (newest entries at the TOP).
 
@@ -32,11 +34,19 @@ entry_length: "500_chars_ideal"              # ~5-10 lines per entry
 - ✅ Completing work and handing off to another agent
 - ✅ Receiving work back with changes needed
 - ✅ Completing a phase or subtask
+- ✅ **MANDATORY: After every code review** (code-reviewer writes separate entry)
+- ✅ **MANDATORY: After every security review** (security-auditor writes separate entry)
 - ✅ Each troubleshooting loop iteration
 - ✅ Completing external research (context-analyzer)
 - ❌ Don't write "STARTED" entries (waste - just do the work)
 
-**Key principle**: Newest entries at TOP, brief (~500 chars), focus on insights
+**CRITICAL - Review Agent Entries**:
+- `code-reviewer` MUST write its own WORKLOG entry after reviewing each phase
+- `security-auditor` MUST write its own WORKLOG entry after security reviews
+- Implementation agents should NOT write review results in their entries - reviewers document their own findings
+- Review entries provide detailed feedback, scores, and context for future work
+
+**Key principle**: Newest entries at TOP, information-complete (10-20 lines), emphasize findings and gotchas
 
 ---
 
@@ -71,15 +81,7 @@ entry_length: "500_chars_ideal"              # ~5-10 lines per entry
    └─ No clear solution? → Use: Investigation Incomplete entry
 ```
 
-**Quick Examples:**
-
-- **Agent handoff**: "I finished API endpoints, passing to frontend-specialist" → HANDOFF
-- **Phase done**: "Phase 2.1 complete, all tests passing" → COMPLETE
-- **Code review**: "Reviewed and found 3 issues needing fixes" → REVIEW REQUIRES CHANGES
-- **Security audit**: "No vulnerabilities found, approved" → REVIEW APPROVED
-- **Plan updated**: "Security audit found gaps, updated TASK/PLAN" → PLAN CHANGES
-- **Debugging**: "Tried adding indexes, query still slow" → Troubleshooting Loop N - Failed
-- **Research**: "Researched PostgreSQL JSONB performance solutions" → Investigation Complete
+**See worklog-examples.md for concrete examples of each entry type.**
 
 ---
 
@@ -101,19 +103,15 @@ entry_length: "500_chars_ideal"              # ~5-10 lines per entry
 ---
 ```
 
-**Workflow**:
-1. Complete phase → Update PLAN.md/TASK.md → Write WORKLOG entry → Commit
+**Workflow (MANDATORY after every phase commit)**:
+1. Complete phase → Write WORKLOG entry → Commit phase changes
 2. Get commit ID: `git rev-parse --short HEAD`
-3. Add one line to "Phase Commits" section: `- Phase X.Y: \`commit-id\` - Brief description`
-4. Commit reference: `git add WORKLOG.md && git commit -m "docs(TASK-001): add phase X.Y commit reference"`
+3. Update "Phase Commits" section in WORKLOG.md: `- Phase X.Y: \`commit-id\` - Brief description`
+4. Commit the reference: `git add WORKLOG.md && git commit --amend --no-edit` (amend) or make separate docs commit
 
-**Benefit**: Instant visual rollback map, no chicken-and-egg problem with commit IDs
+**Why mandatory**: Provides instant rollback map for each phase - critical for debugging and reverting specific changes
 
-**Rollback Example**:
-```bash
-# Roll back to Phase 1.2 (before Phase 2.1 changes)
-git reset --hard def456e
-```
+**Benefit**: Know exactly which commit to revert if a phase needs rollback
 
 ---
 
@@ -128,13 +126,32 @@ git reset --hard def456e
 ```markdown
 ## YYYY-MM-DD HH:MM - [AUTHOR: agent-name] → [NEXT: next-agent]
 
-Brief summary of what was done (5-10 lines max).
+**Completed**: [What was accomplished in this phase - 2-3 lines]
 
-Gotcha: [critical issues encountered, if any]
-Lesson: [key insights, if any]
-Files: [key/files/changed.js]
+**Implementation approach**:
+- [Key decision 1 and rationale]
+- [Key decision 2 and rationale]
+- [Pattern/library used and why]
 
-→ Passing to {next-agent} for {reason}
+**Key findings**:
+- [Discovery 1 that affects future work]
+- [Discovery 2 that changes understanding]
+- [Unexpected behavior observed]
+
+**Gotchas encountered**:
+- [Issue 1]: [How it manifested] → [Solution/workaround]
+- [Issue 2]: [Root cause discovered] → [Fix applied]
+
+**Testing status**:
+- [Test results summary]
+- [Edge cases validated]
+- [Known limitations]
+
+**Files modified**: [key/files/changed.js, other/important.ts]
+
+**Next agent context**: [Specific information next-agent needs to continue]
+
+→ Passing to {next-agent} for {specific-reason}
 ```
 
 #### COMPLETE Entry (phase fully done, no more handoffs)
@@ -142,61 +159,36 @@ Files: [key/files/changed.js]
 ```markdown
 ## YYYY-MM-DD HH:MM - [AUTHOR: agent-name] (Phase X.Y COMPLETE)
 
-Phase complete summary (5-10 lines).
+**Phase objective**: [What this phase was meant to accomplish]
 
-Status:
-- ✅ Tests passing
-- ✅ Quality gates met
-- ✅ PLAN.md updated
+**Implementation summary**:
+- [Approach taken and why]
+- [Key architectural decisions]
+- [Libraries/patterns used]
 
-Files: [key/files/changed.js]
-```
+**Key findings**:
+- [Discovery 1 that affects future phases]
+- [Discovery 2 about system behavior]
+- [Performance/security insights]
 
-### Required Elements
+**Gotchas for future phases**:
+- [Issue 1]: [Context] → [How we solved it / How to avoid]
+- [Issue 2]: [Root cause] → [Lesson learned]
 
-- **Timestamp**: Always run `date '+%Y-%m-%d %H:%M'` - never estimate
-- **Agent identifier**: Name of the agent (or @username for humans via `/worklog`)
-- **Arrow notation**: Use `→` for handoffs to show work flow
-- **Brief summary**: What YOU did (not entire phase history) - keep scannable
-- **Gotchas/Lessons**: Only if significant (don't force it)
-- **Files**: Key files modified (helps locate changes via diff)
-- **Handoff note**: Who receives work and why (for handoffs only)
+**Test coverage**:
+- Unit: [X/Y tests, coverage %]
+- Integration: [test scenarios covered]
+- Edge cases validated: [list]
 
-### Standard Format Examples
+**Quality gates**:
+- ✅ Tests passing (all X tests green)
+- ✅ Code review score: [score/100]
+- ✅ Coverage target met: [%]
+- ✅ PLAN.md checkboxes updated
 
-**Handoff entry**:
-```markdown
-## 2025-01-15 14:30 - [AUTHOR: backend-specialist] → [NEXT: code-reviewer]
+**Files modified**: [key/files/changed.js, tests/added.test.ts]
 
-Implemented JWT auth endpoint with bcrypt hashing (12 rounds) and Redis token storage.
-
-Gotcha: Redis connection pooling required - single connection bottleneck
-Files: src/auth/login.ts, src/middleware/jwt.ts, tests/auth.test.ts
-
-→ Passing to code-reviewer for security validation
-```
-
-**Complete entry**:
-```markdown
-## 2025-01-15 15:35 - [AUTHOR: code-reviewer] (Phase 2.3 COMPLETE)
-
-Re-review approved (score: 94/100). All security issues resolved.
-
-Status:
-- ✅ Tests passing (48/48)
-- ✅ Security validated
-- ✅ PLAN.md checkbox updated
-```
-
-**Human comment entry** (via `/worklog`):
-```markdown
-## 2025-01-15 10:15 - [AUTHOR: @alice]
-
-Disabled middleware auth check temporarily - was blocking sign-up flow. Cookie name mismatch.
-
-Files: src/middleware.ts (disabled check on line 42)
-
-→ Need to fix cookie naming before re-enabling
+**Notes for future work**: [Anything next phases should know]
 ```
 
 #### REVIEW APPROVED Entry (code/security review passed)
@@ -204,18 +196,29 @@ Files: src/middleware.ts (disabled check on line 42)
 ```markdown
 ## YYYY-MM-DD HH:MM - [AUTHOR: code-reviewer|security-auditor] (Review Approved)
 
-Reviewed: [Phase/feature/files reviewed]
-Scope: [Quality/Security/Performance - which aspects reviewed]
-Verdict: ✅ Approved [clean / with minor notes]
+**Reviewed**: [Phase X.Y / Feature name / Specific implementation]
+**Scope**: [Quality/Security/Performance/Architecture - what was examined]
+**Score**: [92/100] ✅ Approved
+**Verdict**: Clean approval [or: Approved with minor notes]
 
-Strengths:
-- [Key positive aspect 1]
-- [Key positive aspect 2]
+**Strengths observed**:
+- [Positive pattern 1 - why it's good]
+- [Positive pattern 2 - impact on codebase]
+- [Well-handled edge case or design decision]
 
-[Optional] Notes:
-- [Minor suggestion or observation]
+**Code quality highlights**:
+- [Test coverage aspect - specific number]
+- [Error handling approach - why effective]
+- [Performance consideration - measurement]
 
-Files: [files reviewed]
+**Minor observations** (non-blocking):
+- [Suggestion 1 for future consideration]
+- [Pattern that could be improved later]
+- [Documentation enhancement opportunity]
+
+**Files reviewed**: [src/file1.ts, src/file2.ts, tests/file.test.ts]
+
+**Recommendation**: Approved for merge. [Additional context if relevant]
 ```
 
 #### REVIEW REQUIRES CHANGES Entry (issues found, passing back)
@@ -223,102 +226,41 @@ Files: [files reviewed]
 ```markdown
 ## YYYY-MM-DD HH:MM - [AUTHOR: code-reviewer|security-auditor] → [NEXT: implementation-agent]
 
-Reviewed: [Phase/feature/files reviewed]
-Scope: [Quality/Security/Performance]
-Verdict: ⚠️ Requires Changes
+**Reviewed**: [Phase X.Y / Feature name / Specific implementation]
+**Scope**: [Quality/Security/Performance/Architecture]
+**Score**: [78/100] ⚠️ Requires Changes
+**Verdict**: Issues must be addressed before merge
 
-Critical:
-- [Issue description] @ file.ts:line - [Fix needed]
+**Critical issues** (blocking):
+1. [Issue description and impact] @ file.ts:123
+   - **Problem**: [What's wrong and why it's critical]
+   - **Fix needed**: [Specific action required]
+   - **Context**: [Why this matters / What breaks without fix]
 
-[Optional] Major:
-- [Issue description] @ file.ts:line - [Fix needed]
+2. [Security/correctness issue] @ file.ts:456
+   - **Problem**: [Vulnerability or bug description]
+   - **Fix needed**: [Remediation approach]
+   - **Reference**: [OWASP category / pattern to use]
 
-[Optional] Minor:
-- [Issue description] - [Suggestion]
+**Major issues** (should fix):
+- [Issue with significant impact] @ file.ts:789
+  - **Problem**: [What's suboptimal]
+  - **Recommendation**: [Better approach]
+  - **Benefit**: [Why this improves the code]
 
-Files: [files reviewed]
+**Minor suggestions** (optional):
+- [Enhancement opportunity]
+- [Documentation clarification]
 
-→ Passing back to {agent-name} for fixes
-```
+**What works well**:
+- [Positive aspect to preserve]
+- [Good pattern used]
 
-### Review Entry Examples
+**Files reviewed**: [src/file1.ts (5 issues), src/file2.ts (2 issues)]
 
-**Code review approved**:
-```markdown
-## 2025-01-17 14:20 - [AUTHOR: code-reviewer] (Review Approved)
+**Estimated fix time**: [15 minutes / 1 hour / etc.]
 
-Reviewed: Phase 2.1 - JWT authentication implementation
-Scope: Code quality, security basics, testing
-Verdict: ✅ Approved clean
-
-Strengths:
-- Proper async error handling throughout
-- Comprehensive test coverage (94%)
-- Clear separation of concerns
-
-Files: src/auth/login.ts, src/middleware/jwt.ts, tests/auth.test.ts
-```
-
-**Code review with issues**:
-```markdown
-## 2025-01-17 15:45 - [AUTHOR: code-reviewer] → [NEXT: backend-specialist]
-
-Reviewed: Phase 3.2 - Payment processing implementation
-Scope: Code quality, error handling, edge cases
-Verdict: ⚠️ Requires Changes
-
-Critical:
-- Missing error handling for Stripe webhook timeout @ payment.ts:156 - Add try/catch with idempotency check
-- Race condition in payment status update @ payment.ts:203 - Use database transaction
-
-Major:
-- Test coverage only 65% (target: 80%) - Add tests for refund flow and webhook retries
-
-Minor:
-- Magic number for retry count - Extract to config constant
-
-Files: src/payment/payment.ts, src/payment/webhook.ts, tests/payment.test.ts
-
-→ Passing back to backend-specialist for fixes
-```
-
-**Security review approved**:
-```markdown
-## 2025-01-18 10:30 - [AUTHOR: security-auditor] (Review Approved)
-
-Reviewed: Phase 1.3 - OAuth2 authentication flow
-Scope: Security (OWASP Top 10, auth best practices)
-Verdict: ✅ Approved with minor notes
-
-Strengths:
-- PKCE implemented correctly (prevents authorization code interception)
-- State parameter validated (CSRF protection)
-- Tokens stored in httpOnly cookies (XSS protection)
-
-Notes:
-- Consider adding rate limiting on token endpoint (good-to-have, not required)
-
-Files: src/auth/oauth.ts, src/middleware/auth.ts
-```
-
-**Security review with vulnerabilities**:
-```markdown
-## 2025-01-18 11:15 - [AUTHOR: security-auditor] → [NEXT: backend-specialist]
-
-Reviewed: Phase 2.4 - User profile API endpoints
-Scope: Security (OWASP A01 Access Control, A03 Injection)
-Verdict: ⚠️ Requires Changes - Critical vulnerabilities found
-
-Critical:
-- Missing authorization check on DELETE /users/:id @ users.ts:89 - Add ownership verification (OWASP A01: Broken Access Control)
-- SQL injection risk in search query @ users.ts:145 - Use parameterized query or ORM (OWASP A03: Injection)
-
-Major:
-- PII returned without consent check @ users.ts:67 - Add GDPR consent validation before exposing email/phone
-
-Files: src/api/users.ts, src/middleware/auth.ts
-
-→ Passing back to backend-specialist for security fixes (URGENT)
+→ Passing back to {agent-name} for fixes. Focus on critical issues first.
 ```
 
 #### PLAN CHANGES Entry (documenting adaptations after reviews)
@@ -342,26 +284,25 @@ Files: src/api/users.ts, src/middleware/auth.ts
 **Full report**: [link if needed]
 ```
 
-**Plan changes entry example**:
-```markdown
-## 2025-11-06 14:30 - Security Audit: Plan Updated
+### Required Elements
 
-Security audit completed on Phase 2 (email/password auth) implementation.
+- **Timestamp**: Always run `date '+%Y-%m-%d %H:%M'` - never estimate
+- **Agent identifier**: Name of the agent (or @username for humans via `/worklog`)
+- **Arrow notation**: Use `→` for handoffs to show work flow
+- **Completed/Objective**: What was accomplished or reviewed (context setter)
+- **Implementation approach**: Key decisions and rationale (helps next agent understand choices)
+- **Key findings**: Discoveries that affect future work (critical context)
+- **Gotchas encountered**: Issues hit and solutions found (prevent re-discovery)
+- **Testing/Quality status**: Results and coverage (confidence level)
+- **Files modified**: Key files changed (helps locate implementation)
+- **Next agent context**: Specific info handoff recipient needs (direct handoff)
 
-**Key Findings**:
-- Email verification required to prevent spam accounts (high priority)
-- Rate limiting needed on auth endpoints (medium priority)
-- Session timeout should be 24h not 7d (configuration issue)
+**Information density test**: Can the next agent continue effectively without:
+- Re-reading the code to understand what was done?
+- Re-discovering the same issues you encountered?
+- Asking clarifying questions about your decisions?
 
-**Decisions**:
-- Added "Email verification required" to TASK.md acceptance criteria
-- Inserted Phase 3 for email verification in PLAN.md (before OAuth)
-- Rate limiting deferred to post-MVP (tracked in backlog)
-- Updated session config in Phase 2 deliverables
-
-**Files Updated**: TASK.md, PLAN.md
-**Full report**: docs/security/audit-2025-11-06.md
-```
+If any answer is "no", add more context to the entry.
 
 ---
 
@@ -423,38 +364,6 @@ Manual verification: User confirmed working
 Debug cleanup: [Kept as comments / Removed / Converted to logger]
 ```
 
-### Troubleshooting Format Examples
-
-**Loop 1 - Failed**:
-```markdown
-## 2025-01-16 15:30 - [AUTHOR: backend-specialist] (Loop 1 - Failed)
-
-Hypothesis: Query runs before auth completes (based on Convex Auth docs)
-Debug findings: Logs show isLoading=false before query, but userId still null
-Implementation: Added isLoading gate to skip query during auth
-Result: ❌ Not fixed - User still sees "Not signed in" after login
-Rollback: ✅ Changes reverted
-
-Files: (all changes reverted)
-Next: Research getAuthUserId() vs ctx.auth.getUserIdentity() API difference
-```
-
-**Loop 2 - Success**:
-```markdown
-## 2025-01-16 16:15 - [AUTHOR: backend-specialist] (Loop 2 - Success)
-
-Hypothesis: Using wrong auth API (should use getAuthUserId helper)
-Debug findings: Logs confirmed getUserIdentity returns null, getAuthUserId works
-Implementation: Replaced ctx.auth.getUserIdentity() with getAuthUserId(ctx)
-Research: @convex-dev/auth/server documentation
-Result: ✅ Fixed - Login works, profile displays correctly
-
-Files: convex/users.ts
-Tests: 245/245 passing
-Manual verification: User confirmed working in browser
-Debug cleanup: Kept as comments for future reference
-```
-
 ---
 
 ## Investigation Results WORKLOG Format
@@ -487,80 +396,6 @@ Curated resources:
 → Passing findings to {agent-name} for implementation
 ```
 
-### Required Elements
-
-- **Timestamp**: Always run `date '+%Y-%m-%d %H:%M'` - never estimate
-- **Query**: What was being researched (the request from calling agent)
-- **Sources**: Count and breakdown (docs/blogs/SO/GitHub)
-- **Key findings**: High-level summary (2-3 sentences max)
-- **Top solutions**: Ranked approaches with use cases
-- **Curated resources**: Best resources found (2-5 links with context)
-- **Suggested resources**: Exceptional finds worth adding to CLAUDE.md (0-3 max)
-- **Handoff note**: Which agent receives findings and for what purpose
-
-### Investigation Format Examples
-
-**Research for troubleshooting**:
-```markdown
-## 2025-01-16 14:45 - [AUTHOR: context-analyzer] (Investigation Complete)
-
-Query: PostgreSQL JSONB aggregation performance issues causing timeouts
-Sources: 12 resources (Context7: 1, blogs: 4, SO: 5, GitHub: 2)
-Key findings: jsonb_agg loads entire result set into memory causing timeouts on large datasets. Three proven solutions with different trade-offs. Memory configuration alone won't solve root issue.
-
-Top solutions:
-1. Chunked aggregation pattern - Best for large datasets, requires query restructure, proven at scale
-2. array_agg + json_build_object - Alternative aggregation method, better memory profile
-3. Increase work_mem - Quick temporary fix, doesn't scale, risks OOM on concurrent queries
-
-Curated resources:
-- "PostgreSQL JSONB Performance Deep Dive" - https://example.com/pg-jsonb - Comprehensive benchmarks comparing all approaches with real-world data
-- Stack Overflow chunked pattern answer - https://stackoverflow.com/... - Working code example with step-by-step implementation
-
-💡 Suggested for CLAUDE.md:
-- "PostgreSQL JSONB Performance Deep Dive" → Performance & Optimization - Core tech, extensive benchmarks, covers aggregation patterns we'll likely reference again for similar issues
-
-→ Passing findings to backend-specialist for implementation decision
-```
-
-**Research for best practices**:
-```markdown
-## 2025-01-17 10:20 - [AUTHOR: context-analyzer] (Investigation Complete)
-
-Query: Node.js API rate limiting best practices for distributed systems
-Sources: 15 resources (Context7: 2, blogs: 8, GitHub: 5)
-Key findings: Three main algorithms (token bucket, leaky bucket, fixed window). Token bucket most flexible for APIs. Redis required for distributed rate limiting to share state across instances.
-
-Top solutions:
-1. rate-limiter-flexible + Redis - Most comprehensive, battle-tested, supports multiple algorithms
-2. Custom Redis implementation - Full control, requires more maintenance, good learning exercise
-3. express-rate-limit (memory) - Simple but single-server only, not suitable for production
-
-Curated resources:
-- "Rate Limiting Algorithms Explained" - https://example.com/rate-limiting - Visual algorithm comparison with use cases and trade-offs
-- rate-limiter-flexible docs - https://github.com/... - Production-ready library with Redis examples
-
-→ Passing findings to backend-specialist for implementation decision
-```
-
-**Research with no suggestions**:
-```markdown
-## 2025-01-18 09:15 - [AUTHOR: context-analyzer] (Investigation Complete)
-
-Query: Specific error "TypeError: Cannot read property 'id' of undefined" in React component
-Sources: 8 resources (blogs: 3, SO: 5)
-Key findings: Common issue when component renders before async data loads. Two main patterns: conditional rendering or optional chaining.
-
-Top solutions:
-1. Optional chaining (?.id) - Modern, concise, handles deeply nested properties
-2. Conditional rendering with loading state - More explicit, better UX with spinner
-
-Curated resources:
-- Stack Overflow answer - https://stackoverflow.com/... - Clear explanation of both approaches
-
-→ Passing findings to frontend-specialist for implementation
-```
-
 ### Investigation Format Variants
 
 #### When No Clear Solution Found
@@ -585,27 +420,16 @@ Recommendation: [Suggest alternative approach, ask domain expert, try different 
 → Passing to {agent-name} with findings (no implementation recommended yet)
 ```
 
-**Example**:
-```markdown
-## 2025-01-19 11:30 - [AUTHOR: context-analyzer] (Investigation Incomplete)
+### Required Elements (Investigation Format)
 
-Query: Custom Convex validator for international phone numbers with country codes
-Sources: 9 resources (Context7: 1, blogs: 3, SO: 3, GitHub: 2)
-Key findings: No built-in validator in Convex. Found general phone validation libraries but unclear how to integrate custom validators in Convex schema.
-
-Partial findings:
-- libphonenumber-js library handles international formats well
-- Convex validators are TypeScript types, not runtime validation
-- May need custom function wrapper for validation
-
-Resources checked:
-- Convex docs - Shows string validators but not custom validation patterns
-- Community discussions - Limited examples of complex custom validators
-
-Recommendation: Ask in Convex Discord or check if validator can be custom function wrapping v.string()
-
-→ Passing to backend-specialist with partial findings (implementation approach unclear)
-```
+- **Timestamp**: Always run `date '+%Y-%m-%d %H:%M'` - never estimate
+- **Query**: What was being researched (the request from calling agent)
+- **Sources**: Count and breakdown (docs/blogs/SO/GitHub)
+- **Key findings**: High-level summary (2-3 sentences max)
+- **Top solutions**: Ranked approaches with use cases
+- **Curated resources**: Best resources found (2-5 links with context)
+- **Suggested resources**: Exceptional finds worth adding to CLAUDE.md (0-3 max)
+- **Handoff note**: Which agent receives findings and for what purpose
 
 ---
 
@@ -613,130 +437,47 @@ Recommendation: Ask in Convex Discord or check if validator can be custom functi
 
 **Apply to all formats (standard, troubleshooting, investigation, reviews)**:
 
-1. **Keep entries scannable**: ~500 chars is ideal, can be longer for critical gotchas
-2. **Focus on insights**: Document WHY things were done certain ways, not just WHAT
-3. **Capture alternatives**: "Tried X but Y worked better because..." helps future work
-4. **Reference decisions**: For architecture decisions, use `/adr` command to create ADR
-5. **Write for the future**: Developers reading weeks/months later need context
-6. **Newest first**: Always add new entries at the TOP of WORKLOG.md (reverse chronological)
-7. **Be honest about failures**: Failed attempts are valuable documentation
-8. **Review specificity**: For review entries, always include file:line references for issues
+1. **Information completeness over brevity**: 10-20 lines average. Include all context next agent needs. Brief entries save time writing but cost time during handoffs.
 
-### Entry Length Guidelines
+2. **Emphasize findings and gotchas**: These are gold for future work. Spend 40-60% of entry on:
+   - What you discovered that wasn't obvious
+   - Issues you hit and how you solved them
+   - Behavior that surprised you
+   - Patterns that worked/didn't work
 
-**Good length** (scannable):
-```markdown
-## 2025-01-15 14:30 - [AUTHOR: backend-specialist] → [NEXT: code-reviewer]
+3. **Document WHY, not just WHAT**:
+   - Good: "Used bcrypt with cost 12 (not 10) because auth testing showed 10 was too fast for our security requirements"
+   - Bad: "Added password hashing"
 
-Implemented JWT auth endpoint with bcrypt (12 rounds) and Redis token storage.
+4. **Capture attempted alternatives**:
+   - "Tried X approach but switched to Y because [specific reason]" prevents re-attempting failed approaches
 
-Gotcha: Redis connection pooling required - single connection bottleneck
-Files: src/auth/login.ts, src/middleware/jwt.ts, tests/auth.test.ts
+5. **Quantify when possible**:
+   - "Test coverage: 94% (127/135 lines)"
+   - "Performance improved 40% (200ms → 120ms)"
+   - "Code review score: 92/100"
 
-→ Passing to code-reviewer for security validation
-```
+6. **File:line references for issues**: Always include specific locations for problems
+   - "SQL injection risk @ src/auth.ts:45 in login query"
+   - "Memory leak @ src/cache.ts:123 when clearing expired entries"
 
-**Too brief** (missing context):
-```markdown
-## 2025-01-15 14:30 - [AUTHOR: backend-specialist] → [NEXT: code-reviewer]
+7. **Reference decisions**: For architecture decisions, use `/adr` command to create ADR
 
-Implemented auth endpoint.
+8. **Write for the future**: Developers reading weeks/months later need full context
 
-→ Passing to code-reviewer
-```
+9. **Newest first**: Always add new entries at the TOP of WORKLOG.md (reverse chronological)
 
-**Too verbose** (consider using `/adr` for architecture decisions):
-```markdown
-## 2025-01-15 14:30 - [AUTHOR: backend-specialist] → [NEXT: code-reviewer]
+10. **Be honest about failures**: Failed attempts with lessons learned are more valuable than success stories without context
 
-Implemented JWT auth endpoint. After evaluating 5 different hashing algorithms
-(bcrypt, scrypt, argon2, PBKDF2, and SHA-256), selected bcrypt because...
-[500 more words explaining the decision]
+11. **Review specificity**: Review entries need extra detail - include reasoning, not just findings
 
-→ Passing to code-reviewer for security validation
-```
-
-**Better approach for complex decisions**:
-```markdown
-## 2025-01-15 14:30 - [AUTHOR: backend-specialist] → [NEXT: code-reviewer]
-
-Implemented JWT auth using bcrypt for password hashing (see ADR-007 for algorithm evaluation).
-Token expiry: 15min access, 7d refresh. HttpOnly cookies prevent XSS.
-
-→ Passing to code-reviewer for security validation
-```
+**Quality check**: Before writing entry, ask: "If I read only this entry tomorrow, could I continue the work effectively?" If no, add more detail.
 
 ### When to Mix Formats
 
-**Use MULTIPLE formats in same WORKLOG** when work involves research + troubleshooting + implementation:
+**Use MULTIPLE formats in same WORKLOG** when work involves research + troubleshooting + implementation.
 
-**Example: Investigation → Troubleshooting → Implementation**:
-
-```markdown
-## 2025-01-16 16:45 - [AUTHOR: backend-specialist] (Phase 2.2 COMPLETE)
-
-Phase 2.2 complete after resolving auth issue (see investigation + troubleshooting entries below).
-
-Status:
-- ✅ Tests passing (48/48)
-- ✅ Auth working correctly
-- ✅ PLAN.md updated
-
----
-
-## 2025-01-16 16:15 - [AUTHOR: backend-specialist] (Loop 2 - Success)
-
-Hypothesis: Using wrong auth API (should use getAuthUserId helper per context-analyzer findings)
-Debug findings: Logs confirmed getUserIdentity returns null, getAuthUserId works
-Implementation: Replaced ctx.auth.getUserIdentity() with getAuthUserId(ctx)
-Research: @convex-dev/auth/server documentation (from context-analyzer curated resources)
-Result: ✅ Fixed - Login works, profile displays correctly
-
-Files: convex/users.ts
-Tests: 48/48 passing
-Manual verification: User confirmed working
-
----
-
-## 2025-01-16 15:30 - [AUTHOR: backend-specialist] (Loop 1 - Failed)
-
-Hypothesis: Query runs before auth completes (based on Convex Auth docs)
-Debug findings: Logs show isLoading=false before query, but userId still null
-Implementation: Added isLoading gate to skip query during auth
-Result: ❌ Not fixed - User still sees "Not signed in" after login
-Rollback: ✅ Changes reverted
-
-Next: Request research on getAuthUserId() vs getUserIdentity() API difference
-
----
-
-## 2025-01-16 15:00 - [AUTHOR: context-analyzer] (Investigation Complete)
-
-Query: Convex Auth getAuthUserId vs getUserIdentity API difference
-Sources: 5 resources (Context7: 1, GitHub: 2, Convex Discord: 2)
-Key findings: Two different auth APIs with different use cases. getAuthUserId is helper from @convex-dev/auth, getUserIdentity is core Convex API. Auth library uses different flow.
-
-Top solutions:
-1. Use getAuthUserId(ctx) - Recommended for @convex-dev/auth library
-2. Use ctx.auth.getUserIdentity() - For native Convex auth only
-
-Curated resources:
-- @convex-dev/auth/server docs - https://labs.convex.dev/auth/... - Clear explanation of helper functions
-- GitHub discussion - https://github.com/get-convex/convex-helpers/discussions/... - Comparison of both approaches
-
-→ Passing findings to backend-specialist for implementation
-
----
-
-## 2025-01-16 14:00 - [AUTHOR: backend-specialist] → [NEXT: context-analyzer]
-
-Implemented initial auth backend using getUserIdentity(). Hit unexpected issue - returns null after login.
-Need research on correct auth API usage for @convex-dev/auth library.
-
-Files: convex/users.ts (initial implementation)
-
-→ Passing to context-analyzer for API research
-```
+See worklog-examples.md for multi-format workflow examples.
 
 ---
 
@@ -773,17 +514,12 @@ Files: convex/users.ts (initial implementation)
 
 ## Related Documentation
 
-**For troubleshooting methodology**:
-- See `troubleshooting.md` for complete 5-step debug loop
-- See `troubleshooting.md` for debug logging best practices
+**For concrete examples**: See `worklog-examples.md` for all entry type examples
 
-**For workflow context**:
-- See `development-loop.md` for agent handoff patterns
-- See `development-loop.md` for quality gates and workflow phases
+**For troubleshooting methodology**: See `troubleshooting.md` for complete 5-step debug loop and debug logging best practices
 
-**For file structure**:
-- See `pm-guide.md` for TASK.md, BUG.md formats
-- See `pm-guide.md` for PLAN.md format
+**For workflow context**: See `development-loop.md` for agent handoff patterns and quality gates
 
-**For complex decisions**:
-- Use `/adr` command to create Architecture Decision Records for significant technical decisions
+**For file structure**: See `pm-workflows.md` for TASK.md, BUG.md, and PLAN.md formats
+
+**For complex decisions**: Use `/adr` command to create Architecture Decision Records for significant technical decisions

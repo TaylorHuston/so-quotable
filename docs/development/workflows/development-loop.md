@@ -1,9 +1,8 @@
 ---
 # === Metadata ===
 template_type: "guideline"
-version: "1.0.0"
 created: "2025-10-30"
-last_updated: "2025-10-30"
+last_updated: "2025-11-13"
 status: "Active"
 target_audience: ["AI Assistants", "Development Team"]
 description: "AI-assisted development workflow with test-first approach, continuous code review, and agent coordination"
@@ -79,7 +78,7 @@ complexity_scoring:
 
 # Development Loop Guidelines
 
-**Referenced by Commands:** `/implement`, `/plan`, `/quality`, `/test-fix`, `/comment`
+**Referenced by Commands:** `/implement`, `/plan`, `/quality`, `/troubleshoot`, `/worklog`
 
 ## Quick Reference
 
@@ -106,7 +105,7 @@ This guideline defines our AI-assisted development workflow, emphasizing test-fi
 
 **Pragmatic Test-First Approach**: Choose the right tool for the job.
 
-**✅ Test-First (Preferred) - When you know what to build:**
+**✅ Test-First (Highly Preferred) - When you know what to build:**
 - Feature has clear acceptance criteria from `/plan` output
 - Phase objectives specify expected behavior
 - Bug fix with reproducible failure scenario
@@ -185,6 +184,19 @@ See `testing-standards.md` for framework-specific commands and test organization
 
 **Threshold**: 90+ required to proceed (configurable above)
 
+**WORKLOG Documentation** (MANDATORY):
+- `code-reviewer` MUST write its own WORKLOG entry after EVERY review
+- Use REVIEW APPROVED entry format (score ≥90) or REVIEW REQUIRES CHANGES (score <90)
+- Implementation agents should NOT write review results in their entries
+- Review entries document: score, strengths, issues found, files reviewed
+- See `worklog-format.md` for complete Review entry formats and examples
+
+**Why separate review entries matter**:
+- Provides detailed feedback visible to future agents
+- Documents what was reviewed and why it passed/failed
+- Creates audit trail of quality decisions
+- Helps future developers understand code quality evolution
+
 See `coding-standards.md` for specific style and quality expectations.
 
 ### 5. Iterate Until Quality Gates Pass
@@ -203,6 +215,47 @@ See `coding-standards.md` for specific style and quality expectations.
 4. Request re-review if major changes
 5. Repeat until all gates pass
 
+### 6. Review and Adapt Plans (After Phase Completion)
+
+**After completing each phase, conduct review cycle to adapt plans**:
+
+**Step 1: Run Quality Reviews**
+- Code review (always - via code-reviewer agent)
+- Security audit (if security-critical flag set)
+- Architecture review (if high complexity)
+
+**Step 2: Synthesize Findings**
+- Identify immediate actions vs deferred improvements
+- Determine impact on remaining phases
+- Make decisions (with stakeholder input if needed)
+
+**Step 3: Adapt TASK and PLAN Files**
+- Update TASK.md if new requirements discovered
+- Update PLAN.md phases based on learnings
+- Remove obsolete approaches from PLAN
+- Keep files clean and current
+
+**Step 4: Document in WORKLOG**
+- Brief entry: what changed and why
+- Link to detailed reports if needed
+- See [worklog-format.md](worklog-format.md) for "Plan Changes" entry format
+
+**Step 5: Proceed to Next Phase**
+- With updated understanding
+- With adapted approach
+- With cleaner, more accurate plan
+
+**Example review cycle**:
+```
+Phase 2 Complete → Security Audit → Finds email verification needed
+→ Add to TASK.md acceptance criteria
+→ Insert Phase 3 in PLAN.md for email verification
+→ Document decision in WORKLOG.md
+→ Proceed to new Phase 3
+```
+
+**Key principle**: Inspect and adapt - plans evolve based on implementation learnings.
+
 ## Agent Coordination
 
 ### Specialist Agent Selection
@@ -217,6 +270,7 @@ See `coding-standards.md` for specific style and quality expectations.
 - **security-auditor**: Security review, vulnerability assessment
 - **performance-optimizer**: Performance analysis, optimization
 - **code-reviewer**: Code quality assessment, best practices review
+- **context-analyzer**: External research, documentation lookup, resource curation
 
 ### Agent Orchestration: Who Drives the Handoffs?
 
@@ -299,254 +353,66 @@ code-reviewer:
 
 ### File Purposes
 
-Every issue directory (`pm/issues/TASK-###-name/` or `BUG-###-name/`) can contain three files:
+Every issue directory (`pm/issues/TASK-###-name/` or `BUG-###-name/`) should contain at least 3 files:
 
 **TASK.md / BUG.md** (WHAT to do):
-- Primary issue file with plan checklist
-- Acceptance criteria and phase breakdown
-- Updated by `/plan` and `/implement` commands
-- Status: Required, created by `/epic` or manually
+- Primary issue file with acceptance criteria
+- Created by `/spec` or `/plan` commands
+- See `pm-guide.md` for complete format
 
-**WORKLOG.md** (HOW it was done):
+**PLAN.md** (HOW to do it - phases):
+- Phase-based implementation breakdown
+- Created by `/plan` command
+- See `pm-guide.md` for complete format
+
+**WORKLOG.md** (WHAT was done and WHY):
 - Reverse chronological narrative work history
+- Documents work done, decisions made, and rationale
 - Created automatically by `/implement` after each phase
-- Documents: what was accomplished, lessons learned, gotchas, files changed
-- Used by: AI agents to understand previous work, humans to review history
-- Status: Auto-created during implementation
+- See `worklog-format.md` for entry formats (Standard, Troubleshooting, Investigation, Reviews)
+- For complex architecture decisions, use `/adr` to create Architecture Decision Records
 
-**RESEARCH.md** (WHY decisions were made):
-- Deep technical investigations requiring multi-page analysis
-- Created manually when complex decisions need detailed rationale
-- Documents: alternatives considered, trade-offs, benchmarks, root cause analysis
-- Referenced from WORKLOG entries for deeper context
-- Status: Optional, created as needed
+### WORKLOG Documentation
 
-### WORKLOG Entry Format
+**For complete WORKLOG entry formats**, see `worklog-format.md` which documents:
+- Standard format (HANDOFF, COMPLETE, and REVIEW entries)
+- Troubleshooting format (hypothesis-based entries)
+- Investigation format (external research findings)
+- When to write entries vs when to skip
+- Best practices and examples
+- Entry length guidelines
+- Cross-referencing RESEARCH.md
 
-**Philosophy**: Stream, don't summarize. Write entries as work happens (cross-agent handoffs), not retrospective summaries after phases complete.
+**Quick Reference:**
+- Write entries at agent handoffs and phase completion
+- Always maintain reverse chronological order (newest at TOP)
+- Keep entries scannable (~500 chars ideal)
+- Reference RESEARCH.md for complex decisions
 
-**When to write entries:**
-- ✅ When **completing work** and **handing off** to another agent (e.g., backend-specialist → code-reviewer)
-- ✅ When **receiving work back** from another agent with changes needed (e.g., code-reviewer → backend-specialist)
-- ❌ Don't write "STARTED" entries (waste - just do the work)
-- ❌ Don't write summary entries after entire phase (defeats stream pattern)
+### Troubleshooting
 
-**Entry Types:**
+**When encountering bugs or unexpected behavior**, use the structured troubleshooting methodology.
 
-**HANDOFF Entry** (passing work to another agent):
-```markdown
-## YYYY-MM-DD HH:MM - [AUTHOR: agent-name] → [NEXT: next-agent]
+**See**: `troubleshooting.md` for complete 5-step loop (Research → Hypothesize → Implement → Test → Document), debug logging practices, and troubleshooting-specific WORKLOG format.
 
-Brief summary of what was done (5-10 lines max).
+**See**: `worklog-format.md` for troubleshooting WORKLOG entry format with hypothesis tracking.
 
-Gotcha: [critical issues encountered, if any]
-Lesson: [key insights, if any]
-Files: [key/files/changed.js]
+**Command**: Use `/troubleshoot` to apply systematic debugging approach
 
-→ Passing to {next-agent} for {reason}
-```
+### Architecture Decision Records
 
-**COMPLETE Entry** (phase fully done, no more handoffs):
-```markdown
-## YYYY-MM-DD HH:MM - [AUTHOR: agent-name] (Phase X.Y COMPLETE)
+**For significant technical decisions**, use `/adr` command to create Architecture Decision Records:
+- Architecture decisions affecting multiple components
+- Technology selections with trade-offs
+- Security approaches and threat models
+- Performance strategies with benchmarks
+- API design patterns and conventions
 
-Phase complete summary (5-10 lines).
-
-Status:
-- ✅ Tests passing
-- ✅ Quality gates met
-- ✅ PLAN.md updated
-
-Files: [key/files/changed.js]
-```
-
-**Required Elements:**
-- **Timestamp**: Always run `date '+%Y-%m-%d %H:%M'` - never estimate
-- **Agent identifier**: Name of the agent (or @username for humans via `/comment`)
-- **Arrow notation**: Use `→` for handoffs to show work flow
-- **Brief summary**: What YOU did (not entire phase history) - keep scannable
-- **Gotchas/Lessons**: Only if significant (don't force it)
-- **Files**: Key files modified (helps locate changes via diff)
-- **Handoff note**: Who receives work and why (for handoffs only)
-
-### WORKLOG Best Practices
-
-1. **Keep entries scannable**: ~500 chars is ideal, can be longer for critical gotchas
-2. **Focus on insights**: Document WHY things were done certain ways, not just WHAT
-3. **Capture alternatives**: "Tried X but Y worked better because..." helps future work
-4. **Reference deep dives**: "See RESEARCH.md #caching-strategy for full rationale"
-5. **Write for the future**: Developers reading weeks/months later need context
-
-**Good WORKLOG entry examples:**
-
-**Handoff entry:**
-```markdown
-## 2025-01-15 14:30 - [AUTHOR: backend-specialist] → [NEXT: code-reviewer]
-
-Implemented JWT auth endpoint with bcrypt hashing (12 rounds) and Redis token storage.
-
-Gotcha: Redis connection pooling required - single connection bottleneck
-Files: src/auth/login.ts, src/middleware/jwt.ts, tests/auth.test.ts
-
-→ Passing to code-reviewer for security validation
-```
-
-**Complete entry:**
-```markdown
-## 2025-01-15 15:35 - [AUTHOR: code-reviewer] (Phase 2.3 COMPLETE)
-
-Re-review approved (score: 94/100). All security issues resolved.
-
-Status:
-- ✅ Tests passing (48/48)
-- ✅ Security validated
-- ✅ PLAN.md checkbox updated
-```
-
-### When to Create RESEARCH.md
-
-**Create RESEARCH.md when decisions involve:**
-
-✅ **Complex analysis requiring detailed documentation:**
-- Evaluated **3+ alternatives** with detailed trade-off analysis
-- Performed **benchmarks or performance testing** with data
-- **Deep root cause analysis** for non-obvious bugs
-- **Architecture decisions** affecting multiple components
-- **Technical spikes** exploring multiple approaches
-- **Security decisions** with threat modeling
-
-✅ **Examples warranting RESEARCH.md:**
-- "Evaluated PostgreSQL vs MongoDB vs Redis for session storage (6 criteria, benchmarks)"
-- "Root cause: Memory leak from unclosed database connections in connection pool"
-- "API architecture: REST vs GraphQL vs gRPC (performance tests, ecosystem analysis)"
-- "Caching strategy: Redis vs Memcached vs in-memory (load testing results)"
-
-❌ **Keep in WORKLOG when:**
-- Decision is **straightforward** (~500 chars explains it fully)
-- Following **established patterns** from ADRs or guidelines
-- **Implementation details** without alternative approaches
-- Quick **gotchas or lessons** learned during coding
-
-❌ **Examples NOT needing RESEARCH.md:**
-- "Used React hooks instead of class components (team standard)"
-- "Fixed off-by-one error in pagination logic"
-- "Added input validation per security-guidelines.md"
-
-**Rule of thumb:**
-- **Can explain in ~500 chars?** → WORKLOG entry only
-- **Need multiple pages with data?** → Create RESEARCH.md section, reference from WORKLOG
-
-### RESEARCH.md Structure
-
-When creating RESEARCH.md, use clear sections with anchor-friendly IDs:
-
-```markdown
-# Technical Research
-
-## #caching-strategy - Redis vs Memcached Selection
-
-### Problem
-Need sub-10ms cache response times for user session data at 10K req/sec.
-
-### Alternatives Considered
-
-**Option 1: Redis**
-- Pros: Persistence, pub/sub, data structures
-- Cons: Slightly slower, more memory
-- Benchmark: 8ms avg latency
-
-**Option 2: Memcached**
-- Pros: Fastest, simple, less memory
-- Cons: No persistence, cache-only
-- Benchmark: 5ms avg latency
-
-**Option 3: In-memory (Node.js)**
-- Pros: Fastest, no network
-- Cons: Not shared across instances, memory limits
-- Benchmark: 1ms avg latency
-
-### Decision
-Selected **Redis** despite slower benchmarks because:
-1. Persistence protects against cold-start issues (10K sessions lost = bad UX)
-2. 8ms still well under 10ms SLA requirement
-3. Pub/sub enables real-time features later (roadmap: EPIC-005)
-
-### Implementation
-- Redis Cluster (3 nodes, replication factor 2)
-- Connection pooling (min: 10, max: 50)
-- Eviction policy: allkeys-lru
-
-### References
-- Benchmark code: `/benchmarks/cache-comparison/`
-- Architecture discussion: docs/project/adrs/ADR-003-caching-strategy.md
-```
-
-**Key elements:**
-- **Anchor IDs**: `##` headings like `#caching-strategy` for easy WORKLOG references
-- **Problem statement**: What decision needed to be made
-- **Alternatives**: Each option with pros/cons and data
-- **Decision rationale**: Why this choice, with justification
-- **Implementation details**: How the decision was implemented
-- **References**: Links to benchmarks, ADRs, related docs
-
-### When WORKLOG Entries Are Created
-
-**Automatically by `/implement`:**
-- After each phase completion
-- Documents phase implementation work
-- Prepended to top (reverse chronological)
-
-**Manually by humans via `/comment`:**
-- When developers make changes outside `/implement` workflow
-- Manual fixes, refactoring, debugging
-- Identified by @username instead of agent-name
-
-**At task completion:**
-- Final WORKLOG entry summarizing overall results
-- Documents completion of all acceptance criteria
-
-### WORKLOG Completeness Criteria
-
-Before marking a task complete, verify WORKLOG.md has:
-
-✅ **Narrative continuity**: WORKLOG tells coherent story from start to finish
-✅ **Lessons captured**: Key gotchas and discoveries documented
-✅ **File coverage**: Major implementation files referenced in entries
-✅ **Human contributions**: Any manual work documented via `/comment`
-✅ **RESEARCH references**: Complex decisions link to detailed analysis
-
-**Example complete WORKLOG:**
-```markdown
-# WORKLOG
-
-## 2025-01-15 16:00 - backend-specialist
-
-Task TASK-001 complete. All 4 phases finished, tests passing (97% coverage),
-code review score: 94. Authentication system ready for staging deployment.
-
-Files: See entries below for complete file list
-
----
-
-## 2025-01-15 14:30 - backend-specialist
-[Phase 1.2 entry - shown earlier]
-
----
-
-## 2025-01-15 10:15 - @alice
-
-Manual fix: Added rate limiting to prevent brute force attacks. Cloudflare wasn't
-blocking fast enough, added Express middleware (10 attempts/15min).
-
-Gotcha: Redis needed for distributed rate limit state
-Lesson: Should be in security requirements from start
-Files: src/middleware/rate-limit.ts
-
----
-
-## 2025-01-14 15:20 - database-specialist
-[Phase 1.1 entry]
-```
+**Decision documentation guidelines:**
+- **Simple decisions** → WORKLOG entry with brief rationale
+- **External research** → Investigation format (invoke context-analyzer)
+- **Architecture decisions** → ADR via `/adr` command
+- **Complex debugging** → Extended WORKLOG entries with hypothesis tracking
 
 ## Test-First Strategy
 
@@ -601,391 +467,71 @@ Phase 1.2: Implement user registration endpoint
 9. Write WORKLOG entry, proceed to next phase
 ```
 
+
 ## Quality Gates
 
-**Quality gates are validation checkpoints** that ensure code quality at different levels of development. This guideline is the **single source of truth** for quality gate configuration.
-
-### Quality Gate Hierarchy
-
-```
-Per-Phase Gates (finest granularity)
-  ↓ Multiple phases combine into...
-Per-Task Gates (task completion)
-  ↓ Multiple tasks combine into...
-Per-Epic Gates (epic completion)
-```
-
-**Enforcement**:
-- **Per-Phase Gates**: `/implement` command validates before marking phase complete
-- **Per-Task Gates**: `/branch merge develop` command validates before merging
-- **Per-Epic Gates**: Manual validation (checklist in epic Definition of Done)
-
-**Related Guidelines**:
-- `git-workflow.md`: Describes how `/branch merge` enforces per-task gates
-- `testing-standards.md`: References coverage targets from this file
-
-### Customizing Quality Dimensions
-
-**Quality dimensions are configured in the YAML frontmatter** at the top of this file. The `/quality` command reads this configuration to determine which quality aspects to assess.
-
-**Enabled Dimensions** (customize based on your team's priorities):
-- **code_quality**: Always recommended - code maintainability foundation
-- **security**: Critical for production systems
-- **performance**: Essential for high-traffic or resource-constrained apps
-- **testing**: Recommended - confidence in code correctness
-- **documentation**: Important for team collaboration (optional for MVPs)
-- **architecture**: Important for long-term maintainability
-
-**Customization Examples:**
-
-**Startup MVP** (speed over perfection):
-```yaml
-quality_dimensions:
-  enabled: [code_quality, testing, security]
-  # Dropped: documentation, performance, architecture (add later)
-```
-
-**Enterprise Product** (comprehensive quality):
-```yaml
-quality_dimensions:
-  enabled: [code_quality, security, performance, testing, documentation, architecture]
-  # All dimensions enabled for production-grade quality
-```
-
-**Performance-Critical App** (focus on speed):
-```yaml
-quality_dimensions:
-  enabled: [code_quality, performance, testing]
-  # Heavy focus on performance, security added when needed
-```
-
-**How It Works:**
-- The `/quality assess` command reads this configuration
-- Only enabled dimensions are assessed by their respective agents
-- Quality reports include only the dimensions you care about
-- You can add/remove dimensions as your project matures
-
-### Complexity Scoring
-
-**Complexity scoring helps the `/plan` command** determine if tasks should be broken down into smaller subtasks. Configure scoring rules in the YAML frontmatter at the top of this file.
-
-**How It Works:**
-1. The `/plan` command analyzes task requirements
-2. Assigns points based on complexity indicators (multi-domain integration, security, etc.)
-3. Recommends decomposition based on total complexity score
-4. Teams can customize point values and thresholds
-
-**Default Indicators** (customize based on your team's experience):
-- **Multi-domain integration** (+3 points): API + database, frontend + backend, UI + server
-- **Security implementation** (+2 points): Authentication, authorization, encryption, permissions
-- **Database schema changes** (+2 points): Migrations, schema modifications, data transformations
-- **External integrations** (+2 points): Third-party APIs, service connections, webhooks
-- **Performance optimization** (+2 points): Scaling, optimization, performance tuning
-- **UI/UX implementation** (+1 point): Component creation, interface design, responsive work
-- **Testing requirements** (+1 point): Test creation, validation, quality assurance
-
-**Thresholds:**
-- **High complexity (≥5 points)**: Suggest breaking into subtasks with focused responsibilities
-- **Medium complexity (3-4 points)**: Consider decomposition based on timeline
-- **Low complexity (≤2 points)**: Task appropriately scoped
-
-**Customization Examples:**
+**Quality gates are validation checkpoints** that ensure code quality at per-phase, per-task, and per-spec levels.
 
-**Senior Team** (higher threshold):
-```yaml
-complexity_scoring:
-  thresholds:
-    high_complexity: 8      # More confident handling complex tasks
-    medium_complexity: 5
-```
+**For complete quality gate configuration and enforcement details**, see `quality-gates.md` which documents:
+- Quality gate hierarchy (phase → task → spec)
+- Customizing quality dimensions
+- Complexity scoring system
+- Per-phase, per-task, and per-spec gates
+- Documentation synchronization checklist
 
-**Junior Team** (lower threshold):
-```yaml
-complexity_scoring:
-  thresholds:
-    high_complexity: 4      # Break down tasks earlier
-    medium_complexity: 2
-```
+**Quick Reference - Per-Phase Gates** (enforced by `/implement`):
+- ✅ All tests pass
+- ✅ Code review score ≥ 90
+- ✅ Test coverage ≥ 95% (or project target)
+- ✅ No critical security issues
+- ✅ Acceptance criteria met
 
-**Different Point Values** (team-specific challenges):
-```yaml
-complexity_scoring:
-  indicators:
-    multi_domain_integration: 5   # Team struggles with integration
-    security_implementation: 1    # Team has strong security expertise
-```
+**The quality-gates.md file is the single source of truth for gate configuration.**
 
-### Per-Phase Gates
+---
 
-**Required before marking phase complete:**
+## Planning and Implementation Structure
 
-1. **Functional**: All acceptance criteria met
-2. **Tests**: All tests pass, coverage ≥ 95%
-3. **Quality**: Code review score ≥ 90
-4. **Security**: No critical vulnerabilities (if security-relevant)
-5. **Documentation**: Inline docs for public APIs
+### Plan Creation and Review
 
-### Per-Task Gates
+**For complete planning details**, see `pm-guide.md` which documents:
+- Default phase structures by task type (frontend, backend, bug fixes, etc.)
+- Mandatory code-architect review requirements
+- Conditional security-auditor review for security-relevant tasks
+- Auto-detection criteria for security relevance
+- Alternative test-first patterns
 
-**Required before `/branch merge develop`:**
+**Referenced by**: `/plan` command when creating PLAN.md files
 
-1. **All phases complete**: Every phase passed its per-phase gates
-2. **Integration tests**: Full test suite passes
-3. **WORKLOG complete**: All work documented
-4. **No regressions**: Existing tests still pass
-5. **Branch up-to-date**: Merged latest from develop
+### Progress Tracking
 
-**Enforcement**: The `/branch merge develop` command (see `git-workflow.md`) enforces these gates:
-- Runs full test suite before merge
-- Blocks merge if tests fail
-- Validates branch status and changes
+**For progress tracking protocol**, see `pm-guide.md` which documents:
+- Dual tracking system (PLAN.md phases vs TASK.md acceptance criteria)
+- After-phase-completion checklist (verify, update PLAN, update TASK, write WORKLOG, consider RESEARCH)
+- Task completion validation criteria
+- When to mark items complete vs incomplete
 
-**This is the primary quality gate for task completion** - if you can merge to develop, your task meets quality standards.
+**Referenced by**: `/implement` command after each phase completion
 
-### Per-Epic Gates
+### Test-First Guidance
 
-**Required before closing epic:**
+**For test-first approach**, see `pm-guide.md` which documents:
+- Pragmatic test-first philosophy (test-first when you know, code-first when discovering)
+- Pre-implementation check for test phases
+- AI-powered test generation messaging
+- When to prompt for test generation vs allowing code-first
 
-1. **All tasks complete**: Every task in epic finished
-2. **Acceptance criteria**: Epic-level definition of done met
-3. **Documentation**: User-facing docs updated if needed
-4. **Deployment**: Changes successfully deployed to staging
-5. **Validation**: Stakeholder sign-off (if required)
+**Referenced by**: `/implement` command before implementation phases
 
-## Implementation Plan Structure
+### Agent Context Preparation
 
-**Referenced by:** `/plan` command when creating PLAN.md files
+**For agent briefing patterns**, see `pm-guide.md` which documents:
+- Context filtering by agent type (backend, frontend, test, security, database, performance)
+- What each agent receives (domain-specific vs full context)
+- Dynamic context loading process
+- How to avoid context overload
 
-### Default Phase Structures by Task Type
-
-**Standard Implementation:**
-1. Design → Test-Driven Implementation → Integration → Documentation
-
-**Frontend Tasks:**
-1. Design → Component Tests → Implementation → Responsive/E2E
-
-**Backend Tasks:**
-1. API Design → Unit Tests → Implementation → Integration Tests
-
-**Bug Fixes:**
-1. Investigation → Root Cause → Fix → Regression Tests
-
-**Database Tasks:**
-1. Schema Design → Migration Script → Unit Tests → Integration Tests
-
-**Security Tasks:**
-1. Threat Modeling → Security Tests → Implementation → Security Audit
-
-### Alternative Test-First Patterns
-
-Teams can choose different testing approaches based on context:
-
-- **Strict TDD**: Red-Green-Refactor cycle visible in every step
-- **BDD Scenarios**: Given/When/Then scenarios → Implement tests → Build features
-- **Test Pyramid**: Heavy unit tests, moderate integration, light E2E
-- **Pragmatic**: Spike/explore → Write tests → Implement production code
-
-**Note**: Phases are suggestions. Modify to fit your workflow and team preferences.
-
-## Plan Review Requirements
-
-**Referenced by:** `/plan` command before presenting plan to user
-
-### Mandatory Code-Architect Review
-
-**BEFORE presenting any plan to the user**, the `/plan` command must invoke the code-architect agent for review.
-
-**Code-Architect Reviews:**
-- Architectural soundness and consistency with existing ADRs
-- Phase structure and logical breakdown
-- Technology choices and patterns
-- Scalability and maintainability considerations
-- Cross-cutting concerns (security, performance, observability)
-- Integration with existing system architecture
-
-**Code-Architect May:**
-- Approve plan as-is (proceed to present to user)
-- Suggest modifications to phases or approach
-- Request additional phases for technical debt or infrastructure
-- Recommend creating ADR for significant architectural decisions
-- Identify potential architectural risks or anti-patterns
-
-**Only after code-architect approval should the plan be presented to the user.**
-
-## Progress Tracking Protocol
-
-**Referenced by:** `/implement` command after each phase completion
-
-### Dual Tracking System
-
-**PLAN.md**: Tracks implementation phases (what work needs to be done)
-**TASK.md/BUG.md**: Tracks acceptance criteria (what requirements must be satisfied)
-
-### After Each Phase Completion
-
-**Execute in this order:**
-
-**1. Verify Completion Thoroughly**
-   - All tests pass (run test suite)
-   - Code works as intended (manual verification if needed)
-   - Requirements from phase description fully met
-   - No errors, warnings, or broken functionality
-
-**2. Update PLAN.md (Phase Tracking)**
-   - Change `- [ ] 1.1 Task description` to `- [x] 1.1 Task description`
-   - ONLY mark complete when verified - never mark prematurely
-   - Use Edit tool to update the specific checkbox
-   - Update IMMEDIATELY after completion, not in batches
-
-**3. Update TASK.md/BUG.md (Acceptance Criteria Tracking)**
-   - **For local issues (TASK-###, BUG-###)**:
-     - Review acceptance criteria checkboxes in TASK.md/BUG.md
-     - If phase satisfies any criterion, mark complete: `- [ ] criterion` → `- [x] criterion`
-     - Example: Phase "1.2 Implement login form" satisfies "User can log in with email/password"
-     - ONLY check off when criterion fully satisfied and verified
-   - **For Jira issues (PROJ-###)**:
-     - Note satisfied criteria in WORKLOG entry (Jira is source of truth)
-     - Example: "✓ Satisfies Jira AC: User can log in with email/password"
-
-**4. Write WORKLOG Entry**
-   - Get timestamp: Run `date '+%Y-%m-%d %H:%M'` (never estimate)
-   - Document what was done, lessons learned
-   - Include which PLAN steps and TASK criteria were completed
-   - Prepend to top (reverse chronological order)
-   - See "WORKLOG Entry Format" section above for complete structure
-
-**5. Consider RESEARCH.md**
-   - If complex technical decisions were made, create RESEARCH.md section
-   - See "When to Create RESEARCH.md" section above for criteria
-
-**Critical**: Never mark items complete until verified working. Premature checkoffs lead to incomplete work and confusion.
-
-## Task Completion Validation
-
-**Referenced by:** `/implement` command when all PLAN.md phases are checked off
-
-### Completion Checklist
-
-**Required before marking any task complete:**
-
-**1. All PLAN.md Phases Checked Off**
-   - Verify EVERY phase checkbox is marked: `- [x] All phases`
-   - If any phases remain unchecked, task is NOT complete
-
-**2. All Acceptance Criteria Verified and Checked Off**
-   - **For local issues (TASK-###, BUG-###)**:
-     - EVERY checkbox in TASK.md/BUG.md acceptance criteria marked: `- [x] All criteria`
-   - **For Jira issues (PROJ-###)**:
-     - EVERY Jira acceptance criterion verified (documented in WORKLOG)
-   - If any criteria remain unsatisfied, task is NOT complete
-
-**3. Tests Passing**
-   - All test suites pass with 95%+ coverage (or configured target)
-   - Run full test suite before marking complete
-   - No failing tests, no errors, no warnings
-
-**4. WORKLOG Documented**
-   - Final entry summarizing overall task completion
-   - Lists all completed phases and satisfied criteria
-   - See "WORKLOG Completeness Criteria" section above
-
-**5. Epic Consistency (if epic exists)**
-   - Task marked complete in epic task list: `- [x] TASK-001`
-   - Epic progress updated
-
-**Final Checkpoint**: Can you honestly say this task is 100% complete with all requirements met? If no, keep working. If yes, mark complete.
-
-## Test-First Guidance Protocol
-
-**Referenced by:** `/implement` command before implementation phases
-
-### Pragmatic Test-First Philosophy
-
-**Test-first when you know what to build, code-first when discovering unknowns.**
-
-### Pre-Implementation Check
-
-**Before executing implementation phases (e.g., "2.2 Implement X"):**
-
-**1. Check for Test Phases**
-   - Look for preceding test phase (e.g., "2.1 Write tests for X")
-   - If test phase exists but is unchecked:
-     - **Prompt**: "Pragmatic test-first: Phase '2.1 Write tests' should typically come first. Execute 2.1 first? (yes/skip)"
-     - **NEVER BLOCK**: Always allow skip - user may be in discovery mode
-
-**2. If No Tests Found**
-   - **Prompt with options**:
-     1. Auto-generate comprehensive test suite from acceptance criteria (RECOMMENDED if requirements are clear)
-     2. I'll write tests manually first (good for learning/experimentation)
-     3. Skip tests for now - I'm in discovery mode (must add tests before phase completion)
-   - **Default**: Option 1 if no user input
-   - **Track choice**: Document in WORKLOG entry
-
-### AI-Powered Test Generation Messaging
-
-**Frame test generation as AI superpower, not chore:**
-- "✅ Generated comprehensive test suite with X unit tests, Y integration tests, Z edge cases. All tests documented for team reference."
-- Highlight: Create comprehensive test suites in seconds with explanatory comments
-- Benefit: Makes TDD/BDD easier than skipping tests!
-
-## Agent Context Briefing
-
-**Referenced by:** `/implement` command when invoking specialist agents
-
-### Principle
-
-**Provide domain-specific context to agents, not full epic context dump.**
-
-Filter and prepare only relevant information for each specialist to optimize performance and reduce context overload.
-
-### Context Filtering Patterns by Agent
-
-**Backend Specialists** receive:
-- API contracts, database schemas
-- Security requirements, performance targets
-- Relevant ADR decisions for backend architecture
-- Previous backend work from WORKLOG
-
-**Frontend Specialists** receive:
-- Component specifications, state management patterns
-- UI/UX requirements, responsive design needs
-- Relevant ADR decisions for frontend architecture
-- Previous frontend work from WORKLOG
-
-**Test Engineers** receive:
-- Coverage targets, validation patterns
-- Quality gates, existing test structure
-- Test-first approach configuration
-- Previous testing work from WORKLOG
-
-**Security Auditors** receive:
-- Threat models, authentication flows
-- Authorization requirements, compliance needs
-- Security-related ADR decisions
-- Previous security work from WORKLOG
-
-**Database Specialists** receive:
-- Schema requirements, migration patterns
-- Performance constraints, data validation
-- Database-related ADR decisions
-- Previous database work from WORKLOG
-
-**Performance Optimizers** receive:
-- Performance targets, current bottlenecks
-- Scaling requirements, optimization opportunities
-- Performance-related ADR decisions
-- Previous optimization work from WORKLOG
-
-### Dynamic Context Loading
-
-**Process:**
-1. Parse WORKLOG.md, RESEARCH.md, ADR files in real-time
-2. Extract only domain-relevant sections for selected agent
-3. Combine with phase-specific requirements from PLAN.md
-4. Include lessons learned from previous phases to avoid repeating mistakes
-5. Present concise, actionable context that eliminates noise
-
-**Benefit**: Agents focus on relevant information without context overload, improving decision quality and execution speed.
+**Referenced by**: `/implement` command when invoking specialist agents
 
 ## Command Integration
 
@@ -994,7 +540,7 @@ Filter and prepare only relevant information for each specialist to optimize per
 - **`/implement TASK-### PHASE`**: Executes development loop for specific phase
 - **`/plan TASK-###`**: Defines phases and acceptance criteria that drive the loop
 - **`/quality`**: Comprehensive quality assessment (superset of code review)
-- **`/test-fix`**: Automated test failure detection and resolution
+- **`/troubleshoot`**: Systematic debugging with research-first approach
 
 ### How Commands Enforce the Loop
 
@@ -1022,74 +568,23 @@ See individual command documentation for complete workflows.
 ### Example 1: Feature Implementation
 
 ```
-Task: TASK-001 - User Authentication
-Phase: 1.2 - Implement login endpoint
-
-1. Test-Engineer writes tests:
-   ✓ POST /api/login with valid credentials returns token
-   ✓ POST /api/login with invalid credentials returns 401
-   ✓ Token includes correct user claims
-   ✓ Login attempts are rate-limited
-
-2. Backend-Specialist implements:
-   - POST /api/login route
-   - Credential validation
-   - JWT token generation
-   - Rate limiting middleware
-
-3. Run tests: All pass ✅
-
-4. Code-Reviewer assesses:
-   - Score: 88
-   - Feedback: "Add password hashing timing attack protection"
-
-5. Backend-Specialist refactors:
-   - Implement constant-time comparison
-   - Update tests for timing safety
-
-6. Re-run tests: All pass ✅
-
-7. Code-Reviewer re-assesses:
-   - Score: 93 ✅
-
-8. Backend-Specialist writes WORKLOG:
-   "/comment Implemented login endpoint with JWT tokens and rate limiting.
-   Key decision: Use bcrypt.compare for timing-safe password verification.
-   Challenge: Initial implementation vulnerable to timing attacks.
-   Next: Implement token refresh mechanism in phase 1.3."
-
-9. Phase marked complete, proceed to phase 1.3
+TASK-001 Phase 1.2: Implement login endpoint
+→ Test-Engineer writes 4 tests (valid creds, invalid creds, token claims, rate limit)
+→ Backend-Specialist implements endpoint + JWT + rate limiting
+→ Tests pass, Code-Reviewer scores 88 (feedback: timing attack protection needed)
+→ Refactor with constant-time comparison, re-test, score 93 ✅
+→ WORKLOG entry, mark phase complete
 ```
 
 ### Example 2: Bug Fix
 
 ```
-Bug: BUG-003 - Cart total calculation incorrect for discounted items
-
-1. Test-Engineer writes failing test:
-   ✓ Cart with 10% discount shows correct total
-   (Currently fails - shows $100 instead of $90)
-
-2. Backend-Specialist investigates:
-   - Reads WORKLOG from previous cart work
-   - Identifies discount not applied in subtotal calculation
-
-3. Implement fix:
-   - Update calculateSubtotal() to apply discounts
-   - Add discount validation
-
-4. Run tests: All pass ✅ (including new test)
-
-5. Code-Reviewer assesses:
-   - Score: 95 ✅
-
-6. Backend-Specialist writes WORKLOG:
-   "/comment Fixed cart total calculation bug.
-   Root cause: Discount multiplier applied to total, not subtotal.
-   Also added validation to prevent negative discounts.
-   All existing cart tests still pass."
-
-7. Bug marked resolved, create PR
+BUG-003: Cart total calculation incorrect
+→ Test-Engineer writes failing test (expects $90, shows $100)
+→ Backend-Specialist investigates, finds discount not applied to subtotal
+→ Fix calculateSubtotal(), add validation
+→ Tests pass, Code-Reviewer scores 95 ✅
+→ WORKLOG entry, mark bug resolved
 ```
 
 ## CHANGELOG Updates
@@ -1104,12 +599,16 @@ See [Versioning and Releases](./versioning-and-releases.md) for complete CHANGEL
 
 ## Related Documentation
 
-- [API Guidelines](./api-guidelines.md) - REST/GraphQL API design patterns
-- [Coding Standards](./coding-standards.md) - Language-specific conventions
+**Core Workflow Guidelines:**
+- [Plan Structure](./pm-guide.md) - Phase patterns, reviews, progress tracking, test-first guidance
+- [WORKLOG Format](./worklog-format.md) - Standard and troubleshooting WORKLOG entry formats
+- [Issue Management](./pm-guide.md) - TASK.md, BUG.md, SPEC.md file formats
+- [Troubleshooting](./troubleshooting.md) - 5-step debug loop methodology
+
+**Supporting Guidelines:**
+- [Versioning and Releases](./versioning-and-releases.md) - Semantic versioning, release process, CHANGELOG maintenance
+- [Git Workflow](./git-workflow.md) - Branching and merge requirements
 - [Testing Standards](./testing-standards.md) - Test coverage and quality thresholds
-- [Security Guidelines](./security-guidelines.md) - Secure coding practices
-- [Versioning and Releases](./versioning-and-releases.md) - Semantic versioning and release process
-- [Git Workflow](./git-workflow.md) - Branch strategy and commit conventions
 
 ## General Development Loop Knowledge
 
