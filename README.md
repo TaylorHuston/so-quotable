@@ -201,20 +201,54 @@ See [Testing Standards](./docs/development/guidelines/testing-standards.md) for 
 
 ## 🌐 Deployment
 
+### Deployment Workflow (Free Tier)
+
+This project uses a **simplified deployment workflow** adapted for Convex free tier constraints:
+
+1. **Local Development**:
+   ```bash
+   # Terminal 1: Next.js dev server
+   npm run dev
+
+   # Terminal 2: Convex dev backend
+   npx convex dev
+   ```
+
+2. **Local Testing** (before production push):
+   ```bash
+   # Run all tests
+   npm run test:run
+
+   # Run E2E tests
+   npm run test:e2e
+
+   # TypeScript check
+   npm run type-check
+   ```
+
+3. **Production Deployment**:
+   ```bash
+   # Push to main branch → auto-deploys to Vercel
+   git push origin main
+   ```
+
 ### Environments
 
-- **Production**: Automatic deployment from `main` branch to Vercel
-- **Development**: `develop` branch for integration testing
-- **Preview**: Automatic preview deployments for all pull requests
+- **Production**: Automatic deployment from `main` branch to Vercel + Convex Cloud
+- **Development**: Local environment with `npx convex dev` (development deployment)
+
+**Note**: Preview deployments are not supported on Convex free tier (requires Pro plan). Test locally before pushing to production.
 
 ### Deployment Commands
 
 ```bash
-# Convex deployment (backend)
-npx convex deploy --prod
+# Local development (recommended workflow)
+npx convex dev              # Start Convex dev backend
+npm run dev                 # Start Next.js dev frontend
+npm run test:e2e            # Run E2E tests locally
 
-# Vercel deployment (frontend - auto-deploys via git push)
-git push origin main
+# Production deployment
+git push origin main        # Auto-deploys to Vercel + Convex production
 ```
 
 ### Authentication Deployment
@@ -224,13 +258,12 @@ git push origin main
 **Quick checklist**:
 1. Generate `AUTH_SECRET`: `openssl rand -base64 32`
 2. Configure Google OAuth credentials (Client ID + Secret)
-3. Set environment variables in Convex Dashboard
-4. Deploy backend: `npx convex deploy --prod`
-5. Set environment variables in Vercel
-6. Deploy frontend: `git push origin main`
-7. Update Google OAuth redirect URIs with production domain
+3. Set environment variables in Convex Dashboard (Settings → Environment Variables)
+4. Set `CONVEX_DEPLOY_KEY` in Vercel (Settings → Environment Variables)
+5. Deploy: `git push origin main`
+6. Update Google OAuth redirect URIs with production domain
 
-See [ADR-003: Deployment Strategy](./docs/project/adrs/ADR-003-environment-and-deployment-strategy.md) for details.
+See [ADR-003: Deployment Strategy](./docs/project/adrs/ADR-003-environment-and-deployment-strategy.md) for architecture details.
 
 ## 🔍 Code Quality
 
@@ -431,21 +464,23 @@ TBD
 
 ---
 
-**Project Status**: MVP Development (Phase: Infrastructure Setup Complete)
+**Project Status**: MVP Development (Phase: Infrastructure Complete)
 
 **Current Focus**: Core quote generation features (EPIC-002)
 
 **Latest**:
-- ✅ TASK-004: Convex Auth implementation complete with comprehensive documentation (2025-11-17)
-  - Email/password authentication with NIST-compliant validation
-  - Google OAuth integration
-  - Protected routes and session management
-  - 501 tests passing (94.18% coverage)
-  - Production deployment guide complete
+- ✅ TASK-006: Deployment pipeline configured (2025-11-22)
+  - Production deployments via Vercel + Convex Cloud
+  - Simplified workflow for Convex free tier
+  - Local E2E testing before production push
+  - Production deployment verified and operational
+- ✅ TASK-005: E2E testing infrastructure (Playwright)
+- ✅ TASK-004: Convex Auth (email/password + Google OAuth, 94% coverage)
 - ✅ TASK-003: Cloudinary integration (92% coverage, 146 tests)
 - ✅ TASK-002: Convex backend setup (97.36% coverage)
 - ✅ TASK-001: Next.js project initialized
 
-**Next**: Quote generation UI and image transformation features
+**Infrastructure**: Complete and production-ready
+**Next**: Quote generation UI and image transformation features (EPIC-002)
 
 
