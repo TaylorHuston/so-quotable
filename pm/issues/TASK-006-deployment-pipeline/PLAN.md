@@ -155,7 +155,7 @@ Convex free tier does not support preview deployment keys (Pro feature required)
   - Confirm health check includes critical dependencies
   - Document expected health check response format
 
-- [ ] 5.2 Document rollback procedures
+- [x] 5.2 Document rollback procedures
   - Create docs/deployment/rollback.md
   - Document instant rollback via Vercel dashboard
   - Document Convex backend rollback procedure

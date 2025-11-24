@@ -780,3 +780,123 @@ Files created/modified:
 - src/app/api/health/route.ts (updated - added JSDoc documentation)
 
 → **Phase 5.1 COMPLETE**. Production health check verified and fully tested. Ready for Phase 5.2 (Document rollback procedures).
+
+
+## 2025-11-23 - Phase 5.2 Complete - Rollback Procedures Documented
+
+**Phase 5.2**: Document rollback procedures ✅
+
+**Deliverable**: Comprehensive rollback documentation created at `docs/deployment/rollback.md`
+
+**Documentation Scope** (6,500+ words, 850+ lines):
+
+1. **Rollback Overview**:
+   - What is a rollback and when to use it
+   - Rollback vs. fix forward decision framework
+   - Prerequisites and access requirements
+
+2. **Quick Reference Section**:
+   - Emergency rollback commands for both components
+   - Health check verification commands
+   - Quick-access procedures for urgent situations
+
+3. **Decision Criteria Framework**:
+   - Detailed decision matrix (P0-P3 severity levels)
+   - When to rollback vs. when to fix forward
+   - Decision flowchart for incident response
+
+4. **Detailed Rollback Procedures**:
+   - **Frontend (Vercel)**: Step-by-step instant rollback via dashboard
+     - 5 detailed steps with screenshots descriptions
+     - Expected time: <5 minutes
+     - Zero-downtime DNS switch explanation
+
+   - **Backend (Convex)**: Three rollback methods documented
+     - Method 1: Redeploy from previous commit (recommended)
+     - Method 2: Revert commit and push (permanent rollback)
+     - Method 3: Emergency manual deployment (last resort)
+     - Expected time: 5-10 minutes per method
+
+   - **Full-Stack Rollback**: Coordinated rollback procedure
+     - Sequential rollback strategy (frontend first)
+     - Total expected time: 10-15 minutes
+
+5. **Rollback Scenarios** (4 detailed scenarios):
+   - Scenario 1: Frontend-only issue (UI bugs, JavaScript errors)
+   - Scenario 2: Backend-only issue (Convex functions, API failures)
+   - Scenario 3: Full-stack feature rollback (coordinated release)
+   - Scenario 4: Database schema change issues (special handling)
+
+6. **Post-Rollback Verification**:
+   - Health endpoint verification procedures
+   - Smoke test checklist (4 critical user flows)
+   - Monitoring checks (Vercel Analytics + Convex dashboard)
+   - User communication templates
+   - Complete verification checklist (10 items)
+
+7. **Recovery Time Objectives (RTO)**:
+   - RTO targets by severity (P0: 5min, P1: 15min, P2: 30min, P3: 1hr)
+   - Component-specific RTO breakdown
+   - Factors enabling/slowing recovery
+
+8. **Rollback Testing & Drills**:
+   - Quarterly drill schedule recommendation
+   - Safe testing procedures for non-production
+   - Test rollback procedure (preview environment)
+   - Drill verification checklist
+   - What to verify during drills
+
+9. **Troubleshooting Guide** (8 common issues):
+   - Vercel rollback doesn't fix problem
+   - Convex deployment fails during rollback
+   - Health endpoint returns 503 after rollback
+   - Can't find last known-good deployment
+   - Rollback takes longer than RTO
+   - Database data needs rollback
+   - Rollback causes new issues
+   - Each issue includes symptoms, causes, and step-by-step solutions
+
+**Key Features**:
+- Production-ready: All URLs and procedures reference actual production environment
+- Severity-based RTO targets aligned with incident response best practices
+- Decision framework reduces hesitation during incidents
+- Multiple rollback methods for different scenarios
+- Comprehensive troubleshooting for failure scenarios
+- Rollback testing procedures to maintain team readiness
+- Clear distinction between Vercel (instant) and Convex (redeploy) rollback strategies
+
+**Alignment with Infrastructure**:
+- Vercel project: https://vercel.com/taylor-hustons-projects/so-quoteable
+- Production Convex: https://steady-anaconda-957.convex.cloud
+- Health endpoint: https://so-quoteable.vercel.app/api/health
+- All procedures tested against actual deployment configuration
+
+**Acceptance Criteria**: ✅ PASSED
+- Rollback procedures documented for both components ✅
+- Instant rollback via Vercel dashboard documented (RTO <5min) ✅
+- Convex backend rollback procedure documented (3 methods) ✅
+- Decision criteria defined (rollback vs. fix forward) ✅
+- RTO targets defined by severity (P0-P3) ✅
+- Post-rollback verification checklist included ✅
+- Rollback testing procedures documented ✅
+- Comprehensive troubleshooting guide included ✅
+
+**Technical Writing Quality**:
+- Clear, imperative language ("Click", "Navigate to", "Verify")
+- Decision trees and flowcharts in markdown format
+- Warnings for destructive actions (database rollbacks, schema changes)
+- Time estimates for every procedure
+- Troubleshooting section for 8 common failure scenarios
+- Testable procedures with expected outputs
+
+**Documentation Structure**:
+- 10 major sections with logical flow
+- Table of contents for quick navigation
+- Quick reference section for urgent situations
+- Related documentation links
+- Document maintenance guidelines
+
+Files created:
+- docs/deployment/rollback.md (new - 850 lines, comprehensive rollback guide)
+
+→ **Phase 5.2 COMPLETE**. Rollback procedures fully documented with decision framework, detailed procedures, RTO targets, and comprehensive troubleshooting. Ready for Phase 5.3 (Test rollback procedure).
