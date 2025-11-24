@@ -15,6 +15,7 @@
 - Phase 3.2: `7a8b59a` - Automated deployments configured in Phase 2.3 (complete)
 - Phase 3.3: TBD - Production backend verified, known issue documented (complete)
 - Phase 5.1: `28efffb` - Health endpoint tests and documentation (complete)
+- Phase 5.2: `40f1359` - Rollback procedures documentation (complete)
 
 ---
 
