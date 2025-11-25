@@ -184,7 +184,7 @@ Convex free tier does not support preview deployment keys (Pro feature required)
 
 **Objective**: Create comprehensive deployment documentation for team reference.
 
-- [ ] 6.1 Update README.md with deployment section
+- [x] 6.1 Update README.md with deployment section
   - Quick start for new developers
   - Link to detailed deployment docs
   - List deployment environments and URLs

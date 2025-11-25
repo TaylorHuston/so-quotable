@@ -18,6 +18,7 @@
 - Phase 5.2: `40f1359` - Rollback procedures documentation (complete)
 - Phase 5.3: `3f99378` - Rollback procedure tested (39 seconds, 87% under RTO) (complete)
 - Phase 5.4: DEFERRED - Sentry configuration deferred to post-MVP (documentation only)
+- Phase 6.1: TBD - README.md deployment section updated (complete)
 
 ---
 
@@ -60,6 +61,86 @@ npx @sentry/wizard -i nextjs
 - WORKLOG.md: This decision entry
 
 → Phase 5.4 DEFERRED. Ready for Phase 6 (Deployment Documentation).
+
+---
+
+## 2025-11-24 - Phase 6.1 Complete - README.md Deployment Section Updated
+
+**Phase 6.1**: Update README.md with deployment section ✅
+
+**Deliverable**: Comprehensive deployment section added to README.md
+
+**Content Added** (7 subsections):
+
+1. **Deployment Environments**:
+   - Environment comparison table (Production vs Development)
+   - Live URLs and backend deployment links
+   - Clear purpose statement for each environment
+
+2. **Quick Start - Deploy to Production**:
+   - 2-step deployment process (test locally → push to main)
+   - Deployment time: 2-3 minutes
+   - Rollback time: <1 minute (tested: 39 seconds)
+
+3. **CI/CD Pipeline Overview**:
+   - Automated workflow diagram (push → build → deploy → live)
+   - Build process breakdown (Next.js + Convex + env vars)
+   - Manual deployment commands (if needed)
+
+4. **Environment Variables**:
+   - 8 required production variables in table format
+   - Where to set each variable (Vercel vs Convex Dashboard)
+   - Links to detailed setup guides
+
+5. **Monitoring and Health Checks**:
+   - Health endpoint curl example with expected response
+   - Monitoring dashboard links (Vercel Analytics + Convex Dashboard)
+   - Health check validation procedure
+
+6. **Rollback Procedures**:
+   - Emergency rollback commands (CLI + Dashboard)
+   - Link to detailed rollback guide (850+ lines)
+   - Decision criteria and RTO targets
+
+7. **Free Tier Constraints**:
+   - Convex free tier limitations clearly documented
+   - Adapted development workflow
+   - Upgrade path to Convex Pro tier
+
+**Writing Quality**:
+- Concise and scannable (developers can find info quickly)
+- Tables for quick reference (environments, variables)
+- Code blocks for copy-paste commands
+- Links to detailed documentation for deep dives
+- Matches existing README.md style and formatting
+
+**User Experience Improvements**:
+- New developers can understand deployment in <5 minutes
+- Quick-start commands for common tasks (deploy, rollback, health check)
+- Clear environment separation (production vs development)
+- Comprehensive but not overwhelming (details in linked docs)
+
+**Documentation Links Verified**:
+- ✅ docs/deployment/environment-setup.md (600+ lines)
+- ✅ docs/deployment/github-secrets-setup.md
+- ✅ docs/deployment/rollback.md (850+ lines)
+- ✅ docs/project/adrs/ADR-003-environment-and-deployment-strategy.md
+- ✅ Vercel project dashboard (correct URL)
+- ✅ Convex production deployment dashboard (steady-anaconda-957)
+
+**Acceptance Criteria**: ✅ PASSED
+- Deployment section is comprehensive but concise ✅
+- All environment URLs are correct ✅
+- Links to detailed docs work ✅
+- Commands are accurate and tested ✅
+- Follows existing README.md style ✅
+- Quick start for new developers included ✅
+- Free tier constraints documented ✅
+
+Files modified:
+- README.md (Deployment section updated - replaced 68 lines with 130 lines)
+
+→ **Phase 6.1 COMPLETE**. README.md now has comprehensive deployment documentation. Ready for Phase 6.2 (Create deployment runbook).
 
 ---
 
