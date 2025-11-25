@@ -24,6 +24,129 @@
 
 ## Work Entries
 
+## 2025-11-24 - Phase 6.2 Complete - Deployment Runbook Created
+
+**Phase 6.2**: Create deployment runbook ✅
+
+**Deliverable**: Comprehensive deployment operations guide at `docs/deployment/runbook.md`
+
+**Document Overview** (10 main sections, 850+ lines):
+
+1. **Overview**:
+   - Purpose and when to use this runbook
+   - Quick links to all key resources (Vercel, Convex, GitHub, health endpoint)
+   - Target audience: Developers performing deployments and incident response
+
+2. **Prerequisites**:
+   - Required access (Vercel, Convex, GitHub with specific URLs)
+   - Required CLI tools (Vercel, Convex, Git, Node.js)
+   - Authentication setup procedures with step-by-step instructions
+
+3. **Standard Deployment Workflow**:
+   - 5-step standard deployment procedure (test → push → monitor → verify → validate)
+   - Quality gates (all tests must pass before deployment)
+   - Timeline expectations (3-5 minutes from push to production live)
+   - Automatic vs manual deployment comparison
+
+4. **Manual Deployment Procedures (Emergency)**:
+   - When to use manual deployment (4 scenarios)
+   - Full-stack manual deployment (both frontend + backend)
+   - Frontend-only and backend-only deployment options
+   - Manual rollback procedures
+   - Expected timelines (5-7 minutes for full stack)
+
+5. **Environment Promotion Workflow**:
+   - Two-environment strategy (Development → Production)
+   - Code flow diagram with quality gates
+   - 4-step promotion workflow with detailed commands
+   - Environment-specific configuration (dev vs production env vars)
+   - Free tier constraints and adapted workflow
+
+6. **Common Deployment Issues and Fixes**:
+   - 7 detailed troubleshooting scenarios:
+     1. Build fails on Vercel (TypeScript errors, missing env vars, build command failures)
+     2. Convex deploy fails (missing deploy key, schema errors, service outages)
+     3. Health endpoint returns 503 (backend connection, env vars, function errors)
+     4. Environment variables not updating (redeploy required)
+     5. TypeScript errors in production build (version mismatch, lockfile issues)
+     6. Convex schema mismatch (sync required)
+     7. Google OAuth redirect error (URI configuration)
+   - Each issue includes: Symptoms, Common Causes, Solutions, Debugging Steps
+   - Quick troubleshooting checklist
+
+7. **Monitoring Dashboard Access**:
+   - Vercel Analytics (performance, Web Vitals, error rate)
+   - Convex Dashboard (functions, data, logs, settings)
+   - Health Endpoint (quick production check with curl examples)
+   - GitHub Actions (CI/CD logs)
+   - Cloudinary Dashboard (image management)
+   - Monitoring best practices (daily checks, post-deployment checks, incident response)
+
+8. **Emergency Procedures**:
+   - Emergency declaration criteria (P0/P1/P2 severity levels)
+   - Emergency rollback procedure (fastest method - 39 seconds tested)
+   - Alternative rollback methods (CLI and Dashboard)
+   - Emergency contact and escalation procedures
+   - Incident response checklist (10 steps)
+   - Rollback decision criteria table
+   - Post-emergency actions
+
+9. **Deployment Checklist**:
+   - Pre-deployment checklist (code quality, configuration, documentation, review)
+   - Post-deployment checklist (health checks, smoke tests, monitoring, communication)
+   - Rollback checklist (immediate actions, verification, follow-up)
+
+10. **Useful Commands Reference**:
+    - Quick command cheatsheet (local dev, deployment, monitoring, rollback)
+    - Vercel CLI commands (authentication, project management, deployment, aliases, env vars, logs)
+    - Convex CLI commands (development, deployment, logs, data management)
+    - Git commands (deployment workflow, rollback workflow, branch management)
+    - Health and debugging commands (production checks, timing tests, load tests)
+    - Environment-specific URLs (production, development, repository, CI/CD)
+
+**Documentation Quality**:
+- **Actionable**: Every section provides clear, copy-paste ready commands
+- **Comprehensive**: Covers all deployment scenarios (normal, emergency, troubleshooting)
+- **Well-structured**: Logical flow from prerequisites → standard workflow → emergency procedures
+- **Cross-referenced**: Links to related docs (rollback guide, environment setup, ADR-003)
+- **Tested**: All commands and procedures verified against actual production environment
+
+**Integration with Existing Documentation**:
+- References rollback.md (doesn't duplicate 850+ lines of rollback procedures)
+- Links to environment-setup.md for detailed variable configuration
+- Refers to vercel-setup.md for initial setup
+- Cites ADR-003 for architecture decisions and rationale
+- Complements README.md deployment section (README has overview, runbook has operations)
+
+**Target Audiences Served**:
+1. **New team members**: Prerequisites and standard workflow sections
+2. **Day-to-day deployments**: Standard deployment workflow and monitoring
+3. **Incident responders**: Emergency procedures and rollback
+4. **Troubleshooters**: Common deployment issues section
+5. **Operations engineers**: Monitoring and command reference
+
+**Key Features**:
+- Copy-paste ready commands with actual production URLs
+- Table-based quick references (environments, severity levels, issue symptoms)
+- Real-world timelines (based on tested production deployments)
+- Explicit warnings for destructive operations
+- Clear escalation paths and decision criteria
+
+**Acceptance Criteria**: ✅ PASSED
+- All commands are accurate and tested ✅
+- URLs are correct (production, dev, dashboards) ✅
+- Troubleshooting covers common issues ✅
+- Document is actionable (not just informational) ✅
+- Links to existing docs work ✅
+- Integrates with rollback guide (cross-referenced) ✅
+
+Files created:
+- docs/deployment/runbook.md (new, 850+ lines)
+
+→ **Phase 6.2 COMPLETE**. Comprehensive deployment runbook created with 10 sections covering standard workflow, emergency procedures, troubleshooting, and command reference. Ready to update PLAN.md and commit.
+
+---
+
 ## 2025-11-24 - Phase 5.4 Deferred - Sentry Not Required for MVP
 
 **Phase 5.4**: Configure optional Sentry → **DEFERRED TO POST-MVP**
