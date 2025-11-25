@@ -84,13 +84,18 @@ Before performing a rollback, ensure you have:
 
 ### Emergency Rollback Commands
 
-**Frontend Rollback** (via Vercel Dashboard):
+**Frontend Rollback** (via Vercel Dashboard or CLI):
 ```
+Dashboard Method:
 1. Go to: https://vercel.com/taylor-hustons-projects/so-quoteable/deployments
 2. Find last known-good deployment
 3. Click "..." menu → "Promote to Production"
 4. Confirm promotion
 ⏱️ Expected time: <5 minutes
+
+CLI Method (faster):
+vercel alias set <previous-deployment-url> so-quoteable.vercel.app
+⏱️ Expected time: <1 minute
 ```
 
 **Backend Rollback** (via Git + Convex deploy):
@@ -204,13 +209,50 @@ Vercel provides instant rollback via dashboard. This is the fastest rollback met
 4. Check health endpoint: `curl https://so-quoteable.vercel.app/api/health`
 5. Test critical user flows (see [Post-Rollback Verification](#post-rollback-verification))
 
-#### Expected Time: <5 minutes
+#### Expected Time: <5 minutes (Dashboard), <1 minute (CLI)
 
-**Breakdown**:
+**Breakdown (Dashboard Method)**:
 - Step 1-2 (Find deployment): 1 minute
 - Step 3 (Promote): 30 seconds
 - Step 4 (DNS propagation): 1-2 minutes
 - Step 5 (Verification): 2 minutes
+
+**Breakdown (CLI Method)**:
+- Find deployment URL: 30 seconds
+- Execute alias command: 1-5 seconds
+- DNS propagation: 30-60 seconds
+- Verification: 30 seconds
+- **Total: ~2 minutes**
+
+#### Alternative: Vercel CLI Rollback (Faster)
+
+For fastest rollback (tested at 39 seconds):
+
+```bash
+# 1. List recent production deployments
+vercel ls --prod | head -5
+
+# 2. Identify previous deployment URL (second in list)
+# Example: https://so-quoteable-2bpn5tpnu-taylor-hustons-projects.vercel.app
+
+# 3. Set production alias to previous deployment
+vercel alias set so-quoteable-2bpn5tpnu-taylor-hustons-projects.vercel.app so-quoteable.vercel.app
+
+# 4. Verify rollback
+curl https://so-quoteable.vercel.app/api/health
+```
+
+**Advantages of CLI Method**:
+- Faster execution (1-2 minutes vs 3-5 minutes)
+- No browser/dashboard access needed
+- Can be scripted for automation
+- Direct command-line feedback
+
+**When to Use CLI Method**:
+- Emergency incidents requiring fastest possible rollback
+- Dashboard is slow or unresponsive
+- Scripted rollback procedures
+- Remote access without browser available
 
 #### Rollback Impact
 

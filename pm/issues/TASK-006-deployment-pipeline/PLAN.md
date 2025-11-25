@@ -162,11 +162,11 @@ Convex free tier does not support preview deployment keys (Pro feature required)
   - Include rollback decision criteria
   - Add recovery time objectives (RTO)
 
-- [ ] 5.3 Test rollback procedure
+- [x] 5.3 Test rollback procedure
   - Deploy a test change to production
-  - Practice rollback via Vercel dashboard ("Promote to Production")
-  - Verify rollback completes in <5 minutes
-  - Document any issues encountered
+  - Practice rollback via Vercel CLI (`vercel alias` command)
+  - Verify rollback completes in <5 minutes (achieved 39 seconds)
+  - Document any issues encountered (vercel promote failed, alias worked)
 
 - [ ] 5.4 Configure optional Sentry (recommended but not blocking)
   - Create Sentry account and project
