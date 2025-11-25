@@ -20,7 +20,7 @@
 - Phase 5.4: DEFERRED - Sentry configuration deferred to post-MVP (documentation only)
 - Phase 6.1: `45ea4c9` - README.md deployment section updated (complete)
 - Phase 6.2: `4e392a7` - Deployment runbook created (complete)
-- Phase 6.3: TBD - Monitoring and observability documentation (complete)
+- Phase 6.3: `b8a118f` - Monitoring and observability documentation (complete)
 
 ---
 
