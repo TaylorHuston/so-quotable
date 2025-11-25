@@ -21,7 +21,7 @@
 - Phase 6.1: `45ea4c9` - README.md deployment section updated (complete)
 - Phase 6.2: `4e392a7` - Deployment runbook created (complete)
 - Phase 6.3: `b8a118f` - Monitoring and observability documentation (complete)
-- Phase 6.4: TBD - Deployment checklist with rollback decision tree (complete)
+- Phase 6.4: `ac263b8` - Deployment checklist with rollback decision tree (complete) ✅ TASK-006 COMPLETE
 
 ---
 
