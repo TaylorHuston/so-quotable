@@ -168,11 +168,15 @@ Convex free tier does not support preview deployment keys (Pro feature required)
   - Verify rollback completes in <5 minutes (achieved 39 seconds)
   - Document any issues encountered (vercel promote failed, alias worked)
 
-- [ ] 5.4 Configure optional Sentry (recommended but not blocking)
-  - Create Sentry account and project
-  - Install @sentry/nextjs if time permits
-  - Run `npx @sentry/wizard -i nextjs`
-  - Document Sentry setup for post-MVP enhancement
+- [x] 5.4 Configure optional Sentry (recommended but not blocking)
+  - **DEFERRED TO POST-MVP** - Not required for MVP launch
+  - Sentry error tracking is a nice-to-have enhancement, not blocking
+  - Current monitoring: Vercel Analytics + health endpoint + Convex dashboard logs
+  - **Post-MVP Setup** (documented in Post-MVP Enhancements section):
+    1. Create Sentry account and project
+    2. Install: `npm install @sentry/nextjs`
+    3. Configure: `npx @sentry/wizard -i nextjs`
+    4. Add SENTRY_DSN to Vercel environment variables
 
 **Acceptance**: Health check works in production, rollback procedure is documented and tested.
 

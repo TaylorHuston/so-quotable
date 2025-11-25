@@ -17,10 +17,51 @@
 - Phase 5.1: `28efffb` - Health endpoint tests and documentation (complete)
 - Phase 5.2: `40f1359` - Rollback procedures documentation (complete)
 - Phase 5.3: `3f99378` - Rollback procedure tested (39 seconds, 87% under RTO) (complete)
+- Phase 5.4: DEFERRED - Sentry configuration deferred to post-MVP (documentation only)
 
 ---
 
 ## Work Entries
+
+## 2025-11-24 - Phase 5.4 Deferred - Sentry Not Required for MVP
+
+**Phase 5.4**: Configure optional Sentry → **DEFERRED TO POST-MVP**
+
+**Decision**: Skip Sentry implementation for MVP launch.
+
+**Rationale**:
+- Phase 5.4 was marked "optional" and "not blocking" in original plan
+- Current monitoring is sufficient for MVP:
+  - ✅ Vercel Analytics (page views, performance, Web Vitals)
+  - ✅ Health endpoint (`/api/health`) with Convex connectivity check
+  - ✅ Convex dashboard logs for backend function monitoring
+  - ✅ Tested rollback procedures (39-second RTO achieved)
+- Sentry adds complexity without immediate MVP value
+- Can be added post-MVP when error volume justifies the overhead
+
+**Post-MVP Implementation Notes** (for future reference):
+```bash
+# 1. Create Sentry project at sentry.io
+# 2. Install Sentry SDK
+npm install @sentry/nextjs
+
+# 3. Run Sentry wizard for automatic configuration
+npx @sentry/wizard -i nextjs
+
+# 4. Add to Vercel environment variables:
+#    - SENTRY_DSN (from Sentry project settings)
+#    - SENTRY_AUTH_TOKEN (for source maps upload)
+
+# 5. Configure error boundaries in layout.tsx
+```
+
+**Files Updated**:
+- PLAN.md: Phase 5.4 marked complete with deferral note
+- WORKLOG.md: This decision entry
+
+→ Phase 5.4 DEFERRED. Ready for Phase 6 (Deployment Documentation).
+
+---
 
 <!-- Use worklog-format.md for entry structure -->
 
