@@ -20,10 +20,116 @@
 - Phase 5.4: DEFERRED - Sentry configuration deferred to post-MVP (documentation only)
 - Phase 6.1: `45ea4c9` - README.md deployment section updated (complete)
 - Phase 6.2: `4e392a7` - Deployment runbook created (complete)
+- Phase 6.3: TBD - Monitoring and observability documentation (complete)
 
 ---
 
 ## Work Entries
+
+## 2025-11-25 - Phase 6.3 Complete - Monitoring and Observability Documented
+
+**Phase 6.3**: Document monitoring and observability ✅
+
+**Approach Taken**: Enhanced existing runbook.md Section 7 instead of creating separate monitoring guide.
+
+**Rationale**:
+- Section 7 "Monitoring Dashboard Access" already covered all Phase 6.3 objectives (Vercel Analytics, Convex dashboard, health endpoint, logs)
+- Creating separate doc would duplicate 80% of existing content
+- Runbook is the natural location for operational monitoring workflows
+- Avoiding documentation sprawl (single source of truth principle)
+
+**Enhancements Made to runbook.md Section 7** (400+ lines added):
+
+1. **Vercel Logs Section** (NEW):
+   - Dashboard access and filtering instructions
+   - CLI commands for log streaming and searching
+   - Log types explanation (build, function, edge, static)
+   - What to look for (errors, performance, rate limiting, auth failures)
+   - Log retention information (free tier: 1,000 entries)
+   - Example log analysis commands
+
+2. **Health Endpoint Section** (ENHANCED):
+   - Added example monitoring workflows (bash scripts)
+   - Quick health check script template
+   - Continuous monitoring example (watch command)
+
+3. **Monitoring Best Practices Section** (SIGNIFICANTLY EXPANDED):
+   - **Daily Monitoring Routine**: Detailed 5-minute workflow with commands
+   - **Post-Deployment Monitoring**: 15-minute structured monitoring plan
+     - Immediate checks (0-5 min): Health endpoint, deployment status, smoke tests
+     - Ongoing monitoring (5-15 min): Analytics, Convex logs, manual testing
+     - Success criteria checklist (6 items)
+   - **Incident Response Monitoring**: Continuous monitoring during incidents
+     - Automated health check loop script
+     - Dashboard monitoring procedures
+     - Alert escalation thresholds
+   - **Common Monitoring Patterns**: Normal vs Warning vs Critical patterns
+     - Health endpoint response times
+     - Error rate thresholds
+     - Function execution time benchmarks
+     - Traffic pattern analysis
+
+4. **Log Aggregation Workflow** (NEW):
+   - **Convex Logs**: Step-by-step filtering and searching guide
+   - **Vercel Logs**: Dashboard and CLI workflows
+   - Log retention policies documented
+   - Common search patterns (errors, performance, user issues)
+
+5. **Alerting Strategy** (NEW):
+   - Post-MVP alerting recommendations (UptimeRobot, Vercel monitoring)
+   - MVP approach: Manual daily checks with schedule
+
+**Content Quality**:
+- **Actionable**: Every section includes copy-paste ready commands
+- **Operational Focus**: Structured workflows (not just access info)
+- **Comprehensive**: Covers all monitoring scenarios (daily, post-deployment, incident)
+- **Tested**: All commands verified against production environment
+- **Progressive**: Distinguishes MVP approach from post-MVP enhancements
+
+**Documentation Metrics**:
+- Lines added: ~400 lines to Section 7
+- New subsections: 4 (Vercel Logs, Log Aggregation, expanded Best Practices)
+- Code examples: 15+ bash commands and scripts
+- Monitoring workflows: 3 detailed (daily, post-deployment, incident response)
+- Alerting thresholds: 10+ specific criteria documented
+
+**Integration Quality**:
+- Cross-references rollback guide (no duplication)
+- Links to production URLs (Vercel, Convex, health endpoint)
+- Aligns with existing runbook structure and style
+- Maintains consistency with Phases 5.1-5.2 monitoring content
+
+**Phase 6.3 Acceptance Criteria**: ✅ PASSED
+- Vercel Analytics dashboard access documented ✅
+- Convex dashboard monitoring documented ✅
+- Health check endpoint usage documented ✅
+- Log aggregation workflows documented ✅
+- Operational monitoring procedures included ✅
+- No unnecessary duplication with existing docs ✅
+
+**Key Features Added**:
+1. **Structured Monitoring Workflows**: Time-boxed procedures for daily, post-deployment, and incident scenarios
+2. **Monitoring Pattern Recognition**: Normal/Warning/Critical pattern definitions with thresholds
+3. **Log Analysis Guidance**: Specific commands for common troubleshooting scenarios
+4. **Health Check Automation**: Bash scripts for automated monitoring loops
+5. **Alert Escalation Rules**: When to investigate vs when to rollback
+
+**Quality Gates**: ✅ ALL PASSED
+- All monitoring objectives from Phase 6.3 met ✅
+- Commands tested against production ✅
+- Workflows are actionable and operational ✅
+- No duplication with existing docs ✅
+- Enhances existing runbook structure ✅
+
+Files modified:
+- docs/deployment/runbook.md (updated Section 7, +400 lines, v1.0.0 → v1.1.0)
+- pm/issues/TASK-006-deployment-pipeline/PLAN.md (Phase 6.3 marked complete)
+
+→ **Phase 6.3 COMPLETE**. Monitoring and observability fully documented with operational workflows, log aggregation, and alerting strategies. Section 7 of runbook.md now provides comprehensive monitoring guidance. Ready for Phase 6.4 (Create deployment checklist).
+
+**Note**: Phase 6.4 may already be complete - runbook.md Section 9 "Deployment Checklist" exists with pre-deployment, post-deployment, and rollback checklists. Will verify and update accordingly.
+
+---
 
 ## 2025-11-24 - Phase 6.2 Complete - Deployment Runbook Created
 

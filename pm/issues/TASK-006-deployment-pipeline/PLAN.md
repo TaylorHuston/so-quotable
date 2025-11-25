@@ -197,11 +197,12 @@ Convex free tier does not support preview deployment keys (Pro feature required)
   - Common deployment issues and fixes (7 scenarios)
   - Monitoring dashboard access (5 dashboards)
 
-- [ ] 6.3 Document monitoring and observability
+- [x] 6.3 Document monitoring and observability
   - Vercel Analytics dashboard access
   - Convex dashboard monitoring
   - Health check endpoint usage
   - Log aggregation (Vercel logs)
+  - Enhanced runbook.md Section 7 with operational workflows
 
 - [ ] 6.4 Create deployment checklist
   - Pre-deployment verification steps

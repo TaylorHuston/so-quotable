@@ -1,8 +1,8 @@
 # Deployment Runbook
 
-**Document Status**: Phase 6.2 Complete
-**Last Updated**: 2025-11-24
-**Related**: TASK-006 Phase 6.2 - Create deployment runbook
+**Document Status**: Phase 6.3 Complete
+**Last Updated**: 2025-11-25
+**Related**: TASK-006 Phase 6.3 - Document monitoring and observability
 
 ---
 
@@ -1021,6 +1021,88 @@ curl https://so-quoteable.vercel.app/api/health
 - Alert on 503 or timeout
 - Track uptime percentage
 
+**Example Monitoring Workflows**:
+```bash
+# Quick health check script (save as scripts/check-health.sh)
+#!/bin/bash
+response=$(curl -s -o /dev/null -w "%{http_code}" https://so-quoteable.vercel.app/api/health)
+if [ "$response" -eq 200 ]; then
+  echo "✅ Production is healthy"
+else
+  echo "❌ Production unhealthy (HTTP $response)"
+  exit 1
+fi
+
+# Continuous monitoring (every 60 seconds)
+watch -n 60 'curl -s https://so-quoteable.vercel.app/api/health | jq .'
+```
+
+### Vercel Logs
+
+**Purpose**: View application logs, build logs, and function execution logs.
+
+**Access**: https://vercel.com/taylor-hustons-projects/so-quoteable/logs
+
+**Accessing Logs**:
+
+**Via Dashboard**:
+1. Navigate to project: https://vercel.com/taylor-hustons-projects/so-quoteable
+2. Click "Logs" in sidebar
+3. Filter by:
+   - Deployment (specific deployment or all)
+   - Time range (last hour, 24h, 7d, custom)
+   - Log level (info, warn, error)
+   - Function name (API routes)
+
+**Via CLI**:
+```bash
+# View recent logs
+vercel logs
+
+# Follow logs in real-time
+vercel logs --follow
+
+# View logs from specific deployment
+vercel logs <deployment-url>
+
+# Filter by time range
+vercel logs --since 1h
+vercel logs --since 24h
+vercel logs --until 2h
+
+# View only production logs
+vercel logs --prod
+```
+
+**Log Types**:
+- **Build Logs**: Compilation, dependency installation, build errors
+- **Function Logs**: API route execution, console.log output
+- **Edge Function Logs**: Middleware execution
+- **Static Logs**: Static asset requests (limited)
+
+**What to Look For**:
+- **Errors**: Unhandled exceptions, API failures
+- **Performance**: Slow function execution times (>1s warning)
+- **Rate Limiting**: 429 errors from external services
+- **Authentication**: Failed login attempts, token errors
+
+**Log Retention**:
+- **Free Tier**: Last 1,000 log entries
+- **Pro Tier**: 30 days retention with full search
+- **Recommendation**: Export critical errors immediately for future reference
+
+**Example Log Analysis**:
+```bash
+# Find errors in last hour
+vercel logs --since 1h | grep -i error
+
+# Monitor specific API route
+vercel logs --follow | grep "/api/health"
+
+# Check function cold start times
+vercel logs | grep "Init Duration"
+```
+
 ### GitHub Actions (CI/CD Logs)
 
 **Purpose**: View automated test results and deployment logs.
@@ -1056,22 +1138,183 @@ curl https://so-quoteable.vercel.app/api/health
 
 ### Monitoring Best Practices
 
-**Daily Checks** (5 minutes):
-1. Health endpoint returns 200 OK
-2. Vercel Analytics shows no error spike
-3. Convex Dashboard shows normal function execution
+**Daily Monitoring Routine** (5 minutes):
+1. **Quick Health Check**:
+   ```bash
+   curl https://so-quoteable.vercel.app/api/health
+   # Expect: HTTP 200, status: "healthy", peopleCount >= 0
+   ```
 
-**Post-Deployment Checks** (10 minutes):
-1. Health endpoint verification
-2. Vercel deployment status (Ready)
-3. Manual smoke test of critical flows
-4. Monitor Vercel Analytics for 15 minutes post-deploy
+2. **Vercel Analytics Review**:
+   - Navigate to: https://vercel.com/taylor-hustons-projects/so-quoteable/analytics
+   - Check error rate: Should be <1%
+   - Review page views: Should show consistent traffic pattern
+   - Check Web Vitals: LCP <2.5s, FID <100ms, CLS <0.1
 
-**Incident Response Checks** (continuous):
-1. Health endpoint every 1 minute
-2. Vercel Analytics real-time view
-3. Convex Logs live stream
-4. User reports and support tickets
+3. **Convex Dashboard Check**:
+   - Navigate to: https://dashboard.convex.dev/deployment/steady-anaconda-957
+   - Functions tab: Verify no error spikes
+   - Logs tab: Scan for warnings or errors
+   - Data tab: Verify database tables have expected data
+
+**Post-Deployment Monitoring** (15 minutes):
+
+**Immediate (0-5 minutes)**:
+1. **Health Endpoint Verification**:
+   ```bash
+   # Test health endpoint 3 times
+   for i in {1..3}; do
+     curl -s https://so-quoteable.vercel.app/api/health | jq '.status'
+     sleep 2
+   done
+   # All should return "healthy"
+   ```
+
+2. **Deployment Status Check**:
+   - Vercel dashboard: Deployment shows "Ready" status
+   - Build logs: No errors or warnings
+   - Function cold starts: <1s for API routes
+
+3. **Critical Path Smoke Tests**:
+   ```bash
+   # Homepage loads
+   curl -I https://so-quoteable.vercel.app
+   # Expect: HTTP 200
+
+   # Login page loads
+   curl -I https://so-quoteable.vercel.app/login
+   # Expect: HTTP 200
+   ```
+
+**Ongoing (5-15 minutes)**:
+4. **Vercel Analytics Monitoring**:
+   - Monitor error rate every 5 minutes
+   - Alert threshold: >1% errors for 10 minutes
+   - Check for:
+     - Sudden traffic drops (possible routing issue)
+     - Error spikes (new bug introduced)
+     - Performance degradation (Web Vitals increase)
+
+5. **Convex Function Monitoring**:
+   - Navigate to Convex Logs tab
+   - Filter by last 15 minutes
+   - Look for:
+     - Function errors (red indicators)
+     - Slow queries (>500ms execution time)
+     - Action failures (email, image uploads)
+
+6. **Manual User Flow Testing**:
+   - Visit production site: https://so-quoteable.vercel.app
+   - Test login flow (email/password)
+   - Verify protected route redirects work
+   - Check browser console for errors (should be none)
+
+**Success Criteria for Deployment**:
+- ✅ Health endpoint returns 200 OK (3/3 attempts)
+- ✅ Error rate <1% in Vercel Analytics
+- ✅ No function errors in Convex logs
+- ✅ All smoke tests passing
+- ✅ No browser console errors
+- ✅ User flows functional
+
+**If Any Check Fails**: Immediately assess for rollback (see [Rollback Guide](./rollback.md))
+
+**Incident Response Monitoring** (continuous during incident):
+
+**Every 1 Minute**:
+```bash
+# Automated monitoring script during incidents
+while true; do
+  timestamp=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+  response=$(curl -s -w "\nHTTP: %{http_code}\nTime: %{time_total}s" \
+    https://so-quoteable.vercel.app/api/health)
+  echo "[$timestamp] $response"
+  echo "---"
+  sleep 60
+done
+```
+
+**Dashboard Monitoring**:
+1. Vercel Analytics: Real-time view (refresh every 30 seconds)
+2. Convex Logs: Live stream mode (auto-refresh)
+3. Health endpoint: Automated checks every 60 seconds
+
+**Alert Escalation**:
+- **2 consecutive health check failures**: Investigate immediately
+- **Error rate >5% for 5 minutes**: Consider rollback
+- **Zero traffic for 5 minutes**: Check routing/DNS
+- **Health endpoint 503 for 2 minutes**: Verify backend connectivity
+
+**Common Monitoring Patterns to Watch**:
+
+**Normal Pattern**:
+- Health endpoint: 200 OK, response time <500ms
+- Error rate: 0-0.5%
+- Function execution: <200ms for queries, <2s for actions
+- Traffic: Consistent with historical patterns
+
+**Warning Pattern** (investigate but don't panic):
+- Health endpoint: Occasional 503 (1-2x per hour)
+- Error rate: 0.5-1%
+- Function execution: 200-500ms queries, 2-5s actions
+- Traffic: 20-30% deviation from normal
+
+**Critical Pattern** (consider rollback):
+- Health endpoint: Consistent 503 (>3 consecutive)
+- Error rate: >5%
+- Function execution: >1s for queries, >10s for actions
+- Traffic: >50% drop or complete outage
+
+**Log Aggregation Workflow**:
+
+**Convex Logs**:
+1. Navigate to: https://dashboard.convex.dev/deployment/steady-anaconda-957/logs
+2. Use filters:
+   - **Time range**: Last 1h, 24h, 7d
+   - **Function**: Select specific function (e.g., api.quotes.list)
+   - **Severity**: Error, Warn, Info, Debug
+3. Search for specific patterns:
+   - Error messages: `error`, `exception`, `failed`
+   - Performance issues: `timeout`, `slow`
+   - User issues: User IDs, email addresses
+
+**Vercel Logs**:
+1. Navigate to: https://vercel.com/taylor-hustons-projects/so-quoteable/logs
+2. Use filters:
+   - **Deployment**: Production only
+   - **Time range**: Last hour (for recent issues)
+   - **Log level**: Error (for critical issues)
+3. CLI alternative:
+   ```bash
+   # Stream production logs
+   vercel logs --prod --follow
+
+   # Search for errors
+   vercel logs --prod | grep -i error
+
+   # View specific API route logs
+   vercel logs --prod | grep "/api/health"
+   ```
+
+**Log Retention**:
+- **Convex**: 30 days retention (free tier)
+- **Vercel**: Last 1,000 entries (free tier)
+- **Recommendation**: Export critical errors to external logging service for long-term retention
+
+**Alerting Strategy** (Post-MVP):
+1. **UptimeRobot** (free tier):
+   - Monitor `/api/health` every 5 minutes
+   - Alert on 503 or timeout (>30s)
+   - Notification channels: Email, Slack
+
+2. **Vercel Monitoring** (built-in):
+   - Error rate threshold: >1% for 10 minutes
+   - Notification via Vercel dashboard
+
+3. **Manual Checks** (MVP approach):
+   - Daily health check: 9am local time
+   - Post-deployment: Immediate and 15-minute follow-up
+   - On-call: Check before bed and after waking
 
 ---
 
@@ -1497,6 +1740,6 @@ for i in {1..10}; do curl https://so-quoteable.vercel.app/api/health; done
 
 ---
 
-**Last Updated**: 2025-11-24
-**Version**: 1.0.0
-**Status**: Phase 6.2 Complete
+**Last Updated**: 2025-11-25
+**Version**: 1.1.0
+**Status**: Phase 6.3 Complete - Enhanced monitoring and observability section
