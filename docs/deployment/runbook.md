@@ -1,8 +1,8 @@
 # Deployment Runbook
 
-**Document Status**: Phase 6.3 Complete
+**Document Status**: Phase 6.4 Complete
 **Last Updated**: 2025-11-25
-**Related**: TASK-006 Phase 6.3 - Document monitoring and observability
+**Related**: TASK-006 Phase 6.4 - Create deployment checklist
 
 ---
 
@@ -1504,26 +1504,110 @@ After deployment completes, verify:
 - [ ] Known issues documented (if any)
 - [ ] Stakeholders notified (if significant release)
 
+### Rollback Decision Tree
+
+Use this decision tree to quickly determine whether to rollback or fix forward:
+
+```
+Deployment Complete
+       |
+       v
+Health Check Passes?
+   |         |
+  YES        NO ──────────────────────► IMMEDIATE ROLLBACK
+   |                                    (P0 - Total outage)
+   |                                    RTO: 5 minutes
+   v
+Smoke Tests Pass?
+   |         |
+  YES        NO
+   |          |
+   |          v
+   |    Critical Feature Broken?
+   |      |              |
+   |     YES             NO
+   |      |              |
+   |      v              v
+   |   ROLLBACK     Fix Forward
+   |   (P1 - Major    (P2 - Minor
+   |    impact)        issue)
+   |   RTO: 15min     RTO: 1 hour
+   |      |              |
+   v      |              |
+Monitor ◄─┘◄─────────────┘
+15 minutes
+   |
+   v
+Error Rate Check
+   |
+   ├─ >5% errors ──────────────────► ROLLBACK
+   |                                  (Quality threshold)
+   |                                  Investigate root cause
+   ├─ 1-5% errors ─────────────────► Investigate + Decide
+   |                                  - Check logs
+   |                                  - Assess user impact
+   |                                  - Decide: Rollback vs Fix
+   |
+   └─ <1% errors (normal) ─────────► SUCCESS
+                                      Continue monitoring
+```
+
+**Decision Criteria Summary**:
+
+| Scenario | Rollback? | Rationale | RTO Target |
+|----------|-----------|-----------|------------|
+| Health endpoint fails (503/500) | ✅ YES | Total outage - immediate rollback | 5 minutes |
+| >50% users affected | ✅ YES | Major impact - rollback required | 15 minutes |
+| Security vulnerability discovered | ✅ YES | Critical risk - immediate rollback | 5 minutes |
+| Error rate >5% for 10+ minutes | ✅ YES | Quality threshold exceeded | 15 minutes |
+| Core feature broken (login, auth) | ✅ YES | Critical functionality - rollback | 15 minutes |
+| Minor bug, <10% users | ❌ NO | Fix forward faster than rollback | 1 hour |
+| UI issue, no data risk | ❌ NO | Fix forward - low user impact | 1 hour |
+| Performance degradation <20% | ⚠️ MAYBE | Assess severity and trend | 30 minutes |
+| Database schema changed | ⚠️ MAYBE | Rollback may break data - careful analysis | Varies |
+
+**Fix Forward vs Rollback Guidelines**:
+
+**Choose ROLLBACK when**:
+- ✅ Issue affects >50% of users
+- ✅ Core functionality is broken
+- ✅ Security vulnerability exists
+- ✅ Health endpoint returns 503
+- ✅ Error rate >5%
+- ✅ Fix will take >30 minutes to implement and deploy
+
+**Choose FIX FORWARD when**:
+- ✅ Issue affects <10% of users
+- ✅ Minor UI bug with workaround
+- ✅ Fix is simple and can be deployed in <15 minutes
+- ✅ Rollback would break database migrations
+- ✅ Issue is already known and fix is ready
+
 ### Rollback Checklist
 
 If deployment needs to be rolled back:
 
-**Immediate Actions**:
+**Immediate Actions** (0-5 minutes):
+- [ ] Declare incident severity (P0/P1/P2)
+- [ ] Notify team of rollback decision
 - [ ] Execute rollback procedure (see [Rollback Guide](./rollback.md))
-- [ ] Notify team of rollback
-- [ ] Document reason for rollback
+- [ ] Document reason for rollback in incident log
 
-**Verification**:
+**Verification** (5-10 minutes):
 - [ ] Health endpoint returns 200 OK after rollback
 - [ ] Previous functionality restored
 - [ ] No new errors introduced
 - [ ] Monitoring dashboards show healthy state
+- [ ] Error rate returns to <1%
+- [ ] Test critical user flows (login, core features)
 
-**Follow-up**:
-- [ ] Create incident report
+**Follow-up** (Post-rollback):
+- [ ] Update team on rollback completion
+- [ ] Create incident report in `pm/incidents/`
 - [ ] Plan fix for rolled-back issue
 - [ ] Update tests to catch issue in future
-- [ ] Schedule post-mortem meeting
+- [ ] Schedule post-mortem meeting (within 24 hours)
+- [ ] Document lessons learned in WORKLOG
 
 ---
 
@@ -1741,5 +1825,5 @@ for i in {1..10}; do curl https://so-quoteable.vercel.app/api/health; done
 ---
 
 **Last Updated**: 2025-11-25
-**Version**: 1.1.0
-**Status**: Phase 6.3 Complete - Enhanced monitoring and observability section
+**Version**: 1.2.0
+**Status**: Phase 6.4 Complete - Deployment checklist with rollback decision tree
