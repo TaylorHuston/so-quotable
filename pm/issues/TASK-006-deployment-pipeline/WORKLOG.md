@@ -19,6 +19,7 @@
 - Phase 5.3: `3f99378` - Rollback procedure tested (39 seconds, 87% under RTO) (complete)
 - Phase 5.4: DEFERRED - Sentry configuration deferred to post-MVP (documentation only)
 - Phase 6.1: `45ea4c9` - README.md deployment section updated (complete)
+- Phase 6.2: `4e392a7` - Deployment runbook created (complete)
 
 ---
 
