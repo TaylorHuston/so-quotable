@@ -22,11 +22,42 @@
 - Phase 6.2: `4e392a7` - Deployment runbook created (complete)
 - Phase 6.3: `b8a118f` - Monitoring and observability documentation (complete)
 - Phase 6.4: `ac263b8` - Deployment checklist with rollback decision tree (complete)
-- Phase 7.1: `a574779` - Fix failing password reset tests (complete)
+- Phase 7.1: `cb1f441` - Fix failing password reset tests (complete)
+- Phase 7.2: TBD - Optimize health check query (in progress)
 
 ---
 
 ## Work Entries
+
+## 2025-11-25 - Phase 7.2 Complete - Optimize Health Check Query
+
+**Phase 7.2**: Optimize health check query ✅
+
+**Problem**:
+- Health check used `.collect().then(p => p.length)` to count people table
+- This performs a full table scan - inefficient for large databases
+- Also exposed `peopleCount` which is unnecessary for health checks
+
+**Solution**:
+- Changed to `.take(1)` - only fetches one record to verify connectivity
+- Removed `peopleCount` from response (not needed for health verification)
+- Response now returns `database: { connected: boolean }` only
+- Fixed spelling inconsistency: "quoteable-api" → "quotable-api"
+
+**Files Changed**:
+- `convex/health.ts` - Changed query from `.collect()` to `.take(1)`
+- `convex/health.test.ts` - Updated tests to expect new response format
+- `src/app/api/health/route.ts` - Updated JSDoc, fixed service name spelling
+- `tests/api/health.test.ts` - Updated to expect "quotable-api"
+
+**Performance Impact**:
+- Before: O(n) - full table scan
+- After: O(1) - single record fetch
+- Health check is now constant-time regardless of database size
+
+**Test Results**: 5/5 tests passing
+
+---
 
 ## 2025-11-25 - Phase 7.1 Complete - Fix Failing Password Reset Tests
 

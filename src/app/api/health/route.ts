@@ -31,12 +31,11 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
  * {
  *   "status": "healthy",
  *   "timestamp": "2025-11-24T04:10:08.388Z",
- *   "service": "quoteable-api",
+ *   "service": "quotable-api",
  *   "convex": {
  *     "status": "ok",
  *     "database": {
- *       "connected": true,
- *       "peopleCount": 0
+ *       "connected": true
  *     },
  *     "environment": {
  *       "deployment": "cloud"
@@ -58,7 +57,7 @@ const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
  *
  * **Checks Performed**:
  * - Convex backend connectivity (via health.ping query)
- * - Database accessibility (people table count)
+ * - Database accessibility (uses .take(1) for efficiency)
  * - Environment configuration validation
  *
  * @returns {Promise<NextResponse>} JSON response with health status
@@ -72,7 +71,7 @@ export async function GET() {
       {
         status: "healthy",
         timestamp: new Date().toISOString(),
-        service: "quoteable-api",
+        service: "quotable-api",
         convex: {
           status: convexHealth.status,
           database: convexHealth.database,

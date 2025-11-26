@@ -236,11 +236,13 @@ Convex free tier does not support preview deployment keys (Pro feature required)
   - File: `convex/passwordReset.test.ts`
   - Result: 16 passed, 2 skipped (properly categorized as integration tests)
 
-- [ ] 7.2 Optimize health check query (P1 - HIGH)
+- [x] 7.2 Optimize health check query (P1 - HIGH) ✅
   - Issue: Health check uses `.collect()` then `.length` for count
   - Location: `convex/health.ts:16`
-  - Fix: Use Convex count query or limit query scope
-  - Acceptance: No full table scan in health check
+  - Fix: Changed to `.take(1)` - only verify connectivity, don't count records
+  - Removed `peopleCount` field (unnecessary for health check)
+  - Updated tests to verify new behavior
+  - Fixed spelling: "quoteable-api" → "quotable-api" in service name
 
 - [ ] 7.3 Add security headers to health endpoint (P1 - HIGH)
   - Issue: Missing explicit `Cache-Control: no-store` header

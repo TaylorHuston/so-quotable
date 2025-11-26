@@ -72,7 +72,7 @@ describe("Health Endpoint", () => {
       const response = await fetch(healthUrl);
       const data = await response.json();
 
-      expect(data.service).toBe("quoteable-api");
+      expect(data.service).toBe("quotable-api");
     });
   });
 
