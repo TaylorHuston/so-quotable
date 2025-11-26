@@ -93,7 +93,7 @@ sections:
 
 ## Mandatory Phase Execution
 
-Each phase MUST follow the mandatory test-first loop (see [pm-guide.md](../../docs/development/guidelines/pm-guide.md)):
+Each phase MUST follow the mandatory test-first loop (see [development-loop.md](../../docs/development/workflows/development-loop.md)):
 
 1. **Write Tests** (Red) - Tests written and initially failing
 2. **Write Code** (Green) - Implementation makes tests pass

@@ -1,14 +1,8 @@
 ---
-# === Metadata ===
-template_type: "guideline"
-version: "1.0.1"
-created: "2025-10-30"
-last_updated: "2025-11-06"
-status: "Active"
-target_audience: ["AI Assistants", "Test Engineers", "Development Team"]
+last_updated: "2025-11-25"
 description: "Testing approach, frameworks, and conventions for So Quotable"
 
-# === Testing Configuration (Machine-readable for AI agents) ===
+# === Testing Configuration ===
 testing_framework: "vitest"       # Vitest v2.0+ for unit/integration
 e2e_framework: "playwright"       # Playwright v1.45+ for E2E
 backend_testing: "convex-test"    # convex-test v0.0.17 for Convex functions

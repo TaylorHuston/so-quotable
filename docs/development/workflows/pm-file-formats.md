@@ -206,7 +206,7 @@ jira_issue_key: null
 ## Environment
 - Browser: Chrome 120
 - OS: macOS 14
-- Server: Node 18.x
+- Server: Node 20.x
 ```
 
 ### Plan File Format

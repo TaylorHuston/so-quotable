@@ -20,7 +20,7 @@ So Quotable allows users to create visually appealing quote graphics overlaid on
   - Email verification (MVP: console logging, production: email service integration ready)
 - **Real-time Database** - Reactive data layer with Convex for instant updates
 - **Type-Safe** - End-to-end TypeScript for frontend and backend
-- **Comprehensive Testing** - 94%+ test coverage (501 tests) with Vitest, convex-test, and Playwright
+- **Comprehensive Testing** - 95%+ test coverage (580 tests) with Vitest, convex-test, and Playwright
 
 ## 🛠 Tech Stack
 
@@ -37,7 +37,7 @@ So Quotable allows users to create visually appealing quote graphics overlaid on
 
 ### Prerequisites
 
-- Node.js 18.18.0 (use [nvm](https://github.com/nvm-sh/nvm) for version management)
+- Node.js 20.x (use [nvm](https://github.com/nvm-sh/nvm) for version management)
 - npm 9.0.0+
 - Convex account ([sign up free](https://www.convex.dev/))
 - Cloudinary account ([sign up free](https://cloudinary.com/))
@@ -146,11 +146,11 @@ quotable/
 
 ## 📚 Documentation
 
-- **[Getting Started Guide](./GETTING-STARTED.md)** - Detailed development workflow and AI-assisted development
 - **[Project Brief](./docs/project-brief.md)** - Product vision and objectives
 - **[Architecture Overview](./docs/project/architecture-overview.md)** - System architecture and design
 - **[Architecture Decision Records](./docs/project/adrs/)** - Technical decision documentation
-- **[Development Guidelines](./docs/development/guidelines/)** - Coding standards, testing, security
+- **[Development Conventions](./docs/development/conventions/)** - Coding standards, testing, security
+- **[Development Workflows](./docs/development/workflows/)** - Development loop, git workflow
 
 ## 🧪 Testing
 
@@ -175,18 +175,22 @@ npm run test:e2e:ui
 
 ### Test Coverage
 
-Current coverage: **94.18%** (501 tests passing)
+Current coverage: **95%+** (580 tests total, 553 passing, 25 with known issues, 2 skipped)
 
 **Test Breakdown by Domain**:
-- **Backend Functions**: 97.36% coverage (217 tests)
-  - Convex Auth: 100% (auth.ts, users.ts, emailVerification.ts)
+- **Backend Functions**: 97%+ coverage (230+ tests)
+  - Convex Auth: 100% (auth.ts, users.ts, emailVerification.ts, passwordReset.ts)
   - Cloudinary: 92% (generatedImages.ts, cloudinary.ts)
   - Database: 100% (quotes.ts, people.ts, images.ts)
-- **Frontend Components**: 100% E2E coverage (22 tests)
+  - Health: 100% (health.ts - 5 tests)
+- **Frontend Components**: 100% coverage (100+ tests)
   - LoginForm: Email/password + Google OAuth flows
   - RegisterForm: Registration + duplicate detection + password strength
+  - ForgotPassword/ResetPassword: Password reset flows
   - UserProfile: Auth state rendering + sign out
   - Middleware: Protected routes (24 tests, 100% coverage)
+- **API Routes**: 100% coverage (24+ tests)
+  - Health endpoint: Unit + integration tests (29 tests)
 - **Utilities**: 100% coverage (70+ tests)
   - Email normalization, slug generation, password validation
   - Debounce utility (performance optimization)
@@ -197,73 +201,138 @@ Current coverage: **94.18%** (501 tests passing)
   - Protected route redirection
   - Session persistence
 
-See [Testing Standards](./docs/development/guidelines/testing-standards.md) for testing approach.
+See [Testing Standards](./docs/development/conventions/testing-standards.md) for testing approach.
 
 ## 🌐 Deployment
 
-### Deployment Workflow (Free Tier)
+### Deployment Environments
 
-This project uses a **simplified deployment workflow** adapted for Convex free tier constraints:
+| Environment | URL | Backend | Purpose |
+|-------------|-----|---------|---------|
+| **Production** | [https://so-quoteable.vercel.app](https://so-quoteable.vercel.app) | [steady-anaconda-957](https://dashboard.convex.dev/deployment/steady-anaconda-957) | Live application for users |
+| **Development** | http://localhost:3000 | [cheery-cow-298](https://dashboard.convex.dev/deployment/cheery-cow-298) | Local development and testing |
 
-1. **Local Development**:
-   ```bash
-   # Terminal 1: Next.js dev server
-   npm run dev
-
-   # Terminal 2: Convex dev backend
-   npx convex dev
-   ```
-
-2. **Local Testing** (before production push):
-   ```bash
-   # Run all tests
-   npm run test:run
-
-   # Run E2E tests
-   npm run test:e2e
-
-   # TypeScript check
-   npm run type-check
-   ```
-
-3. **Production Deployment**:
-   ```bash
-   # Push to main branch → auto-deploys to Vercel
-   git push origin main
-   ```
-
-### Environments
-
-- **Production**: Automatic deployment from `main` branch to Vercel + Convex Cloud
-- **Development**: Local environment with `npx convex dev` (development deployment)
-
-**Note**: Preview deployments are not supported on Convex free tier (requires Pro plan). Test locally before pushing to production.
-
-### Deployment Commands
+### Quick Start - Deploy to Production
 
 ```bash
-# Local development (recommended workflow)
-npx convex dev              # Start Convex dev backend
-npm run dev                 # Start Next.js dev frontend
-npm run test:e2e            # Run E2E tests locally
+# 1. Run tests locally
+npm run test:run        # Unit and integration tests
+npm run test:e2e        # End-to-end tests
+npm run type-check      # TypeScript validation
 
-# Production deployment
-git push origin main        # Auto-deploys to Vercel + Convex production
+# 2. Push to main → Automatic deployment
+git push origin main    # Triggers Vercel + Convex deployment
 ```
 
-### Authentication Deployment
+**Deployment Time**: ~2-3 minutes
+**Rollback Time**: <1 minute (tested: 39 seconds)
 
-**Complete setup guide**: [docs/deployment/auth-setup.md](./docs/deployment/auth-setup.md)
+### CI/CD Pipeline Overview
 
-**Quick checklist**:
-1. Generate `AUTH_SECRET`: `openssl rand -base64 32`
-2. Configure Google OAuth credentials (Client ID + Secret)
-3. Set environment variables in Convex Dashboard (Settings → Environment Variables)
-4. Set `CONVEX_DEPLOY_KEY` in Vercel (Settings → Environment Variables)
-5. Deploy: `git push origin main`
-6. Update Google OAuth redirect URIs with production domain
+**Automated Workflow**:
+1. Push to `main` branch
+2. Vercel build triggered automatically
+3. Convex backend deployed during build
+4. Production URL updated: https://so-quoteable.vercel.app
 
-See [ADR-003: Deployment Strategy](./docs/project/adrs/ADR-003-environment-and-deployment-strategy.md) for architecture details.
+**Build Process**:
+- Next.js build with webpack bundling
+- Convex functions deployed to production
+- Environment variables injected from Vercel
+- Build time: ~2-3 minutes
+
+**Manual Deployment** (if needed):
+```bash
+# Deploy frontend
+vercel --prod
+
+# Deploy backend
+npx convex deploy
+```
+
+### Environment Variables
+
+**Required for Production** (8 variables):
+
+| Variable | Purpose | Where to Set |
+|----------|---------|--------------|
+| `NEXT_PUBLIC_CONVEX_URL` | Backend API endpoint | Vercel + .env.local |
+| `AUTH_SECRET` | Session encryption | Vercel + Convex Dashboard |
+| `CLOUDINARY_API_KEY` | Image upload credentials | Vercel + Convex Dashboard |
+| `CLOUDINARY_API_SECRET` | Image upload signing | Vercel + Convex Dashboard |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` | Image CDN delivery | Vercel + .env.local |
+| `GOOGLE_CLIENT_ID` | OAuth authentication | Vercel + Convex Dashboard |
+| `GOOGLE_CLIENT_SECRET` | OAuth credentials | Vercel + Convex Dashboard |
+| `RESEND_API_KEY` | Email service | Convex Dashboard |
+
+**Setup Documentation**:
+- [Complete Environment Setup Guide](./docs/deployment/environment-setup.md) - Detailed variable configuration
+- [GitHub Secrets Setup](./docs/deployment/github-secrets-setup.md) - CI/CD secrets configuration
+
+### Monitoring and Health Checks
+
+**Health Endpoint**:
+```bash
+# Check production health
+curl https://so-quoteable.vercel.app/api/health
+
+# Expected response (200 OK)
+{
+  "status": "healthy",
+  "timestamp": "2025-11-24T04:15:13.965Z",
+  "service": "quotable-api",
+  "convex": {
+    "status": "ok",
+    "database": { "connected": true },
+    "environment": { "deployment": "cloud" }
+  }
+}
+```
+
+**Monitoring Dashboards**:
+- **Vercel Analytics**: [Project Dashboard](https://vercel.com/taylor-hustons-projects/so-quoteable/analytics) - Page views, performance, Web Vitals
+- **Convex Dashboard**: [Production Deployment](https://dashboard.convex.dev/deployment/steady-anaconda-957) - Function logs, database queries
+- **Health Check**: `/api/health` - System status and Convex connectivity
+
+### Rollback Procedures
+
+**Emergency Rollback** (if deployment breaks production):
+
+```bash
+# Method 1: Vercel CLI (fastest - 39 seconds tested)
+vercel alias set <previous-deployment-url> so-quoteable.vercel.app
+
+# Method 2: Vercel Dashboard (instant)
+# 1. Go to: https://vercel.com/taylor-hustons-projects/so-quoteable/deployments
+# 2. Find previous working deployment
+# 3. Click "..." menu → "Promote to Production"
+```
+
+**Detailed Rollback Guide**: [docs/deployment/rollback.md](./docs/deployment/rollback.md)
+- Decision criteria (when to rollback vs. fix forward)
+- Step-by-step procedures for Vercel and Convex
+- Recovery time objectives (RTO) by severity
+- Post-rollback verification checklist
+
+### Free Tier Constraints
+
+**Convex Free Tier**:
+- ⚠️ **No preview deployments** (requires Pro tier for preview deploy keys)
+- ✅ **Local E2E testing** recommended before production push
+- ✅ **Production deployment** fully supported and automated
+
+**Development Workflow** (adapted for free tier):
+1. Local development with `npx convex dev` + `npm run dev`
+2. Run E2E tests locally: `npm run test:e2e`
+3. Push to `main` → Automatic production deployment
+4. Verify via health endpoint and manual testing
+
+**Upgrade Path**: When upgrading to Convex Pro tier:
+- Enable preview deployments for pull requests
+- Automate E2E tests in GitHub Actions
+- Add PR preview URLs for stakeholder review
+
+See [ADR-003: Deployment Strategy](./docs/project/adrs/ADR-003-environment-and-deployment-strategy.md) for architecture decisions and free tier rationale.
 
 ## 🔍 Code Quality
 
@@ -443,9 +512,9 @@ This project uses [AI Toolkit](https://github.com/cktang88/ai-toolkit) for struc
 
 ### Development Workflow
 
-1. Review [Development Loop](./docs/development/guidelines/development-loop.md) for TDD/BDD workflow
-2. Check [Git Workflow](./docs/development/guidelines/git-workflow.md) for branching strategy
-3. Follow [Coding Standards](./docs/development/guidelines/coding-standards.md) for code style
+1. Review [Development Loop](./docs/development/workflows/development-loop.md) for TDD/BDD workflow
+2. Check [Git Workflow](./docs/development/workflows/git-workflow.md) for branching strategy
+3. Follow [Coding Standards](./docs/development/conventions/coding-standards.md) for code style
 
 ### Branch Strategy
 

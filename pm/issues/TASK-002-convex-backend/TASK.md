@@ -2,15 +2,12 @@
 id: TASK-002
 title: Set up Convex backend and database schema
 epic: EPIC-001
-status: todo
+status: done
 created: 2025-10-30
 updated: 2025-10-30
 ---
 
 # TASK-002: Set up Convex backend and database schema
-
-**Epic**: EPIC-001 - MVP Infrastructure Setup
-**Status**: todo
 
 ## Description
 

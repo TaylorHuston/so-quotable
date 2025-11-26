@@ -1,14 +1,8 @@
 ---
-# === Metadata ===
-template_type: "guideline"
-version: "1.0.0"
-created: "2025-10-30"
-last_updated: "2025-10-31"
-status: "Active"
-target_audience: ["AI Assistants", "Security Auditors", "Development Team"]
+last_updated: "2025-11-25"
 description: "Security practices and standards for So Quotable to protect user data and prevent vulnerabilities"
 
-# === Security Configuration (Machine-readable for AI agents) ===
+# === Security Configuration ===
 authentication: "Convex Auth"      # Convex Auth (email/password + OAuth)
 authorization: "RBAC"              # Role-based access control
 encryption_at_rest: "Convex"       # Convex handles encryption

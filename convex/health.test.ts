@@ -30,16 +30,18 @@ describe("health endpoint", () => {
       expect(result.database.connected).toBe(true);
     });
 
-    it("should return zero people count for empty database", async () => {
-      // Given: Empty database
+    it("should verify database connectivity without full table scan", async () => {
       // When: Calling health ping
       const result = await t.query(api.health.ping, {});
 
-      // Then: Should return zero people count
-      expect(result.database.peopleCount).toBe(0);
+      // Then: Should indicate database is connected
+      // Note: peopleCount was removed for performance (avoided full table scan)
+      // Health check now uses .take(1) to verify connectivity efficiently
+      expect(result.database.connected).toBe(true);
+      expect(result.database).not.toHaveProperty("peopleCount");
     });
 
-    it("should return accurate people count", async () => {
+    it("should still work with populated database", async () => {
       // Given: Three people in database
       await t.mutation(api.people.create, {
         name: "Person 1",
@@ -57,8 +59,8 @@ describe("health endpoint", () => {
       // When: Calling health ping
       const result = await t.query(api.health.ping, {});
 
-      // Then: Should return count of 3
-      expect(result.database.peopleCount).toBe(3);
+      // Then: Should still report connected (uses .take(1), not full scan)
+      expect(result.database.connected).toBe(true);
     });
 
     it("should include environment information", async () => {
