@@ -45,7 +45,7 @@ This runbook provides step-by-step instructions for deploying So Quotable to pro
 | **GitHub Repository** | https://github.com/TaylorHuston/soquoteable | Source code |
 | **Health Endpoint** | https://so-quoteable.vercel.app/api/health | System status |
 | **Rollback Guide** | [rollback.md](./rollback.md) | Emergency rollback procedures |
-| **Environment Setup** | [environment-setup.md](./environment-setup.md) | Environment variables |
+| **Auth Setup** | [auth-setup.md](./auth-setup.md) | OAuth and authentication |
 
 ---
 
@@ -121,8 +121,8 @@ Ensure the following tools are installed and authenticated:
    nvm use
 
    # Verify versions
-   node --version  # Should be 20.9.0
-   npm --version   # Should be 9.0.0+
+   node --version  # Should be 20.x
+   npm --version   # Should be 10.0.0+
    ```
 
 ### Authentication Setup
@@ -1799,10 +1799,8 @@ for i in {1..10}; do curl https://so-quoteable.vercel.app/api/health; done
 ## Related Documentation
 
 - [Rollback Procedures](./rollback.md) - Comprehensive rollback guide (decision criteria, procedures, troubleshooting)
-- [Environment Setup](./environment-setup.md) - Environment variables configuration
-- [Vercel Setup](./vercel-setup.md) - Vercel project configuration and verification
+- [Auth Setup](./auth-setup.md) - OAuth and authentication configuration
 - [ADR-003: Deployment Strategy](../project/adrs/ADR-003-environment-and-deployment-strategy.md) - Architecture decisions and rationale
-- [GitHub Secrets Setup](./github-secrets-setup.md) - CI/CD secrets configuration
 - [TASK-006 PLAN.md](../../pm/issues/TASK-006-deployment-pipeline/PLAN.md) - Deployment pipeline task plan
 - [TASK-006 WORKLOG.md](../../pm/issues/TASK-006-deployment-pipeline/WORKLOG.md) - Deployment history and lessons learned
 

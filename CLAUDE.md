@@ -55,12 +55,12 @@ Never forget that you have access to the following, utilize them as necessary
 quotable/
 ├── pm/                    # Project management (epics, tasks, bugs)
 ├── docs/                  # Documentation (brief, architecture, ADRs, guidelines)
-├── convex/                # Convex backend (functions, schema) - to be created
+├── convex/                # Convex backend (functions, schema)
 │   ├── schema.ts         # Database schema (TypeScript)
 │   ├── quotes.ts         # Quote functions (queries, mutations)
 │   ├── people.ts         # Person functions
 │   └── images.ts         # Image metadata functions
-├── src/                   # Next.js frontend - to be created
+├── src/                   # Next.js frontend
 │   ├── app/              # Next.js App Router pages
 │   ├── components/       # React components
 │   └── lib/              # Utilities and helpers
@@ -74,8 +74,8 @@ quotable/
 
 **Prerequisites**:
 
-- Node.js 18.18.0 (use nvm/fnm for version management)
-- npm 9.0.0+
+- Node.js 20.x (use nvm/fnm for version management)
+- npm 10.0.0+
 
 **Initial Setup**:
 

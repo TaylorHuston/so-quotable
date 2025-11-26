@@ -187,19 +187,19 @@ Each issue gets a directory containing:
 - Narrative work history created automatically by `/implement` after each phase
 - Reverse chronological order (newest entries first)
 - Documents: what was done, lessons learned, gotchas, files changed
-- Format and guidelines: See `docs/development/guidelines/development-loop.md` (Work Documentation section)
+- Format and guidelines: See `docs/development/workflows/development-loop.md` (Work Documentation section)
 
 **RESEARCH.md** (Optional)
 - Deep technical investigations requiring multi-page analysis
 - Created manually when complex decisions need detailed rationale
-- Structure and criteria: See `docs/development/guidelines/development-loop.md` (Work Documentation section)
+- Structure and criteria: See `docs/development/workflows/development-loop.md` (Work Documentation section)
 
 **File Relationship:**
 - **[TYPE].md**: WHAT to do (plan checklist)
 - **WORKLOG.md**: HOW it was done (narrative history with lessons)
 - **RESEARCH.md**: WHY decisions were made (technical deep dives)
 
-**Complete documentation standards**: `docs/development/guidelines/development-loop.md` contains comprehensive guidance on WORKLOG entry format, when to create RESEARCH.md, best practices, and examples.
+**Complete documentation standards**: `docs/development/workflows/development-loop.md` contains comprehensive guidance on WORKLOG entry format, when to create RESEARCH.md, best practices, and examples.
 
 ## Customization
 
@@ -270,7 +270,7 @@ bugfix/BUG-001      # Bug fix (BUG-001-session-timeout)
 /branch delete feature/TASK-001
 ```
 
-See `docs/development/guidelines/git-workflow.md` for complete three-branch workflow specification.
+See `docs/development/workflows/git-workflow.md` for complete three-branch workflow specification.
 
 ## Related Documentation
 

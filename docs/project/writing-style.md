@@ -431,7 +431,7 @@ For strategic content decisions (voice definition, messaging architecture):
 ## Related Documentation
 
 - Design system: `docs/project/design-system.md` (visual design)
-- API guidelines: `docs/development/guidelines/api-guidelines.md` (technical writing)
+- API guidelines: `docs/development/conventions/api-guidelines.md` (technical writing)
 - ADRs: `docs/project/adrs/` (architectural decisions)
 
 ## Maintenance

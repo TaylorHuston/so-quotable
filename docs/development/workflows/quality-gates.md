@@ -302,7 +302,7 @@ See `agent-coordination.md` "Security Governance" section for complete detection
 - [ ] Guidelines references updated if structure changed
 - [ ] Project context reflects current architecture
 
-#### Guidelines (docs/development/guidelines/)
+#### Conventions (docs/development/conventions/)
 - [ ] Process improvements documented
 - [ ] New patterns added to relevant guidelines
 - [ ] Examples updated with real implementations

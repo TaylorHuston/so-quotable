@@ -521,7 +521,7 @@ npx convex dev
 - [Playwright Documentation](https://playwright.dev/)
 - [convex-test Package](https://www.npmjs.com/package/convex-test)
 - [Testing Library](https://testing-library.com/)
-- [Testing Standards](../development/guidelines/testing-standards.md)
+- [Testing Standards](../../development/conventions/testing-standards.md)
 
 ---
 

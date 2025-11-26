@@ -308,7 +308,7 @@ This task supports **no specific acceptance scenarios** from SPEC-001, but enabl
 
 ## Mandatory Phase Execution
 
-Each phase MUST follow the mandatory test-first loop (see [pm-guide.md](../../../docs/development/guidelines/pm-guide.md)):
+Each phase MUST follow the mandatory test-first loop (see [development-loop.md](../../../docs/development/workflows/development-loop.md)):
 
 **For Configuration Tasks:**
 1. **Write Verification Tests** (Red) - Manual test procedure or automated validation script
