@@ -4,6 +4,7 @@ import { api } from "./_generated/api";
 import schema from "./schema";
 import { modules } from "./test.setup";
 import { createTestUser, asUser } from "./test.helpers";
+import { AUTH_ERRORS } from "./lib/auth";
 
 describe("generatedImages CRUD operations", () => {
   let t: ReturnType<typeof convexTest>;
@@ -37,7 +38,7 @@ describe("generatedImages CRUD operations", () => {
       // Create multiple generated images for the same quote
       const expiresAt = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days from now
 
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "generated-1",
@@ -46,7 +47,7 @@ describe("generatedImages CRUD operations", () => {
         expiresAt,
       });
 
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "generated-2",
@@ -119,7 +120,7 @@ describe("generatedImages CRUD operations", () => {
 
       const expiresAt = Date.now() + 30 * 24 * 60 * 60 * 1000;
 
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId: quote1Id,
         imageId,
         cloudinaryId: "quote1-generated",
@@ -128,7 +129,7 @@ describe("generatedImages CRUD operations", () => {
         expiresAt,
       });
 
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId: quote2Id,
         imageId,
         cloudinaryId: "quote2-generated",
@@ -176,7 +177,7 @@ describe("generatedImages CRUD operations", () => {
       const thirtyDaysFromNow = now + 30 * 24 * 60 * 60 * 1000;
 
       // Create images with different expiration times
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "expires-3-days",
@@ -185,7 +186,7 @@ describe("generatedImages CRUD operations", () => {
         expiresAt: threeDaysFromNow,
       });
 
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "expires-10-days",
@@ -194,7 +195,7 @@ describe("generatedImages CRUD operations", () => {
         expiresAt: tenDaysFromNow,
       });
 
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "expires-30-days",
@@ -241,7 +242,7 @@ describe("generatedImages CRUD operations", () => {
       const twoDaysFromNow = now + 2 * 24 * 60 * 60 * 1000;
       const fiveDaysFromNow = now + 5 * 24 * 60 * 60 * 1000;
 
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "expires-2-days",
@@ -250,7 +251,7 @@ describe("generatedImages CRUD operations", () => {
         expiresAt: twoDaysFromNow,
       });
 
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "expires-5-days",
@@ -294,7 +295,7 @@ describe("generatedImages CRUD operations", () => {
 
       const thirtyDaysFromNow = Date.now() + 30 * 24 * 60 * 60 * 1000;
 
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "expires-30-days",
@@ -338,7 +339,7 @@ describe("generatedImages CRUD operations", () => {
 
       const fiveDaysFromNow = Date.now() + 5 * 24 * 60 * 60 * 1000;
 
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "expires-5-days",
@@ -384,7 +385,7 @@ describe("generatedImages CRUD operations", () => {
       const expiresAt = Date.now() + 30 * 24 * 60 * 60 * 1000;
 
       // When: Creating generated image
-      const generatedImageId = await t.mutation(api.generatedImages.create, {
+      const generatedImageId = await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "generated-test",
@@ -431,7 +432,7 @@ describe("generatedImages CRUD operations", () => {
       });
 
       // When: Creating with whitespace
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "  generated-with-spaces  ",
@@ -472,7 +473,7 @@ describe("generatedImages CRUD operations", () => {
       });
 
       // When: Creating with whitespace in transformation
-      await t.mutation(api.generatedImages.create, {
+      await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "generated-test",
@@ -511,7 +512,7 @@ describe("generatedImages CRUD operations", () => {
 
       // When/Then: Creating with empty cloudinaryId should throw
       await expect(
-        t.mutation(api.generatedImages.create, {
+        authT.mutation(api.generatedImages.create, {
           quoteId,
           imageId,
           cloudinaryId: "",
@@ -545,7 +546,7 @@ describe("generatedImages CRUD operations", () => {
 
       // When/Then: Creating with whitespace-only cloudinaryId should throw
       await expect(
-        t.mutation(api.generatedImages.create, {
+        authT.mutation(api.generatedImages.create, {
           quoteId,
           imageId,
           cloudinaryId: "   ",
@@ -579,7 +580,7 @@ describe("generatedImages CRUD operations", () => {
 
       // When/Then: Creating with empty url should throw
       await expect(
-        t.mutation(api.generatedImages.create, {
+        authT.mutation(api.generatedImages.create, {
           quoteId,
           imageId,
           cloudinaryId: "generated-test",
@@ -613,7 +614,7 @@ describe("generatedImages CRUD operations", () => {
 
       // When/Then: Creating with empty transformation should throw
       await expect(
-        t.mutation(api.generatedImages.create, {
+        authT.mutation(api.generatedImages.create, {
           quoteId,
           imageId,
           cloudinaryId: "generated-test",
@@ -648,7 +649,7 @@ describe("generatedImages CRUD operations", () => {
 
       // When/Then: Creating with non-existent quote should throw
       await expect(
-        t.mutation(api.generatedImages.create, {
+        authT.mutation(api.generatedImages.create, {
           quoteId,
           imageId,
           cloudinaryId: "generated-test",
@@ -683,7 +684,7 @@ describe("generatedImages CRUD operations", () => {
 
       // When/Then: Creating with non-existent image should throw
       await expect(
-        t.mutation(api.generatedImages.create, {
+        authT.mutation(api.generatedImages.create, {
           quoteId,
           imageId,
           cloudinaryId: "generated-test",
@@ -717,7 +718,7 @@ describe("generatedImages CRUD operations", () => {
         text: "Test quote",
       });
 
-      const generatedImageId = await t.mutation(api.generatedImages.create, {
+      const generatedImageId = await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "generated-test",
@@ -731,7 +732,7 @@ describe("generatedImages CRUD operations", () => {
       expect(images).toHaveLength(1);
 
       // When: Removing generated image
-      const removedId = await t.mutation(api.generatedImages.remove, {
+      const removedId = await authT.mutation(api.generatedImages.remove, {
         id: generatedImageId,
       });
 
@@ -762,7 +763,7 @@ describe("generatedImages CRUD operations", () => {
         text: "Test quote",
       });
 
-      const generatedImageId = await t.mutation(api.generatedImages.create, {
+      const generatedImageId = await authT.mutation(api.generatedImages.create, {
         quoteId,
         imageId,
         cloudinaryId: "generated-test",
@@ -772,7 +773,7 @@ describe("generatedImages CRUD operations", () => {
       });
 
       // When: Removing generated image
-      await t.mutation(api.generatedImages.remove, { id: generatedImageId });
+      await authT.mutation(api.generatedImages.remove, { id: generatedImageId });
 
       // Then: Quote and base image should still exist
       const quote = await t.query(api.quotes.get, { id: quoteId });
@@ -780,6 +781,207 @@ describe("generatedImages CRUD operations", () => {
 
       const baseImages = await t.query(api.images.getByPerson, { personId });
       expect(baseImages).toHaveLength(1);
+    });
+
+    it("should fail when user is not authenticated (remove)", async () => {
+      // Given: A generated image created by an authenticated user
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test-auth",
+      });
+
+      const imageId = await authT.mutation(api.images.create, {
+        personId,
+        cloudinaryId: "base-image",
+        url: "https://example.com/base.jpg",
+      });
+
+      const quoteId = await authT.mutation(api.quotes.create, {
+        personId,
+        text: "Test quote",
+      });
+
+      const generatedImageId = await authT.mutation(api.generatedImages.create, {
+        quoteId,
+        imageId,
+        cloudinaryId: "generated-test",
+        url: "https://res.cloudinary.com/test/generated.jpg",
+        transformation: "w_800",
+        expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+      });
+
+      // When/Then: Removing without auth should throw
+      await expect(
+        t.mutation(api.generatedImages.remove, { id: generatedImageId })
+      ).rejects.toThrow(AUTH_ERRORS.NOT_AUTHENTICATED);
+    });
+
+    it("should fail when user does not own generated image", async () => {
+      // Given: A generated image created by user1
+      const user1Id = await t.run(async (ctx) => createTestUser(ctx));
+      const user1T = asUser(t, user1Id);
+
+      const personId = await user1T.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test-owner",
+      });
+
+      const imageId = await user1T.mutation(api.images.create, {
+        personId,
+        cloudinaryId: "base-image",
+        url: "https://example.com/base.jpg",
+      });
+
+      const quoteId = await user1T.mutation(api.quotes.create, {
+        personId,
+        text: "Test quote",
+      });
+
+      const generatedImageId = await user1T.mutation(
+        api.generatedImages.create,
+        {
+          quoteId,
+          imageId,
+          cloudinaryId: "generated-test",
+          url: "https://res.cloudinary.com/test/generated.jpg",
+          transformation: "w_800",
+          expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+        }
+      );
+
+      // When: User2 tries to delete user1's generated image
+      const user2Id = await t.run(async (ctx) =>
+        createTestUser(ctx, { email: "user2@example.com" })
+      );
+      const user2T = asUser(t, user2Id);
+
+      // Then: Should throw authorization error
+      await expect(
+        user2T.mutation(api.generatedImages.remove, { id: generatedImageId })
+      ).rejects.toThrow(AUTH_ERRORS.NOT_AUTHORIZED);
+    });
+
+    it("should allow admin to delete any generated image", async () => {
+      // Given: A generated image created by a regular user
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test-admin",
+      });
+
+      const imageId = await authT.mutation(api.images.create, {
+        personId,
+        cloudinaryId: "base-image",
+        url: "https://example.com/base.jpg",
+      });
+
+      const quoteId = await authT.mutation(api.quotes.create, {
+        personId,
+        text: "Test quote",
+      });
+
+      const generatedImageId = await authT.mutation(api.generatedImages.create, {
+        quoteId,
+        imageId,
+        cloudinaryId: "generated-test",
+        url: "https://res.cloudinary.com/test/generated.jpg",
+        transformation: "w_800",
+        expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+      });
+
+      // When: Admin deletes the generated image
+      const adminId = await t.run(async (ctx) =>
+        createTestUser(ctx, { email: "admin@example.com", role: "admin" })
+      );
+      const adminT = asUser(t, adminId);
+
+      const removedId = await adminT.mutation(api.generatedImages.remove, {
+        id: generatedImageId,
+      });
+
+      // Then: Generated image should be deleted
+      expect(removedId).toBe(generatedImageId);
+      const images = await t.query(api.generatedImages.getByQuote, { quoteId });
+      expect(images).toHaveLength(0);
+    });
+  });
+
+  describe("generatedImages.create mutation auth", () => {
+    it("should fail when user is not authenticated (create)", async () => {
+      // Given: Required entities created by an authenticated user
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test-create-auth",
+      });
+
+      const imageId = await authT.mutation(api.images.create, {
+        personId,
+        cloudinaryId: "base-image",
+        url: "https://example.com/base.jpg",
+      });
+
+      const quoteId = await authT.mutation(api.quotes.create, {
+        personId,
+        text: "Test quote",
+      });
+
+      // When/Then: Creating without auth should throw
+      await expect(
+        t.mutation(api.generatedImages.create, {
+          quoteId,
+          imageId,
+          cloudinaryId: "generated-test",
+          url: "https://res.cloudinary.com/test/generated.jpg",
+          transformation: "w_800",
+          expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+        })
+      ).rejects.toThrow(AUTH_ERRORS.NOT_AUTHENTICATED);
+    });
+
+    it("should set createdBy to authenticated user", async () => {
+      // Given: Required entities
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test-created-by",
+      });
+
+      const imageId = await authT.mutation(api.images.create, {
+        personId,
+        cloudinaryId: "base-image",
+        url: "https://example.com/base.jpg",
+      });
+
+      const quoteId = await authT.mutation(api.quotes.create, {
+        personId,
+        text: "Test quote",
+      });
+
+      // When: Creating a generated image as authenticated user
+      await authT.mutation(api.generatedImages.create, {
+        quoteId,
+        imageId,
+        cloudinaryId: "generated-test",
+        url: "https://res.cloudinary.com/test/generated.jpg",
+        transformation: "w_800",
+        expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+      });
+
+      // Then: createdBy should be set to the authenticated user
+      const generatedImages = await t.query(api.generatedImages.getByQuote, {
+        quoteId,
+      });
+      expect(generatedImages[0]!.createdBy).toBe(userId);
     });
   });
 });
