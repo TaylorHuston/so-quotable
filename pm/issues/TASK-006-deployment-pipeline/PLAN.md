@@ -5,7 +5,7 @@ spec_id: SPEC-001
 complexity_score: 8
 estimated_hours: 12-16
 created: 2025-11-18
-updated: 2025-11-18
+updated: 2025-11-25
 ---
 
 # Implementation Plan: TASK-006 Configure Deployment Pipeline
@@ -212,6 +212,62 @@ Convex free tier does not support preview deployment keys (Pro feature required)
 
 **Acceptance**: Team can deploy to production and troubleshoot issues using documentation alone.
 
+### Phase 7: Quality Assessment Remediation
+
+**Objective**: Address issues identified in the comprehensive quality assessment (2025-11-25) to achieve full production readiness.
+
+**Quality Assessment Summary**:
+- Overall Score: 87/100 (CONDITIONAL PASS)
+- Code Quality: 88/100 ✅
+- Security: 92/100 ✅
+- Performance: 85/100 ✅
+- Testing: 75/100 ⚠️ NEEDS ATTENTION
+- Documentation: 95/100 ✅
+
+**Blocking Issue**: 28 failing password reset tests due to `convex-test` framework limitation with scheduled functions.
+
+- [ ] 7.1 Fix failing password reset tests (P0 - BLOCKING)
+  - Root cause: `convex-test` doesn't support `ctx.scheduler.runAfter()` writes
+  - Error: "Write outside of transaction 10001;_scheduled_functions"
+  - Solution options:
+    1. Mock `ctx.scheduler.runAfter()` in test setup
+    2. Refactor to use dependency injection for scheduler
+    3. Mark scheduler-dependent tests as integration-only
+  - File: `convex/passwordReset.test.ts`
+  - Acceptance: All 28 tests pass or are properly categorized
+
+- [ ] 7.2 Optimize health check query (P1 - HIGH)
+  - Issue: Health check uses `.collect()` then `.length` for count
+  - Location: `convex/health.ts:16`
+  - Fix: Use Convex count query or limit query scope
+  - Acceptance: No full table scan in health check
+
+- [ ] 7.3 Add security headers to health endpoint (P1 - HIGH)
+  - Issue: Missing explicit `Cache-Control: no-store` header
+  - Location: `src/app/api/health/route.ts`
+  - Fix: Add `Cache-Control` and security headers
+  - Acceptance: Headers present in health endpoint response
+
+- [ ] 7.4 Add health endpoint error tests (P2 - MEDIUM)
+  - Issue: No tests for 503 error scenarios
+  - Location: `tests/api/health.test.ts`
+  - Fix: Add mock tests for Convex unreachable scenarios
+  - Acceptance: Error handling fully tested
+
+- [ ] 7.5 Standardize project naming (P2 - MEDIUM)
+  - Issue: Inconsistent "quoteable" vs "quotable" spelling
+  - Locations: Multiple files (health endpoint, docs)
+  - Fix: Standardize to "quotable" throughout
+  - Acceptance: Consistent naming across codebase
+
+- [ ] 7.6 Update documentation accuracy (P2 - MEDIUM)
+  - Issue: README test coverage stats outdated
+  - Location: README.md
+  - Fix: Update to reflect current 95% pass rate
+  - Acceptance: Documentation matches current state
+
+**Acceptance**: Quality gate passes with 0 failing tests, all P1 issues resolved.
+
 ---
 
 ## Scenario Coverage
@@ -277,7 +333,7 @@ Each phase MUST follow the mandatory test-first loop (see [pm-guide.md](../../..
 - ⚠️ **Testing Integration** (+2): E2E test automation requires webhook coordination
 - ✅ **Well-Defined Scope** (+0): Clear requirements in ADR-003
 
-**Decomposition Recommendation**: Task is appropriately scoped for 1-2 days of focused work (6 phases). Each phase is testable independently.
+**Decomposition Recommendation**: Task is appropriately scoped for 1-2 days of focused work (7 phases). Each phase is testable independently.
 
 **Risk Areas**:
 - Vercel webhook reliability (may need polling fallback)
