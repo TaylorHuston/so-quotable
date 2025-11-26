@@ -12,7 +12,7 @@
  * - Critical dependencies verification
  */
 
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect } from "vitest";
 
 describe("Health Endpoint", () => {
   // Test against production by default for validation
