@@ -155,10 +155,17 @@ describe("Health Endpoint", () => {
       const response = await fetch(healthUrl);
       const cacheControl = response.headers.get("cache-control");
 
-      // Health checks should never be cached
-      if (cacheControl) {
-        expect(cacheControl).toMatch(/(no-cache|no-store|max-age=0)/);
-      }
+      // Health checks must never be cached
+      expect(cacheControl).toBeTruthy();
+      expect(cacheControl).toContain("no-store");
+      expect(cacheControl).toContain("no-cache");
+    });
+
+    it("should include Pragma header for HTTP/1.0 compatibility", async () => {
+      const response = await fetch(healthUrl);
+      const pragma = response.headers.get("pragma");
+
+      expect(pragma).toBe("no-cache");
     });
   });
 });

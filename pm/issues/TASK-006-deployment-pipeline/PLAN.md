@@ -244,11 +244,13 @@ Convex free tier does not support preview deployment keys (Pro feature required)
   - Updated tests to verify new behavior
   - Fixed spelling: "quoteable-api" → "quotable-api" in service name
 
-- [ ] 7.3 Add security headers to health endpoint (P1 - HIGH)
+- [x] 7.3 Add security headers to health endpoint (P1 - HIGH) ✅
   - Issue: Missing explicit `Cache-Control: no-store` header
   - Location: `src/app/api/health/route.ts`
-  - Fix: Add `Cache-Control` and security headers
-  - Acceptance: Headers present in health endpoint response
+  - Fix: Added `Cache-Control: no-store, no-cache, must-revalidate`, `Pragma: no-cache`, `Expires: 0`
+  - Both success (200) and error (503) responses include headers
+  - Updated tests to verify headers are present
+  - Acceptance: Headers present in health endpoint response ✅
 
 - [ ] 7.4 Add health endpoint error tests (P2 - MEDIUM)
   - Issue: No tests for 503 error scenarios

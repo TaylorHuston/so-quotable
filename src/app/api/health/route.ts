@@ -78,7 +78,14 @@ export async function GET() {
           environment: convexHealth.environment,
         },
       },
-      { status: 200 }
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0",
+        },
+      }
     );
   } catch (error) {
     return NextResponse.json(
@@ -89,7 +96,14 @@ export async function GET() {
           status: "error",
         },
       },
-      { status: 503 }
+      {
+        status: 503,
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0",
+        },
+      }
     );
   }
 }
