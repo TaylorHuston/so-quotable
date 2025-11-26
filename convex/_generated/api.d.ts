@@ -18,6 +18,8 @@ import type * as generatedImages from "../generatedImages.js";
 import type * as health from "../health.js";
 import type * as http from "../http.js";
 import type * as images from "../images.js";
+import type * as lib_auth from "../lib/auth.js";
+import type * as migrations_backfillCreatedBy from "../migrations/backfillCreatedBy.js";
 import type * as passwordReset from "../passwordReset.js";
 import type * as passwordResetActions from "../passwordResetActions.js";
 import type * as people from "../people.js";
@@ -49,6 +51,8 @@ declare const fullApi: ApiFromModules<{
   health: typeof health;
   http: typeof http;
   images: typeof images;
+  "lib/auth": typeof lib_auth;
+  "migrations/backfillCreatedBy": typeof migrations_backfillCreatedBy;
   passwordReset: typeof passwordReset;
   passwordResetActions: typeof passwordResetActions;
   people: typeof people;

@@ -49,11 +49,15 @@ export default defineSchema({
     birthDate: v.optional(v.string()), // ISO format: "YYYY-MM-DD"
     deathDate: v.optional(v.string()), // ISO format: "YYYY-MM-DD"
 
+    // Ownership tracking (required - all resources must have an owner)
+    createdBy: v.id("users"),
+
     // Timestamps
     createdAt: v.number(),
     updatedAt: v.number(),
   })
-    .index("by_slug", ["slug"]),
+    .index("by_slug", ["slug"])
+    .index("by_creator", ["createdBy"]),
 
   quotes: defineTable({
     // Required fields
@@ -65,11 +69,15 @@ export default defineSchema({
     sourceUrl: v.optional(v.string()),
     verified: v.boolean(),
 
+    // Ownership tracking (required - all resources must have an owner)
+    createdBy: v.id("users"),
+
     // Timestamps
     createdAt: v.number(),
     updatedAt: v.number(),
   })
-    .index("by_person", ["personId"]),
+    .index("by_person", ["personId"])
+    .index("by_creator", ["createdBy"]),
 
   images: defineTable({
     // Required fields
@@ -85,10 +93,14 @@ export default defineSchema({
     source: v.optional(v.string()),
     license: v.optional(v.string()),
 
+    // Ownership tracking (required - all resources must have an owner)
+    createdBy: v.id("users"),
+
     // Timestamp
     createdAt: v.number(),
   })
-    .index("by_person", ["personId"]),
+    .index("by_person", ["personId"])
+    .index("by_creator", ["createdBy"]),
 
   generatedImages: defineTable({
     // Required fields
@@ -99,9 +111,13 @@ export default defineSchema({
     transformation: v.string(),    // Transformation params for regeneration
     expiresAt: v.number(),         // When Cloudinary will delete (timestamp)
 
+    // Ownership tracking (required - all resources must have an owner)
+    createdBy: v.id("users"),
+
     // Timestamp
     createdAt: v.number(),
   })
     .index("by_quote", ["quoteId"])
-    .index("by_expires", ["expiresAt"]),
+    .index("by_expires", ["expiresAt"])
+    .index("by_creator", ["createdBy"]),
 });

@@ -1,6 +1,6 @@
 import { convexTest } from "convex-test";
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import { Id } from "./_generated/dataModel";
 import schema from "./schema";
 import { modules } from "./test.setup";
@@ -489,7 +489,7 @@ describe("password reset", () => {
       });
 
       // When: Clearing the token (simulating what happens after successful password reset)
-      await t.mutation(api.passwordReset.clearPasswordResetToken as any, {
+      await t.mutation(internal.passwordReset.clearPasswordResetToken, {
         userId,
       });
 

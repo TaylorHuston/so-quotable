@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requireAuth, requireOwnerOrAdmin } from "./lib/auth";
 
 /**
  * Get a single image by ID
@@ -30,6 +31,7 @@ export const getByPerson = query({
 
 /**
  * Create a new image with validation
+ * Requires authentication - sets createdBy to authenticated user
  * Note: Primary image constraint deferred for MVP (use single image per person)
  */
 export const create = mutation({
@@ -43,6 +45,9 @@ export const create = mutation({
     license: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    // Require authentication
+    const userId = await requireAuth(ctx);
+
     // Basic validation
     if (!args.cloudinaryId.trim()) {
       throw new Error("Cloudinary ID is required and cannot be empty");
@@ -65,6 +70,7 @@ export const create = mutation({
       height: args.height,
       source: args.source,
       license: args.license,
+      createdBy: userId,
       createdAt: Date.now(),
     });
 
@@ -74,12 +80,20 @@ export const create = mutation({
 
 /**
  * Remove an image (hard delete)
+ * Requires authentication and ownership (or admin role)
  */
 export const remove = mutation({
   args: {
     id: v.id("images"),
   },
   handler: async (ctx, args) => {
+    // Fetch existing image and verify ownership
+    const image = await ctx.db.get(args.id);
+    if (!image) {
+      throw new Error("Image not found");
+    }
+    await requireOwnerOrAdmin(ctx, image.createdBy);
+
     await ctx.db.delete(args.id);
     return args.id;
   },

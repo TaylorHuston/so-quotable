@@ -36,26 +36,52 @@ This document defines security practices and standards for the So Quotable proje
 **Authentication** (Convex Auth):
 
 ```typescript
+import { requireAuth } from "./lib/auth";
+
 // Protect functions with authentication
 export const create = mutation({
+  args: { text: v.string() },
   handler: async (ctx, args) => {
-    const user = await ctx.auth.getUserIdentity();
-    if (!user) {
-      throw new Error("Authentication required");
-    }
-    // ... authorized operation
+    // Returns userId or throws "Authentication required"
+    const userId = await requireAuth(ctx);
+
+    // Create resource with ownership tracking
+    return await ctx.db.insert("quotes", {
+      ...args,
+      createdBy: userId,  // Required field for all resources
+      createdAt: Date.now(),
+    });
   },
 });
 ```
 
-**Authorization Patterns**:
+**Authorization Patterns** (Owner or Admin):
 
 ```typescript
-// Check resource ownership
-const quote = await ctx.db.get(quoteId);
-if (quote.userId !== user.subject) {
-  throw new Error("Unauthorized");
-}
+import { requireOwnerOrAdmin, requireAdmin } from "./lib/auth";
+
+// Check resource ownership OR allow admin bypass
+export const update = mutation({
+  args: { id: v.id("quotes"), text: v.string() },
+  handler: async (ctx, { id, text }) => {
+    const quote = await ctx.db.get(id);
+    if (!quote) throw new Error("Quote not found");
+
+    // Throws "Not authorized" if not owner and not admin
+    await requireOwnerOrAdmin(ctx, quote.createdBy);
+
+    return await ctx.db.patch(id, { text, updatedAt: Date.now() });
+  },
+});
+
+// Admin-only operations
+export const cleanup = mutation({
+  handler: async (ctx) => {
+    // Throws "This action requires admin privileges" if not admin
+    await requireAdmin(ctx);
+    // ... admin-only operation
+  },
+});
 ```
 
 ### Cloudinary Security

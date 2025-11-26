@@ -24,6 +24,8 @@ This project uses the AI Toolkit plugin for structured development workflows.
 1. Never commit without explicit instruction to do so
 2. Always review all project documentation and guidelines before starting a batch of work
 3. Always have the code reviewer review any changes
+4. Before modifying any PM file (WORKLOG, PLAN, TASK), ALWAYS read the corresponding format specification in `docs/development/workflows/`
+5. When asked to "fix" a file, make minimal changes - do not reformat or condense unless explicitly requested
 
 ## Tools
 Never forget that you have access to the following, utilize them as necessary

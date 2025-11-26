@@ -1,6 +1,14 @@
-import { query } from "./_generated/server";
+import { internalQuery } from "./_generated/server";
 
-export const listAllUsers = query({
+/**
+ * Debug functions for development only.
+ * Marked as internal to prevent public API access.
+ * Can only be called from other Convex functions (e.g., via ctx.runQuery).
+ *
+ * SECURITY: These expose sensitive user data and should never be public.
+ */
+
+export const listAllUsers = internalQuery({
   args: {},
   handler: async (ctx) => {
     const users = await ctx.db.query("users").collect();
@@ -16,7 +24,7 @@ export const listAllUsers = query({
   },
 });
 
-export const listAllAuthAccounts = query({
+export const listAllAuthAccounts = internalQuery({
   args: {},
   handler: async (ctx) => {
     const accounts = await ctx.db.query("authAccounts").collect();
