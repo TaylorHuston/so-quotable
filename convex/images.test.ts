@@ -4,6 +4,7 @@ import { api } from "./_generated/api";
 import schema from "./schema";
 import { modules } from "./test.setup";
 import { createTestUser, asUser } from "./test.helpers";
+import { AUTH_ERRORS } from "./lib/auth";
 
 describe("images CRUD operations", () => {
   let t: ReturnType<typeof convexTest>;
@@ -23,7 +24,7 @@ describe("images CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "test-cloud-id",
         url: "https://example.com/test.jpg",
@@ -49,13 +50,13 @@ describe("images CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "temp",
         url: "https://example.com/temp.jpg",
       });
 
-      await t.mutation(api.images.remove, { id: imageId });
+      await authT.mutation(api.images.remove, { id: imageId });
 
       // When: Getting deleted image
       const image = await t.query(api.images.get, { id: imageId });
@@ -76,12 +77,12 @@ describe("images CRUD operations", () => {
         slug: "albert-einstein",
       });
 
-      await t.mutation(api.images.create, {
+      await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "einstein-1",
         url: "https://example.com/einstein1.jpg",
       });
-      await t.mutation(api.images.create, {
+      await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "einstein-2",
         url: "https://example.com/einstein2.jpg",
@@ -128,12 +129,12 @@ describe("images CRUD operations", () => {
         slug: "person-2",
       });
 
-      await t.mutation(api.images.create, {
+      await authT.mutation(api.images.create, {
         personId: person1Id,
         cloudinaryId: "person1-img",
         url: "https://example.com/person1.jpg",
       });
-      await t.mutation(api.images.create, {
+      await authT.mutation(api.images.create, {
         personId: person2Id,
         cloudinaryId: "person2-img",
         url: "https://example.com/person2.jpg",
@@ -162,7 +163,7 @@ describe("images CRUD operations", () => {
       });
 
       // When: Creating image with minimal data
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "test-cloud-id",
         url: "https://example.com/test.jpg",
@@ -189,7 +190,7 @@ describe("images CRUD operations", () => {
       });
 
       // When: Creating image with full data
-      const _imageId = await t.mutation(api.images.create, {
+      const _imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "full-cloud-id",
         url: "https://example.com/full.jpg",
@@ -219,7 +220,7 @@ describe("images CRUD operations", () => {
       });
 
       // When: Creating image with whitespace
-      const _imageId = await t.mutation(api.images.create, {
+      const _imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "  cloud-id-with-spaces  ",
         url: "  https://example.com/test.jpg  ",
@@ -243,7 +244,7 @@ describe("images CRUD operations", () => {
 
       // When/Then: Creating image with empty cloudinaryId should throw
       await expect(
-        t.mutation(api.images.create, {
+        authT.mutation(api.images.create, {
           personId,
           cloudinaryId: "",
           url: "https://example.com/test.jpg",
@@ -263,7 +264,7 @@ describe("images CRUD operations", () => {
 
       // When/Then: Creating image with whitespace-only cloudinaryId should throw
       await expect(
-        t.mutation(api.images.create, {
+        authT.mutation(api.images.create, {
           personId,
           cloudinaryId: "   ",
           url: "https://example.com/test.jpg",
@@ -283,7 +284,7 @@ describe("images CRUD operations", () => {
 
       // When/Then: Creating image with empty url should throw
       await expect(
-        t.mutation(api.images.create, {
+        authT.mutation(api.images.create, {
           personId,
           cloudinaryId: "test-id",
           url: "",
@@ -304,12 +305,54 @@ describe("images CRUD operations", () => {
 
       // When/Then: Creating image for non-existent person should throw
       await expect(
-        t.mutation(api.images.create, {
+        authT.mutation(api.images.create, {
           personId,
           cloudinaryId: "test-id",
           url: "https://example.com/test.jpg",
         })
       ).rejects.toThrow("Person not found");
+    });
+
+    it("should fail when user is not authenticated", async () => {
+      // Given: A person (need user to create it)
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test",
+      });
+
+      // When/Then: Creating image without auth should throw
+      await expect(
+        t.mutation(api.images.create, {
+          personId,
+          cloudinaryId: "test-id",
+          url: "https://example.com/test.jpg",
+        })
+      ).rejects.toThrow(AUTH_ERRORS.NOT_AUTHENTICATED);
+    });
+
+    it("should set createdBy to authenticated user", async () => {
+      // Given: An authenticated user and a person
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test",
+      });
+
+      // When: Creating image
+      const imageId = await authT.mutation(api.images.create, {
+        personId,
+        cloudinaryId: "test-id",
+        url: "https://example.com/test.jpg",
+      });
+
+      // Then: createdBy should be set to the authenticated user
+      const image = await t.query(api.images.get, { id: imageId });
+      expect(image!.createdBy).toBe(userId);
     });
   });
 
@@ -324,7 +367,7 @@ describe("images CRUD operations", () => {
         slug: "test",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "test-id",
         url: "https://example.com/test.jpg",
@@ -335,7 +378,7 @@ describe("images CRUD operations", () => {
       expect(images).toHaveLength(1);
 
       // When: Removing image
-      const removedId = await t.mutation(api.images.remove, { id: imageId });
+      const removedId = await authT.mutation(api.images.remove, { id: imageId });
 
       // Then: Image should be deleted
       expect(removedId).toBe(imageId);
@@ -353,18 +396,100 @@ describe("images CRUD operations", () => {
         slug: "test",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "test-id",
         url: "https://example.com/test.jpg",
       });
 
       // When: Removing image
-      await t.mutation(api.images.remove, { id: imageId });
+      await authT.mutation(api.images.remove, { id: imageId });
 
       // Then: Person should still exist
       const person = await t.query(api.people.get, { id: personId });
       expect(person).not.toBeNull();
+    });
+
+    it("should fail when user is not authenticated", async () => {
+      // Given: An image created by an authenticated user
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test",
+      });
+
+      const imageId = await authT.mutation(api.images.create, {
+        personId,
+        cloudinaryId: "test-id",
+        url: "https://example.com/test.jpg",
+      });
+
+      // When/Then: Removing without auth should throw
+      await expect(
+        t.mutation(api.images.remove, { id: imageId })
+      ).rejects.toThrow(AUTH_ERRORS.NOT_AUTHENTICATED);
+    });
+
+    it("should fail when user does not own image", async () => {
+      // Given: An image created by user1
+      const user1Id = await t.run(async (ctx) => createTestUser(ctx));
+      const user1T = asUser(t, user1Id);
+
+      const personId = await user1T.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test",
+      });
+
+      const imageId = await user1T.mutation(api.images.create, {
+        personId,
+        cloudinaryId: "test-id",
+        url: "https://example.com/test.jpg",
+      });
+
+      // When: User2 tries to delete user1's image
+      const user2Id = await t.run(async (ctx) =>
+        createTestUser(ctx, { email: "user2@example.com" })
+      );
+      const user2T = asUser(t, user2Id);
+
+      // Then: Should throw authorization error
+      await expect(
+        user2T.mutation(api.images.remove, { id: imageId })
+      ).rejects.toThrow(AUTH_ERRORS.NOT_AUTHORIZED);
+    });
+
+    it("should allow admin to delete any image", async () => {
+      // Given: An image created by a regular user
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test",
+      });
+
+      const imageId = await authT.mutation(api.images.create, {
+        personId,
+        cloudinaryId: "test-id",
+        url: "https://example.com/test.jpg",
+      });
+
+      // When: Admin deletes the image
+      const adminId = await t.run(async (ctx) =>
+        createTestUser(ctx, { email: "admin@example.com", role: "admin" })
+      );
+      const adminT = asUser(t, adminId);
+
+      const removedId = await adminT.mutation(api.images.remove, {
+        id: imageId,
+      });
+
+      // Then: Image should be deleted
+      expect(removedId).toBe(imageId);
+      const image = await t.query(api.images.get, { id: imageId });
+      expect(image).toBeNull();
     });
   });
 });

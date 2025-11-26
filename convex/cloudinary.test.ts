@@ -18,6 +18,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { api } from "./_generated/api";
 import schema from "./schema";
 import { modules } from "./test.setup";
+import { createTestUser, asUser } from "./test.helpers";
 
 describe("cloudinary.uploadToCloudinary action validation", () => {
   let t: ReturnType<typeof convexTest>;
@@ -29,7 +30,10 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
   describe("parameter validation for base-images preset", () => {
     it("should fail when file is empty", async () => {
       // Given: A person exists
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Error Test Person",
         slug: "error-test",
       });
@@ -46,7 +50,10 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
 
     it("should fail when file is whitespace only", async () => {
       // Given: A person exists
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Whitespace Test",
         slug: "whitespace",
       });
@@ -75,11 +82,14 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
 
     it("should fail when personId does not exist", async () => {
       // Given: A non-existent person ID
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Temporary",
         slug: "temp",
       });
-      await t.mutation(api.people.remove, { id: personId });
+      await authT.mutation(api.people.remove, { id: personId });
 
       // When/Then: Should fail when person doesn't exist
       await expect(
@@ -93,7 +103,10 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
 
     it("should fail when preset is invalid", async () => {
       // Given: A person exists
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Invalid Preset Person",
         slug: "invalid-preset",
       });
@@ -114,12 +127,15 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
   describe("parameter validation for generated-images preset", () => {
     it("should fail when quoteId is missing", async () => {
       // Given: Required entities
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "test",
         url: "https://example.com/test.jpg",
@@ -140,12 +156,15 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
 
     it("should fail when imageId is missing", async () => {
       // Given: Required entities
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
         verified: true,
@@ -166,18 +185,21 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
 
     it("should fail when transformation is missing", async () => {
       // Given: All required entities exist
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
         verified: true,
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "test",
         url: "https://example.com/test.jpg",
@@ -198,24 +220,27 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
 
     it("should fail when quoteId does not exist", async () => {
       // Given: Non-existent quote
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Temporary quote",
         verified: true,
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "test",
         url: "https://example.com/test.jpg",
       });
 
-      await t.mutation(api.quotes.remove, { id: quoteId });
+      await authT.mutation(api.quotes.remove, { id: quoteId });
 
       // When/Then: Should fail when quote doesn't exist
       await expect(
@@ -231,24 +256,27 @@ describe("cloudinary.uploadToCloudinary action validation", () => {
 
     it("should fail when imageId does not exist", async () => {
       // Given: Non-existent base image
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
         verified: true,
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "temp",
         url: "https://example.com/temp.jpg",
       });
 
-      await t.mutation(api.images.remove, { id: imageId });
+      await authT.mutation(api.images.remove, { id: imageId });
 
       // When/Then: Should fail when base image doesn't exist
       await expect(

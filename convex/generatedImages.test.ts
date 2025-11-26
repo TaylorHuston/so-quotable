@@ -23,7 +23,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "albert-einstein",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "einstein-base",
         url: "https://example.com/einstein.jpg",
@@ -101,7 +101,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -159,7 +159,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -226,7 +226,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -281,7 +281,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -325,7 +325,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -370,7 +370,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -419,7 +419,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -460,7 +460,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -498,7 +498,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -532,7 +532,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -566,7 +566,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -600,7 +600,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -634,7 +634,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -669,12 +669,12 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
       });
-      await t.mutation(api.images.remove, { id: imageId });
+      await authT.mutation(api.images.remove, { id: imageId });
 
       const quoteId = await authT.mutation(api.quotes.create, {
         personId,
@@ -706,7 +706,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
@@ -751,7 +751,7 @@ describe("generatedImages CRUD operations", () => {
         slug: "test-person",
       });
 
-      const imageId = await t.mutation(api.images.create, {
+      const imageId = await authT.mutation(api.images.create, {
         personId,
         cloudinaryId: "base-image",
         url: "https://example.com/base.jpg",
