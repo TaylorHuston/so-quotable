@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { api } from "./_generated/api";
 import schema from "./schema";
 import { modules } from "./test.setup";
+import { createTestUser, asUser } from "./test.helpers";
 
 describe("generatedImages CRUD operations", () => {
   let t: ReturnType<typeof convexTest>;
@@ -14,6 +15,9 @@ describe("generatedImages CRUD operations", () => {
   describe("generatedImages.getByQuote query", () => {
     it("should return all generated images for a quote using index", async () => {
       // Given: A person with a quote and multiple generated images
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Albert Einstein",
         slug: "albert-einstein",
@@ -25,7 +29,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/einstein.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Imagination is more important than knowledge.",
       });
@@ -65,12 +69,15 @@ describe("generatedImages CRUD operations", () => {
 
     it("should return empty array for quote with no generated images", async () => {
       // Given: A quote with no generated images
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "A quote without generated images",
       });
@@ -86,6 +93,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should not return generated images from other quotes", async () => {
       // Given: Two quotes with generated images
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -97,12 +107,12 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quote1Id = await t.mutation(api.quotes.create, {
+      const quote1Id = await authT.mutation(api.quotes.create, {
         personId,
         text: "Quote 1",
       });
 
-      const quote2Id = await t.mutation(api.quotes.create, {
+      const quote2Id = await authT.mutation(api.quotes.create, {
         personId,
         text: "Quote 2",
       });
@@ -141,6 +151,9 @@ describe("generatedImages CRUD operations", () => {
   describe("generatedImages.getExpiringSoon query", () => {
     it("should return images expiring within specified days", async () => {
       // Given: Setup test data
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -152,7 +165,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -205,6 +218,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should return multiple images if multiple are expiring soon", async () => {
       // Given: Setup with multiple images expiring soon
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -216,7 +232,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -257,6 +273,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should return empty array if no images are expiring soon", async () => {
       // Given: Setup with image expiring far in the future
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -268,7 +287,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -298,6 +317,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should use default of 7 days when days parameter not provided", async () => {
       // Given: Setup with image expiring in 5 days
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -309,7 +331,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -340,6 +362,9 @@ describe("generatedImages CRUD operations", () => {
   describe("generatedImages.create mutation", () => {
     it("should create generated image with all required fields", async () => {
       // Given: A person, image, and quote
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -351,7 +376,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -386,6 +411,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should trim whitespace from cloudinaryId and url", async () => {
       // Given: Setup test data
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -397,7 +425,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -424,6 +452,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should trim whitespace from transformation", async () => {
       // Given: Setup test data
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -435,7 +466,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -459,6 +490,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should fail when cloudinaryId is empty", async () => {
       // Given: Setup test data
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -470,7 +504,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -490,6 +524,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should fail when cloudinaryId is whitespace only", async () => {
       // Given: Setup test data
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -501,7 +538,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -521,6 +558,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should fail when url is empty", async () => {
       // Given: Setup test data
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -532,7 +572,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -552,6 +592,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should fail when transformation is empty", async () => {
       // Given: Setup test data
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -563,7 +606,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -583,6 +626,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should fail when quote does not exist", async () => {
       // Given: Create and delete a quote to get valid but non-existent ID
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -594,11 +640,11 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Temporary quote",
       });
-      await t.mutation(api.quotes.remove, { id: quoteId });
+      await authT.mutation(api.quotes.remove, { id: quoteId });
 
       // When/Then: Creating with non-existent quote should throw
       await expect(
@@ -615,6 +661,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should fail when image does not exist", async () => {
       // Given: Create and delete an image to get valid but non-existent ID
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -627,7 +676,7 @@ describe("generatedImages CRUD operations", () => {
       });
       await t.mutation(api.images.remove, { id: imageId });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -649,6 +698,9 @@ describe("generatedImages CRUD operations", () => {
   describe("generatedImages.remove mutation", () => {
     it("should delete generated image", async () => {
       // Given: An existing generated image
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -660,7 +712,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
@@ -691,6 +743,9 @@ describe("generatedImages CRUD operations", () => {
 
     it("should not delete quote or base image when generated image is deleted", async () => {
       // Given: A generated image
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       const personId = await t.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
@@ -702,7 +757,7 @@ describe("generatedImages CRUD operations", () => {
         url: "https://example.com/base.jpg",
       });
 
-      const quoteId = await t.mutation(api.quotes.create, {
+      const quoteId = await authT.mutation(api.quotes.create, {
         personId,
         text: "Test quote",
       });
