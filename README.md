@@ -37,7 +37,7 @@ So Quotable allows users to create visually appealing quote graphics overlaid on
 
 ### Prerequisites
 
-- Node.js 18.18.0 (use [nvm](https://github.com/nvm-sh/nvm) for version management)
+- Node.js 20.x (use [nvm](https://github.com/nvm-sh/nvm) for version management)
 - npm 9.0.0+
 - Convex account ([sign up free](https://www.convex.dev/))
 - Cloudinary account ([sign up free](https://cloudinary.com/))
@@ -149,7 +149,8 @@ quotable/
 - **[Project Brief](./docs/project-brief.md)** - Product vision and objectives
 - **[Architecture Overview](./docs/project/architecture-overview.md)** - System architecture and design
 - **[Architecture Decision Records](./docs/project/adrs/)** - Technical decision documentation
-- **[Development Guidelines](./docs/development/guidelines/)** - Coding standards, testing, security
+- **[Development Conventions](./docs/development/conventions/)** - Coding standards, testing, security
+- **[Development Workflows](./docs/development/workflows/)** - Development loop, git workflow
 
 ## 🧪 Testing
 
@@ -174,7 +175,7 @@ npm run test:e2e:ui
 
 ### Test Coverage
 
-Current coverage: **95%+** (580 tests total, 553 passing)
+Current coverage: **95%+** (580 tests total, 553 passing, 25 with known issues, 2 skipped)
 
 **Test Breakdown by Domain**:
 - **Backend Functions**: 97%+ coverage (230+ tests)
@@ -200,7 +201,7 @@ Current coverage: **95%+** (580 tests total, 553 passing)
   - Protected route redirection
   - Session persistence
 
-See [Testing Standards](./docs/development/guidelines/testing-standards.md) for testing approach.
+See [Testing Standards](./docs/development/conventions/testing-standards.md) for testing approach.
 
 ## 🌐 Deployment
 
@@ -511,9 +512,9 @@ This project uses [AI Toolkit](https://github.com/cktang88/ai-toolkit) for struc
 
 ### Development Workflow
 
-1. Review [Development Loop](./docs/development/guidelines/development-loop.md) for TDD/BDD workflow
-2. Check [Git Workflow](./docs/development/guidelines/git-workflow.md) for branching strategy
-3. Follow [Coding Standards](./docs/development/guidelines/coding-standards.md) for code style
+1. Review [Development Loop](./docs/development/workflows/development-loop.md) for TDD/BDD workflow
+2. Check [Git Workflow](./docs/development/workflows/git-workflow.md) for branching strategy
+3. Follow [Coding Standards](./docs/development/conventions/coding-standards.md) for code style
 
 ### Branch Strategy
 
