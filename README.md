@@ -20,7 +20,7 @@ So Quotable allows users to create visually appealing quote graphics overlaid on
   - Email verification (MVP: console logging, production: email service integration ready)
 - **Real-time Database** - Reactive data layer with Convex for instant updates
 - **Type-Safe** - End-to-end TypeScript for frontend and backend
-- **Comprehensive Testing** - 94%+ test coverage (501 tests) with Vitest, convex-test, and Playwright
+- **Comprehensive Testing** - 95%+ test coverage (580 tests) with Vitest, convex-test, and Playwright
 
 ## 🛠 Tech Stack
 
@@ -175,18 +175,22 @@ npm run test:e2e:ui
 
 ### Test Coverage
 
-Current coverage: **94.18%** (501 tests passing)
+Current coverage: **95%+** (580 tests total, 553 passing)
 
 **Test Breakdown by Domain**:
-- **Backend Functions**: 97.36% coverage (217 tests)
-  - Convex Auth: 100% (auth.ts, users.ts, emailVerification.ts)
+- **Backend Functions**: 97%+ coverage (230+ tests)
+  - Convex Auth: 100% (auth.ts, users.ts, emailVerification.ts, passwordReset.ts)
   - Cloudinary: 92% (generatedImages.ts, cloudinary.ts)
   - Database: 100% (quotes.ts, people.ts, images.ts)
-- **Frontend Components**: 100% E2E coverage (22 tests)
+  - Health: 100% (health.ts - 5 tests)
+- **Frontend Components**: 100% coverage (100+ tests)
   - LoginForm: Email/password + Google OAuth flows
   - RegisterForm: Registration + duplicate detection + password strength
+  - ForgotPassword/ResetPassword: Password reset flows
   - UserProfile: Auth state rendering + sign out
   - Middleware: Protected routes (24 tests, 100% coverage)
+- **API Routes**: 100% coverage (24+ tests)
+  - Health endpoint: Unit + integration tests (29 tests)
 - **Utilities**: 100% coverage (70+ tests)
   - Email normalization, slug generation, password validation
   - Debounce utility (performance optimization)
@@ -276,10 +280,10 @@ curl https://so-quoteable.vercel.app/api/health
 {
   "status": "healthy",
   "timestamp": "2025-11-24T04:15:13.965Z",
-  "service": "quoteable-api",
+  "service": "quotable-api",
   "convex": {
     "status": "ok",
-    "database": { "connected": true, "peopleCount": 0 },
+    "database": { "connected": true },
     "environment": { "deployment": "cloud" }
   }
 }

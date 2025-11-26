@@ -52,7 +52,7 @@ Never forget that you have access to the following, utilize them as necessary
 ## Project Structure
 
 ```
-quoteable/
+quotable/
 ├── pm/                    # Project management (epics, tasks, bugs)
 ├── docs/                  # Documentation (brief, architecture, ADRs, guidelines)
 ├── convex/                # Convex backend (functions, schema) - to be created

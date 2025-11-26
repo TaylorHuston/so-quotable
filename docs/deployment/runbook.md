@@ -248,10 +248,10 @@ curl https://so-quoteable.vercel.app/api/health
 {
   "status": "healthy",
   "timestamp": "2025-11-24T...",
-  "service": "quoteable-api",
+  "service": "quotable-api",
   "convex": {
     "status": "ok",
-    "database": { "connected": true, "peopleCount": 0 },
+    "database": { "connected": true },
     "environment": { "deployment": "cloud" }
   }
 }
@@ -985,12 +985,11 @@ curl https://so-quoteable.vercel.app/api/health
 {
   "status": "healthy",
   "timestamp": "2025-11-24T04:15:13.965Z",
-  "service": "quoteable-api",
+  "service": "quotable-api",
   "convex": {
     "status": "ok",
     "database": {
-      "connected": true,
-      "peopleCount": 0
+      "connected": true
     },
     "environment": {
       "deployment": "cloud"

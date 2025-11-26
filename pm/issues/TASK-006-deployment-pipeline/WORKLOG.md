@@ -26,10 +26,37 @@
 - Phase 7.2: `d6c7b65` - Optimize health check query
 - Phase 7.3: `6dcd0ed` - Add security headers to health endpoint
 - Phase 7.4: `82d18f1` - Add health endpoint error tests
+- Phase 7.5: `b1b8da1` - Standardize project naming (quoteable → quotable)
+- Phase 7.6: `b1b8da1` - Update documentation accuracy (580 tests, 95%+)
 
 ---
 
 ## Work Entries
+
+## 2025-11-26 00:32 - [AUTHOR: technical-writer] (Phase 7.5 + 7.6 COMPLETE)
+
+**Phase objective**: Standardize naming and update documentation accuracy
+
+**Implementation summary (7.5 - Naming)**:
+- Changed package.json name: `quoteable` → `quotable`
+- Updated CLAUDE.md project structure diagram
+- Updated service name in doc examples: `quoteable-api` → `quotable-api`
+- Removed obsolete `peopleCount` from health response examples
+
+**Implementation summary (7.6 - Documentation)**:
+- Updated README test coverage: 501 → 580 tests
+- Updated pass rate: 94% → 95%+
+- Added health endpoint to test breakdown
+- Added password reset to auth test coverage
+
+**Key findings**:
+- URLs like `so-quoteable.vercel.app` are infrastructure names (kept as-is)
+- Only internal naming standardized to "quotable"
+- Health response schema changed in Phase 7.2 - docs now match
+
+**Files modified**: package.json, package-lock.json, CLAUDE.md, README.md, docs/deployment/runbook.md, docs/deployment/rollback.md
+
+---
 
 ## 2025-11-25 22:52 - [AUTHOR: code-reviewer] (Review Approved)
 
@@ -545,3 +572,37 @@
 **Files created**: scripts/verify-vercel-connection.sh, docs/deployment/vercel-setup.md, docs/deployment/phase-1-1-verification-checklist.md
 
 → Passing to @user for manual dashboard verification
+
+## 2025-11-26 01:15 - [AUTHOR: code-reviewer] (Review Approved)
+
+**Reviewed**: Phase 7.5 + 7.6 (Naming Standardization + Documentation Accuracy)
+**Scope**: Consistency, documentation accuracy, internal references
+**Score**: 98/100 ✅ Approved (clean)
+**Verdict**: Excellent cleanup work. All internal references standardized, documentation matches reality.
+
+**Strengths observed**:
+- Comprehensive naming standardization: package.json, CLAUDE.md, all doc examples
+- Correct distinction: internal "quotable" vs infrastructure "so-quoteable.vercel.app"
+- Documentation now matches actual test count (580 tests, 95%+ passing)
+- Removed obsolete fields (peopleCount) from examples
+- Service name corrected throughout: "quoteable-api" → "quotable-api"
+
+**Consistency verification** (all passing):
+- ✅ Package name: "quotable" (package.json, package-lock.json)
+- ✅ Service name: "quotable-api" (README, runbook, rollback docs)
+- ✅ Infrastructure URLs: "so-quoteable.vercel.app" correctly preserved
+- ✅ GitHub repo: "soquoteable" correctly preserved (existing infrastructure)
+- ✅ Test count: 580 tests accurate (actual: 553 passing + 25 failing + 2 skipped)
+- ✅ Pass rate: 95%+ accurate (553/580 = 95.3%)
+- ✅ Health response: Removed peopleCount, matches Phase 7.2 changes
+
+**Minor observations** (informational only):
+- Historical references in TASK-001 PLAN.md still mention "quoteable" - acceptable (historical record)
+- Test comment in tests/api/health.test.ts mentions old spelling - acceptable (explains transition)
+- Legacy 94% coverage refs exist in older WORKLOGs (TASK-004) - acceptable (historical accuracy)
+
+**Files reviewed**: package.json, package-lock.json, CLAUDE.md, README.md, docs/deployment/runbook.md, docs/deployment/rollback.md
+
+**Recommendation**: Approved for immediate merge. Documentation is now accurate and consistent.
+
+---

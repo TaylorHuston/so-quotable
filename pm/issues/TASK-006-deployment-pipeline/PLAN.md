@@ -260,17 +260,17 @@ Convex free tier does not support preview deployment keys (Pro feature required)
   - Also fixed outdated assertions and flaky timestamp test in integration tests
   - Acceptance: Error handling fully tested ✅
 
-- [ ] 7.5 Standardize project naming (P2 - MEDIUM)
+- [x] 7.5 Standardize project naming (P2 - MEDIUM) ✅
   - Issue: Inconsistent "quoteable" vs "quotable" spelling
   - Locations: Multiple files (health endpoint, docs)
   - Fix: Standardize to "quotable" throughout
-  - Acceptance: Consistent naming across codebase
+  - Acceptance: Consistent naming across codebase ✅
 
-- [ ] 7.6 Update documentation accuracy (P2 - MEDIUM)
+- [x] 7.6 Update documentation accuracy (P2 - MEDIUM) ✅
   - Issue: README test coverage stats outdated
   - Location: README.md
-  - Fix: Update to reflect current 95% pass rate
-  - Acceptance: Documentation matches current state
+  - Fix: Update to reflect current 95% pass rate (580 tests)
+  - Acceptance: Documentation matches current state ✅
 
 **Acceptance**: Quality gate passes with 0 failing tests, all P1 issues resolved.
 

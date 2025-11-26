@@ -118,7 +118,7 @@ git push origin main
 curl https://so-quoteable.vercel.app/api/health
 
 # Expected response (200 OK):
-# {"status":"healthy","timestamp":"...","service":"quoteable-api","convex":{...}}
+# {"status":"healthy","timestamp":"...","service":"quotable-api","convex":{...}}
 ```
 
 ---
@@ -600,7 +600,7 @@ curl -i https://so-quoteable.vercel.app/api/health
 # HTTP/2 200
 # content-type: application/json
 #
-# {"status":"healthy","timestamp":"2025-11-23T...","service":"quoteable-api","convex":{...}}
+# {"status":"healthy","timestamp":"2025-11-23T...","service":"quotable-api","convex":{...}}
 ```
 
 **Success Criteria**:
