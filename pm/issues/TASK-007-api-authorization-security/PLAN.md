@@ -19,11 +19,11 @@ Address security vulnerabilities identified in security audit (score: 85/100, ta
 
 **Objective**: Create reusable authentication utilities and test helpers to support DRY implementation across all protected mutations.
 
-- [ ] 1.1 Create `convex/lib/auth.ts` with auth helper functions
-  - [ ] 1.1.1 Implement `requireAuth(ctx)` - validates user authentication, returns userId or throws
-  - [ ] 1.1.2 Implement `requireOwnerOrAdmin(ctx, resourceCreatedBy)` - validates ownership or admin role
-  - [ ] 1.1.3 Define `AUTH_ERRORS` constants for standardized error messages
-  - [ ] 1.1.4 Add JSDoc documentation for all helper functions
+- [x] 1.1 Create `convex/lib/auth.ts` with auth helper functions
+  - [x] 1.1.1 Implement `requireAuth(ctx)` - validates user authentication, returns userId or throws
+  - [x] 1.1.2 Implement `requireOwnerOrAdmin(ctx, resourceCreatedBy)` - validates ownership or admin role
+  - [x] 1.1.3 Define `AUTH_ERRORS` constants for standardized error messages
+  - [x] 1.1.4 Add JSDoc documentation for all helper functions
 - [ ] 1.2 Create `convex/test.helpers.ts` for authenticated test contexts
   - [ ] 1.2.1 Implement `createTestUser(t, overrides?)` - creates test user with optional role
   - [ ] 1.2.2 Implement `asUser(t, userId)` - returns authenticated test context via `t.withIdentity()`
@@ -34,12 +34,12 @@ Address security vulnerabilities identified in security audit (score: 85/100, ta
   - [ ] 1.3.3 Add `createdBy: v.optional(v.id("users"))` to `images` table
   - [ ] 1.3.4 Add `createdBy: v.optional(v.id("users"))` to `generatedImages` table
   - [ ] 1.3.5 Add index `by_creator` on `createdBy` field for all 4 tables (enables "my resources" queries)
-- [ ] 1.4 Write tests for auth helpers
-  - [ ] 1.4.1 Test `requireAuth` with authenticated user (should return userId)
-  - [ ] 1.4.2 Test `requireAuth` without authentication (should throw "Authentication required")
-  - [ ] 1.4.3 Test `requireOwnerOrAdmin` as owner (should pass)
-  - [ ] 1.4.4 Test `requireOwnerOrAdmin` as admin (should pass via bypass)
-  - [ ] 1.4.5 Test `requireOwnerOrAdmin` as different user (should throw "Not authorized")
+- [x] 1.4 Write tests for auth helpers
+  - [x] 1.4.1 Test `requireAuth` with authenticated user (should return userId)
+  - [x] 1.4.2 Test `requireAuth` without authentication (should throw "Authentication required")
+  - [x] 1.4.3 Test `requireOwnerOrAdmin` as owner (should pass)
+  - [x] 1.4.4 Test `requireOwnerOrAdmin` as admin (should pass via bypass)
+  - [x] 1.4.5 Test `requireOwnerOrAdmin` as different user (should throw "Not authorized")
 
 **Test Count Estimate**: 5 helper tests
 
