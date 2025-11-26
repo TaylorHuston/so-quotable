@@ -10,7 +10,7 @@
 
 | Phase | Commit | Date | Description |
 |-------|--------|------|-------------|
-| 1.1 | (pending) | 2025-11-26 | Create auth helper functions |
+| 1.1 | 4ceb573 | 2025-11-26 | Create auth helper functions |
 
 ---
 
