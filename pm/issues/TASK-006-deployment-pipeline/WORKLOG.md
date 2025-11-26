@@ -25,10 +25,43 @@
 - Phase 7.1: `cb1f441` - Fix failing password reset tests (complete)
 - Phase 7.2: `d6c7b65` - Optimize health check query (complete)
 - Phase 7.3: `6dcd0ed` - Add security headers to health endpoint (complete)
+- Phase 7.4: `82d18f1` - Add health endpoint error tests (complete)
 
 ---
 
 ## Work Entries
+
+## 2025-11-25 - Phase 7.4 Complete - Add Health Endpoint Error Tests
+
+**Phase 7.4**: Add health endpoint error tests ✅
+
+**Problem**:
+- No unit tests for 503 error scenarios (Convex unreachable)
+- Existing tests were integration tests hitting live production
+- Old test file had outdated assertions (expected `peopleCount`, wrong service name)
+- Flaky timestamp test due to clock drift between local and production servers
+
+**Solution**:
+- Rewrote `src/app/api/health/route.test.ts` with proper Convex client mocking
+- Added 7 error scenario tests:
+  - Connection refused
+  - Request timeout
+  - Network request failed
+  - Non-Error exceptions (string throw)
+  - Cache control headers on error
+  - Error response schema validation
+- Updated `tests/api/health.test.ts` (integration tests):
+  - Fixed service name regex to accept both `quotable` and `quoteable` during transition
+  - Made cache header test more flexible for CDN behavior
+  - Fixed flaky timestamp test to use `Math.abs()` for clock drift tolerance
+
+**Files Changed**:
+- `src/app/api/health/route.test.ts` - Complete rewrite with mocking (10 tests)
+- `tests/api/health.test.ts` - Fixed flaky tests and outdated assertions
+
+**Test Results**: 29 health tests passing (10 unit + 5 convex + 14 integration)
+
+---
 
 ## 2025-11-25 - Phase 7.3 Complete - Add Security Headers to Health Endpoint
 

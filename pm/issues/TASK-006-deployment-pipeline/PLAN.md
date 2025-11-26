@@ -252,11 +252,13 @@ Convex free tier does not support preview deployment keys (Pro feature required)
   - Updated tests to verify headers are present
   - Acceptance: Headers present in health endpoint response ✅
 
-- [ ] 7.4 Add health endpoint error tests (P2 - MEDIUM)
+- [x] 7.4 Add health endpoint error tests (P2 - MEDIUM) ✅
   - Issue: No tests for 503 error scenarios
-  - Location: `tests/api/health.test.ts`
-  - Fix: Add mock tests for Convex unreachable scenarios
-  - Acceptance: Error handling fully tested
+  - Location: `src/app/api/health/route.test.ts` (unit tests with mocking)
+  - Fix: Added 7 error scenario tests with mocked Convex client
+  - Tests cover: connection refused, timeouts, network errors, non-Error exceptions
+  - Also fixed outdated assertions and flaky timestamp test in integration tests
+  - Acceptance: Error handling fully tested ✅
 
 - [ ] 7.5 Standardize project naming (P2 - MEDIUM)
   - Issue: Inconsistent "quoteable" vs "quotable" spelling
