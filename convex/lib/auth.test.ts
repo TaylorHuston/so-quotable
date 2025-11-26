@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { Id } from "../_generated/dataModel";
 import schema from "../schema";
 import { modules } from "../test.setup";
-import { requireAuth, requireOwnerOrAdmin, AUTH_ERRORS } from "./auth";
+import { requireAuth, requireOwnerOrAdmin, requireAdmin, AUTH_ERRORS } from "./auth";
 
 describe("auth helper functions", () => {
   let t: ReturnType<typeof convexTest>;
@@ -171,6 +171,67 @@ describe("auth helper functions", () => {
           return await requireOwnerOrAdmin(ctx, undefined);
         });
       }).rejects.toThrow(AUTH_ERRORS.NOT_AUTHORIZED);
+    });
+  });
+
+  describe("requireAdmin", () => {
+    it("should pass when user is an admin", async () => {
+      // Given: An admin user
+      const adminUserId = await t.run(async (ctx) => {
+        const now = Date.now();
+        return await ctx.db.insert("users", {
+          email: "admin@example.com",
+          name: "Admin User",
+          slug: "admin-user",
+          role: "admin",
+          createdAt: now,
+          updatedAt: now,
+        });
+      });
+
+      // When: Calling requireAdmin with admin context
+      const tAuth = t.withIdentity({ subject: adminUserId });
+      const result = await tAuth.run(async (ctx) => {
+        return await requireAdmin(ctx);
+      });
+
+      // Then: Should return the admin userId
+      expect(result).toBe(adminUserId);
+    });
+
+    it("should throw error when user is not an admin", async () => {
+      // Given: A regular user
+      const userId = await t.run(async (ctx) => {
+        const now = Date.now();
+        return await ctx.db.insert("users", {
+          email: "user@example.com",
+          name: "Regular User",
+          slug: "regular-user",
+          role: "user",
+          createdAt: now,
+          updatedAt: now,
+        });
+      });
+
+      // When: Calling requireAdmin with non-admin context
+      // Then: Should throw admin-only error
+      const tAuth = t.withIdentity({ subject: userId });
+      await expect(async () => {
+        await tAuth.run(async (ctx) => {
+          return await requireAdmin(ctx);
+        });
+      }).rejects.toThrow(AUTH_ERRORS.ADMIN_ONLY);
+    });
+
+    it("should throw error when user is not authenticated", async () => {
+      // Given: No authentication (no identity set)
+      // When: Calling requireAdmin without authentication
+      // Then: Should throw authentication error
+      await expect(async () => {
+        await t.run(async (ctx) => {
+          return await requireAdmin(ctx);
+        });
+      }).rejects.toThrow(AUTH_ERRORS.NOT_AUTHENTICATED);
     });
   });
 });

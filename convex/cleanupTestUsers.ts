@@ -1,8 +1,11 @@
 import { v } from "convex/values";
 import { mutation } from "./_generated/server";
+import { requireAdmin } from "./lib/auth";
 
 /**
  * Safely cleanup test user accounts from the database.
+ *
+ * SECURITY: Requires admin authentication - this is a destructive operation.
  *
  * This mutation:
  * - Filters users by test email patterns (test-*, existing-*, newuser@example.com)
@@ -20,6 +23,8 @@ export const cleanupTestUsers = mutation({
     batchSize: v.optional(v.number()),
   },
   handler: async (ctx, { dryRun, batchSize = 50 }) => {
+    // Admin-only operation - destructive mutation
+    await requireAdmin(ctx);
     // Query all users
     const allUsers = await ctx.db.query("users").collect();
 

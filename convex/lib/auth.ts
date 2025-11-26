@@ -170,3 +170,57 @@ export async function requireOwnerOrAdmin(
 
   return { userId, isAdmin: false };
 }
+
+/**
+ * Require user to have admin privileges
+ *
+ * Validates that the authenticated user has the admin role.
+ * This is a stricter check than requireOwnerOrAdmin - it REQUIRES admin status,
+ * not just allows it as a bypass.
+ *
+ * Use this for administrative operations that should never be performed by regular users,
+ * such as:
+ * - Bulk user management
+ * - System configuration changes
+ * - Destructive cleanup operations
+ * - Accessing debug/diagnostic functions
+ *
+ * @param ctx - Convex query or mutation context
+ * @returns Promise resolving to the admin user's ID
+ * @throws Error with AUTH_ERRORS.NOT_AUTHENTICATED if user is not logged in
+ * @throws Error with AUTH_ERRORS.ADMIN_ONLY if user is not an admin
+ *
+ * @example
+ * ```typescript
+ * export const cleanupTestUsers = mutation({
+ *   args: { dryRun: v.boolean() },
+ *   handler: async (ctx, { dryRun }) => {
+ *     await requireAdmin(ctx);  // Only admins can run cleanup
+ *     // ... perform cleanup
+ *   },
+ * });
+ * ```
+ *
+ * @see {@link requireOwnerOrAdmin} for ownership-based authorization
+ * @see {@link AUTH_ERRORS} for standardized error messages
+ */
+export async function requireAdmin(
+  ctx: QueryCtx | MutationCtx
+): Promise<Id<"users">> {
+  // First, ensure user is authenticated
+  const userId = await requireAuth(ctx);
+
+  // Get user document to check role
+  const user = await ctx.db.get(userId);
+
+  if (!user) {
+    // This shouldn't happen (user was just authenticated), but handle defensively
+    throw new Error(AUTH_ERRORS.NOT_AUTHENTICATED);
+  }
+
+  if (user.role !== "admin") {
+    throw new Error(AUTH_ERRORS.ADMIN_ONLY);
+  }
+
+  return userId;
+}
