@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requireAuth, requireOwnerOrAdmin } from "./lib/auth";
 
 /**
  * List people with simple pagination
@@ -44,6 +45,7 @@ export const getBySlug = query({
 
 /**
  * Create a new person with validation
+ * Requires authentication - sets createdBy to authenticated user
  */
 export const create = mutation({
   args: {
@@ -54,6 +56,9 @@ export const create = mutation({
     deathDate: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    // Require authentication
+    const userId = await requireAuth(ctx);
+
     // Basic validation
     if (!args.name.trim()) {
       throw new Error("Name is required and cannot be empty");
@@ -69,6 +74,7 @@ export const create = mutation({
       bio: args.bio,
       birthDate: args.birthDate,
       deathDate: args.deathDate,
+      createdBy: userId,
       createdAt: now,
       updatedAt: now,
     });
@@ -79,6 +85,7 @@ export const create = mutation({
 
 /**
  * Update a person (sets updatedAt timestamp)
+ * Requires authentication and ownership (or admin role)
  */
 export const update = mutation({
   args: {
@@ -91,6 +98,13 @@ export const update = mutation({
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
+
+    // Fetch existing person and verify ownership
+    const person = await ctx.db.get(id);
+    if (!person) {
+      throw new Error("Person not found");
+    }
+    await requireOwnerOrAdmin(ctx, person.createdBy);
 
     // Basic validation for provided fields
     if (updates.name !== undefined && !updates.name.trim()) {
@@ -125,12 +139,20 @@ export const update = mutation({
 
 /**
  * Remove a person (hard delete)
+ * Requires authentication and ownership (or admin role)
  */
 export const remove = mutation({
   args: {
     id: v.id("people"),
   },
   handler: async (ctx, args) => {
+    // Fetch existing person and verify ownership
+    const person = await ctx.db.get(args.id);
+    if (!person) {
+      throw new Error("Person not found");
+    }
+    await requireOwnerOrAdmin(ctx, person.createdBy);
+
     await ctx.db.delete(args.id);
     return args.id;
   },

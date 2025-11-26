@@ -3,6 +3,8 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { api } from "./_generated/api";
 import schema from "./schema";
 import { modules } from "./test.setup";
+import { createTestUser, asUser } from "./test.helpers";
+import { AUTH_ERRORS } from "./lib/auth";
 
 describe("people CRUD operations", () => {
   let t: ReturnType<typeof convexTest>;
@@ -72,7 +74,10 @@ describe("people CRUD operations", () => {
   describe("people.get query", () => {
     it("should return person by ID", async () => {
       // Given: A person in the database
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Stephen Hawking",
         slug: "stephen-hawking",
       });
@@ -88,11 +93,14 @@ describe("people CRUD operations", () => {
 
     it("should return null for non-existent ID", async () => {
       // Given: Create and delete a person to get a valid but non-existent ID
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Temporary Person",
         slug: "temporary",
       });
-      await t.mutation(api.people.remove, { id: personId });
+      await authT.mutation(api.people.remove, { id: personId });
 
       // When: Getting person with deleted ID
       const person = await t.query(api.people.get, { id: personId });
@@ -105,7 +113,10 @@ describe("people CRUD operations", () => {
   describe("people.getBySlug query", () => {
     it("should return person by slug using index", async () => {
       // Given: A person with a specific slug
-      await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      await authT.mutation(api.people.create, {
         name: "Isaac Newton",
         slug: "isaac-newton",
         bio: "English mathematician and physicist",
@@ -136,26 +147,35 @@ describe("people CRUD operations", () => {
 
   describe("people.create mutation", () => {
     it("should create person with required fields only", async () => {
+      // Given: An authenticated user
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       // When: Creating person with minimal data
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Ada Lovelace",
         slug: "ada-lovelace",
       });
 
-      // Then: Person should be created
+      // Then: Person should be created with createdBy set
       expect(personId).toBeDefined();
 
       const person = await t.query(api.people.get, { id: personId });
       expect(person!.name).toBe("Ada Lovelace");
       expect(person!.slug).toBe("ada-lovelace");
+      expect(person!.createdBy).toBe(userId);
       expect(person!.createdAt).toBeGreaterThan(0);
       expect(person!.updatedAt).toBeGreaterThan(0);
       expect(person!.createdAt).toBe(person!.updatedAt);
     });
 
     it("should create person with all optional fields", async () => {
+      // Given: An authenticated user
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       // When: Creating person with full data
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Leonardo da Vinci",
         slug: "leonardo-da-vinci",
         bio: "Italian polymath",
@@ -171,8 +191,12 @@ describe("people CRUD operations", () => {
     });
 
     it("should trim whitespace from name and slug", async () => {
+      // Given: An authenticated user
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       // When: Creating person with whitespace
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "  Galileo Galilei  ",
         slug: "  galileo-galilei  ",
       });
@@ -184,9 +208,13 @@ describe("people CRUD operations", () => {
     });
 
     it("should fail when name is empty", async () => {
+      // Given: An authenticated user
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       // When/Then: Creating person with empty name should throw
       await expect(
-        t.mutation(api.people.create, {
+        authT.mutation(api.people.create, {
           name: "",
           slug: "test",
         })
@@ -194,9 +222,13 @@ describe("people CRUD operations", () => {
     });
 
     it("should fail when name is whitespace only", async () => {
+      // Given: An authenticated user
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       // When/Then: Creating person with whitespace-only name should throw
       await expect(
-        t.mutation(api.people.create, {
+        authT.mutation(api.people.create, {
           name: "   ",
           slug: "test",
         })
@@ -204,20 +236,37 @@ describe("people CRUD operations", () => {
     });
 
     it("should fail when slug is empty", async () => {
+      // Given: An authenticated user
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
       // When/Then: Creating person with empty slug should throw
       await expect(
-        t.mutation(api.people.create, {
+        authT.mutation(api.people.create, {
           name: "Test Person",
           slug: "",
         })
       ).rejects.toThrow("Slug is required");
+    });
+
+    it("should fail when user is not authenticated", async () => {
+      // When/Then: Creating person without auth should throw
+      await expect(
+        t.mutation(api.people.create, {
+          name: "Test Person",
+          slug: "test-person",
+        })
+      ).rejects.toThrow(AUTH_ERRORS.NOT_AUTHENTICATED);
     });
   });
 
   describe("people.update mutation", () => {
     it("should update person fields", async () => {
       // Given: An existing person
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Charles Darwin",
         slug: "charles-darwin",
       });
@@ -229,7 +278,7 @@ describe("people CRUD operations", () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       // When: Updating person bio
-      await t.mutation(api.people.update, {
+      await authT.mutation(api.people.update, {
         id: personId,
         bio: "English naturalist",
       });
@@ -243,13 +292,16 @@ describe("people CRUD operations", () => {
 
     it("should update multiple fields at once", async () => {
       // Given: An existing person
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Nikola Tesla",
         slug: "nikola-tesla",
       });
 
       // When: Updating multiple fields
-      await t.mutation(api.people.update, {
+      await authT.mutation(api.people.update, {
         id: personId,
         bio: "Serbian-American inventor",
         birthDate: "1856-07-10",
@@ -265,13 +317,16 @@ describe("people CRUD operations", () => {
 
     it("should trim whitespace when updating name", async () => {
       // Given: An existing person
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
 
       // When: Updating with whitespace
-      await t.mutation(api.people.update, {
+      await authT.mutation(api.people.update, {
         id: personId,
         name: "  Updated Name  ",
       });
@@ -283,25 +338,122 @@ describe("people CRUD operations", () => {
 
     it("should fail when updating name to empty string", async () => {
       // Given: An existing person
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
 
       // When/Then: Updating to empty name should throw
       await expect(
-        t.mutation(api.people.update, {
+        authT.mutation(api.people.update, {
           id: personId,
           name: "",
         })
       ).rejects.toThrow("Name cannot be empty");
+    });
+
+    it("should fail when person does not exist", async () => {
+      // Given: Create and delete a person to get valid but non-existent ID
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
+        name: "Temporary Person",
+        slug: "temporary",
+      });
+      await authT.mutation(api.people.remove, { id: personId });
+
+      // When/Then: Updating non-existent person should throw
+      await expect(
+        authT.mutation(api.people.update, {
+          id: personId,
+          name: "New Name",
+        })
+      ).rejects.toThrow("Person not found");
+    });
+
+    it("should fail when user is not authenticated", async () => {
+      // Given: An existing person
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test-person",
+      });
+
+      // When/Then: Updating without auth should throw
+      await expect(
+        t.mutation(api.people.update, {
+          id: personId,
+          name: "New Name",
+        })
+      ).rejects.toThrow(AUTH_ERRORS.NOT_AUTHENTICATED);
+    });
+
+    it("should fail when user does not own person", async () => {
+      // Given: A person created by one user
+      const ownerId = await t.run(async (ctx) => createTestUser(ctx));
+      const ownerT = asUser(t, ownerId);
+
+      const personId = await ownerT.mutation(api.people.create, {
+        name: "Owner Person",
+        slug: "owner-person",
+      });
+
+      // Given: Another user
+      const otherId = await t.run(async (ctx) =>
+        createTestUser(ctx, { email: "other@example.com" })
+      );
+      const otherT = asUser(t, otherId);
+
+      // When/Then: Other user updating should throw
+      await expect(
+        otherT.mutation(api.people.update, {
+          id: personId,
+          name: "Hijacked Name",
+        })
+      ).rejects.toThrow(AUTH_ERRORS.NOT_AUTHORIZED);
+    });
+
+    it("should allow admin to update any person", async () => {
+      // Given: A person created by a regular user
+      const ownerId = await t.run(async (ctx) => createTestUser(ctx));
+      const ownerT = asUser(t, ownerId);
+
+      const personId = await ownerT.mutation(api.people.create, {
+        name: "Regular Person",
+        slug: "regular-person",
+      });
+
+      // Given: An admin user
+      const adminId = await t.run(async (ctx) =>
+        createTestUser(ctx, { email: "admin@example.com", role: "admin" })
+      );
+      const adminT = asUser(t, adminId);
+
+      // When: Admin updates the person
+      await adminT.mutation(api.people.update, {
+        id: personId,
+        name: "Admin Updated Name",
+      });
+
+      // Then: Update should succeed
+      const person = await t.query(api.people.get, { id: personId });
+      expect(person!.name).toBe("Admin Updated Name");
     });
   });
 
   describe("people.remove mutation", () => {
     it("should delete person", async () => {
       // Given: An existing person
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -311,11 +463,92 @@ describe("people CRUD operations", () => {
       expect(person).not.toBeNull();
 
       // When: Removing person
-      const removedId = await t.mutation(api.people.remove, { id: personId });
+      const removedId = await authT.mutation(api.people.remove, {
+        id: personId,
+      });
 
       // Then: Person should be deleted
       expect(removedId).toBe(personId);
       person = await t.query(api.people.get, { id: personId });
+      expect(person).toBeNull();
+    });
+
+    it("should fail when person does not exist", async () => {
+      // Given: Create and delete a person to get valid but non-existent ID
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
+        name: "Temporary Person",
+        slug: "temporary",
+      });
+      await authT.mutation(api.people.remove, { id: personId });
+
+      // When/Then: Removing non-existent person should throw
+      await expect(
+        authT.mutation(api.people.remove, { id: personId })
+      ).rejects.toThrow("Person not found");
+    });
+
+    it("should fail when user is not authenticated", async () => {
+      // Given: An existing person
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
+        name: "Test Person",
+        slug: "test-person",
+      });
+
+      // When/Then: Removing without auth should throw
+      await expect(
+        t.mutation(api.people.remove, { id: personId })
+      ).rejects.toThrow(AUTH_ERRORS.NOT_AUTHENTICATED);
+    });
+
+    it("should fail when user does not own person", async () => {
+      // Given: A person created by one user
+      const ownerId = await t.run(async (ctx) => createTestUser(ctx));
+      const ownerT = asUser(t, ownerId);
+
+      const personId = await ownerT.mutation(api.people.create, {
+        name: "Owner Person",
+        slug: "owner-person",
+      });
+
+      // Given: Another user
+      const otherId = await t.run(async (ctx) =>
+        createTestUser(ctx, { email: "other@example.com" })
+      );
+      const otherT = asUser(t, otherId);
+
+      // When/Then: Other user deleting should throw
+      await expect(
+        otherT.mutation(api.people.remove, { id: personId })
+      ).rejects.toThrow(AUTH_ERRORS.NOT_AUTHORIZED);
+    });
+
+    it("should allow admin to delete any person", async () => {
+      // Given: A person created by a regular user
+      const ownerId = await t.run(async (ctx) => createTestUser(ctx));
+      const ownerT = asUser(t, ownerId);
+
+      const personId = await ownerT.mutation(api.people.create, {
+        name: "Regular Person",
+        slug: "regular-person",
+      });
+
+      // Given: An admin user
+      const adminId = await t.run(async (ctx) =>
+        createTestUser(ctx, { email: "admin@example.com", role: "admin" })
+      );
+      const adminT = asUser(t, adminId);
+
+      // When: Admin deletes the person
+      await adminT.mutation(api.people.remove, { id: personId });
+
+      // Then: Person should be deleted
+      const person = await t.query(api.people.get, { id: personId });
       expect(person).toBeNull();
     });
   });

@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { api } from "./_generated/api";
 import schema from "./schema";
 import { modules } from "./test.setup";
+import { createTestUser, asUser } from "./test.helpers";
 
 describe("images CRUD operations", () => {
   let t: ReturnType<typeof convexTest>;
@@ -14,7 +15,10 @@ describe("images CRUD operations", () => {
   describe("images.get query", () => {
     it("should return image by ID", async () => {
       // Given: An image exists
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -37,7 +41,10 @@ describe("images CRUD operations", () => {
 
     it("should return null for non-existent image", async () => {
       // Given: A non-existent image ID
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -61,7 +68,10 @@ describe("images CRUD operations", () => {
   describe("images.getByPerson query", () => {
     it("should return all images for a person using index", async () => {
       // Given: A person with multiple images
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Albert Einstein",
         slug: "albert-einstein",
       });
@@ -89,7 +99,10 @@ describe("images CRUD operations", () => {
 
     it("should return empty array for person with no images", async () => {
       // Given: A person with no images
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Person Without Images",
         slug: "no-images",
       });
@@ -103,11 +116,14 @@ describe("images CRUD operations", () => {
 
     it("should not return images from other people", async () => {
       // Given: Two people with images
-      const person1Id = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const person1Id = await authT.mutation(api.people.create, {
         name: "Person 1",
         slug: "person-1",
       });
-      const person2Id = await t.mutation(api.people.create, {
+      const person2Id = await authT.mutation(api.people.create, {
         name: "Person 2",
         slug: "person-2",
       });
@@ -137,7 +153,10 @@ describe("images CRUD operations", () => {
   describe("images.create mutation", () => {
     it("should create image with required fields only", async () => {
       // Given: A person
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });
@@ -161,7 +180,10 @@ describe("images CRUD operations", () => {
 
     it("should create image with all optional fields", async () => {
       // Given: A person
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });
@@ -188,7 +210,10 @@ describe("images CRUD operations", () => {
 
     it("should trim whitespace from cloudinaryId and url", async () => {
       // Given: A person
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });
@@ -208,7 +233,10 @@ describe("images CRUD operations", () => {
 
     it("should fail when cloudinaryId is empty", async () => {
       // Given: A person
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });
@@ -225,7 +253,10 @@ describe("images CRUD operations", () => {
 
     it("should fail when cloudinaryId is whitespace only", async () => {
       // Given: A person
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });
@@ -242,7 +273,10 @@ describe("images CRUD operations", () => {
 
     it("should fail when url is empty", async () => {
       // Given: A person
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });
@@ -259,11 +293,14 @@ describe("images CRUD operations", () => {
 
     it("should fail when person does not exist", async () => {
       // Given: Create and delete a person to get a valid but non-existent ID
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Temporary Person",
         slug: "temporary",
       });
-      await t.mutation(api.people.remove, { id: personId });
+      await authT.mutation(api.people.remove, { id: personId });
 
       // When/Then: Creating image for non-existent person should throw
       await expect(
@@ -279,7 +316,10 @@ describe("images CRUD operations", () => {
   describe("images.remove mutation", () => {
     it("should delete image", async () => {
       // Given: An existing image
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });
@@ -305,7 +345,10 @@ describe("images CRUD operations", () => {
 
     it("should not delete person when image is deleted (no cascade)", async () => {
       // Given: A person with an image
-      const personId = await t.mutation(api.people.create, {
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test",
       });

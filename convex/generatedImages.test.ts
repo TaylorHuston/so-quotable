@@ -18,7 +18,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Albert Einstein",
         slug: "albert-einstein",
       });
@@ -72,7 +72,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -96,7 +96,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -154,7 +154,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -221,7 +221,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -276,7 +276,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -320,7 +320,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -365,7 +365,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -414,7 +414,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -455,7 +455,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -493,7 +493,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -527,7 +527,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -561,7 +561,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -595,7 +595,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -629,7 +629,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -664,7 +664,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -701,7 +701,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });
@@ -746,7 +746,7 @@ describe("generatedImages CRUD operations", () => {
       const userId = await t.run(async (ctx) => createTestUser(ctx));
       const authT = asUser(t, userId);
 
-      const personId = await t.mutation(api.people.create, {
+      const personId = await authT.mutation(api.people.create, {
         name: "Test Person",
         slug: "test-person",
       });

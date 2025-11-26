@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { api } from "./_generated/api";
 import schema from "./schema";
 import { modules } from "./test.setup";
+import { createTestUser, asUser } from "./test.helpers";
 
 describe("health endpoint", () => {
   let t: ReturnType<typeof convexTest>;
@@ -42,16 +43,19 @@ describe("health endpoint", () => {
     });
 
     it("should still work with populated database", async () => {
-      // Given: Three people in database
-      await t.mutation(api.people.create, {
+      // Given: An authenticated user and three people in database
+      const userId = await t.run(async (ctx) => createTestUser(ctx));
+      const authT = asUser(t, userId);
+
+      await authT.mutation(api.people.create, {
         name: "Person 1",
         slug: "person-1",
       });
-      await t.mutation(api.people.create, {
+      await authT.mutation(api.people.create, {
         name: "Person 2",
         slug: "person-2",
       });
-      await t.mutation(api.people.create, {
+      await authT.mutation(api.people.create, {
         name: "Person 3",
         slug: "person-3",
       });
