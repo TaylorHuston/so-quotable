@@ -8,15 +8,16 @@ This project uses the AI Toolkit plugin for structured development workflows.
 
 **Toolkit Version Information:**
 
-- **Plugin Version**: 0.36.0
-- **Last Updated**: 2025-11-23
+- **Plugin Version**: 0.37.1
+- **Last Updated**: 2025-11-25
 - **Template Customizations**:
   - **conventions** (all 7 files): Fully customized with project-specific decisions (api-guidelines, architectural-principles, coding-standards, security-guidelines, testing-standards, ui-design-guidelines, versioning-and-releases)
   - **workflows** (6 files): Updated to latest templates with v0.35.0 planning improvements and v0.36.0 WORKLOG enhancements (agent-coordination, development-loop, git-workflow, pm-file-formats, pm-workflows, worklog-format)
   - **templates**: Migrated to `-template.md` naming convention, added spike-template.md and spike-workflow.md
 - **Migration Notes**:
   - v0.30.0 → v0.32.0 (2025-11-19): Major restructuring: `docs/development/guidelines/` split into `conventions/`, `workflows/`, `misc/`; `pm/templates/` moved to `docs/development/templates/`. Backup: `.toolkit-backup-20251118-233538/`
-  - v0.32.0 → v0.36.0 (2025-11-23): Updated workflows and READMEs, migrated template naming convention, added spike workflow. All conventions kept (project-specific). 
+  - v0.32.0 → v0.36.0 (2025-11-23): Updated workflows and READMEs, migrated template naming convention, added spike workflow. All conventions kept (project-specific).
+  - v0.36.0 → v0.37.1 (2025-11-25): Standardized YAML frontmatter across all 7 conventions files (removed target_audience, template_type, title fields; kept last_updated + description + config sections). 
 
 ## Critical Rules
 
