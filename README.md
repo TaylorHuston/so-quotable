@@ -146,7 +146,6 @@ quotable/
 
 ## 📚 Documentation
 
-- **[Getting Started Guide](./GETTING-STARTED.md)** - Detailed development workflow and AI-assisted development
 - **[Project Brief](./docs/project-brief.md)** - Product vision and objectives
 - **[Architecture Overview](./docs/project/architecture-overview.md)** - System architecture and design
 - **[Architecture Decision Records](./docs/project/adrs/)** - Technical decision documentation

@@ -1,8 +1,7 @@
 ---
 id: TASK-001
 title: Initialize Next.js project with TypeScript
-epic: EPIC-001
-status: completed
+status: done
 created: 2025-10-30
 updated: 2025-10-31
 completed: 2025-10-31

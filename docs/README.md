@@ -57,4 +57,4 @@ Create and manage documentation using AI commands:
 - `/adr` - Make technical decisions and create ADRs
 - `/docs` - Generate, validate, or sync documentation
 
-See `GETTING-STARTED.md` for complete workflow.
+See the main README.md for development commands.
