@@ -49,8 +49,8 @@ export default defineSchema({
     birthDate: v.optional(v.string()), // ISO format: "YYYY-MM-DD"
     deathDate: v.optional(v.string()), // ISO format: "YYYY-MM-DD"
 
-    // Ownership tracking (optional for backwards compatibility with existing data)
-    createdBy: v.optional(v.id("users")),
+    // Ownership tracking (required - all resources must have an owner)
+    createdBy: v.id("users"),
 
     // Timestamps
     createdAt: v.number(),
@@ -69,8 +69,8 @@ export default defineSchema({
     sourceUrl: v.optional(v.string()),
     verified: v.boolean(),
 
-    // Ownership tracking (optional for backwards compatibility with existing data)
-    createdBy: v.optional(v.id("users")),
+    // Ownership tracking (required - all resources must have an owner)
+    createdBy: v.id("users"),
 
     // Timestamps
     createdAt: v.number(),
@@ -93,8 +93,8 @@ export default defineSchema({
     source: v.optional(v.string()),
     license: v.optional(v.string()),
 
-    // Ownership tracking (optional for backwards compatibility with existing data)
-    createdBy: v.optional(v.id("users")),
+    // Ownership tracking (required - all resources must have an owner)
+    createdBy: v.id("users"),
 
     // Timestamp
     createdAt: v.number(),
@@ -111,8 +111,8 @@ export default defineSchema({
     transformation: v.string(),    // Transformation params for regeneration
     expiresAt: v.number(),         // When Cloudinary will delete (timestamp)
 
-    // Ownership tracking (optional for backwards compatibility with existing data)
-    createdBy: v.optional(v.id("users")),
+    // Ownership tracking (required - all resources must have an owner)
+    createdBy: v.id("users"),
 
     // Timestamp
     createdAt: v.number(),

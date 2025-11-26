@@ -15,18 +15,29 @@ describe("people CRUD operations", () => {
 
   describe("people.list query", () => {
     it("should return all people", async () => {
-      // Given: Two people in the database
+      // Given: Two people in the database (created by a test user)
       await t.run(async (ctx) => {
         const now = Date.now();
+        // Create a test user for ownership
+        const userId = await ctx.db.insert("users", {
+          email: "list-test@example.com",
+          name: "List Test User",
+          slug: "list-test-user",
+          role: "user",
+          createdAt: now,
+          updatedAt: now,
+        });
         await ctx.db.insert("people", {
           name: "Albert Einstein",
           slug: "albert-einstein",
+          createdBy: userId,
           createdAt: now,
           updatedAt: now,
         });
         await ctx.db.insert("people", {
           name: "Marie Curie",
           slug: "marie-curie",
+          createdBy: userId,
           createdAt: now,
           updatedAt: now,
         });
@@ -42,13 +53,23 @@ describe("people CRUD operations", () => {
     });
 
     it("should respect pagination limit", async () => {
-      // Given: Three people in the database
+      // Given: Three people in the database (created by a test user)
       await t.run(async (ctx) => {
         const now = Date.now();
+        // Create a test user for ownership
+        const userId = await ctx.db.insert("users", {
+          email: "pagination-test@example.com",
+          name: "Pagination Test User",
+          slug: "pagination-test-user",
+          role: "user",
+          createdAt: now,
+          updatedAt: now,
+        });
         for (let i = 1; i <= 3; i++) {
           await ctx.db.insert("people", {
             name: `Person ${i}`,
             slug: `person-${i}`,
+            createdBy: userId,
             createdAt: now,
             updatedAt: now,
           });

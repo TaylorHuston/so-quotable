@@ -86,10 +86,10 @@ export async function requireAuth(
  * Returns both the userId and isAdmin flag for flexibility in downstream logic.
  *
  * @param ctx - Convex mutation context (needs to read user document for role check)
- * @param resourceCreatedBy - The userId of the resource owner, or undefined for legacy data
+ * @param resourceCreatedBy - The userId of the resource owner (required field in schema)
  * @returns Promise resolving to { userId, isAdmin } if authorized
  * @throws Error with AUTH_ERRORS.NOT_AUTHENTICATED if user is not logged in
- * @throws Error with AUTH_ERRORS.NOT_AUTHORIZED if user is neither owner nor admin
+ * @throws Error with AUTH_ERRORS.NOT_AUTHORIZED if user is not the owner and not an admin
  *
  * @example
  * ```typescript
@@ -130,10 +130,6 @@ export async function requireAuth(
  * ```
  *
  * @remarks
- * **Legacy Data Handling**: If `resourceCreatedBy` is undefined (legacy data created before
- * Phase 1.3 schema migration), the function will reject non-admin users. Only admins can
- * modify resources without ownership information.
- *
  * **Admin Bypass**: Users with `role: "admin"` can modify any resource, regardless of ownership.
  * This is useful for moderation, support, and administrative tasks.
  *
@@ -142,7 +138,7 @@ export async function requireAuth(
  */
 export async function requireOwnerOrAdmin(
   ctx: MutationCtx,
-  resourceCreatedBy: Id<"users"> | undefined
+  resourceCreatedBy: Id<"users">
 ): Promise<{ userId: Id<"users">; isAdmin: boolean }> {
   // First, ensure user is authenticated
   const userId = await requireAuth(ctx);
@@ -163,8 +159,7 @@ export async function requireOwnerOrAdmin(
   }
 
   // For regular users, check ownership
-  // Reject if resourceCreatedBy is undefined (legacy data) or doesn't match current user
-  if (!resourceCreatedBy || resourceCreatedBy !== userId) {
+  if (resourceCreatedBy !== userId) {
     throw new Error(AUTH_ERRORS.NOT_AUTHORIZED);
   }
 

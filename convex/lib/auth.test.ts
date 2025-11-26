@@ -149,29 +149,6 @@ describe("auth helper functions", () => {
       }).rejects.toThrow(AUTH_ERRORS.NOT_AUTHORIZED);
     });
 
-    it("should handle undefined resourceCreatedBy (legacy data)", async () => {
-      // Given: A regular user
-      const userId = await t.run(async (ctx) => {
-        const now = Date.now();
-        return await ctx.db.insert("users", {
-          email: "user@example.com",
-          name: "Regular User",
-          slug: "regular-user",
-          role: "user",
-          createdAt: now,
-          updatedAt: now,
-        });
-      });
-
-      // When: Checking ownership against undefined resourceCreatedBy
-      // Then: Should throw authorization error (not owner, undefined means no owner set)
-      const tAuth = t.withIdentity({ subject: userId });
-      await expect(async () => {
-        await tAuth.run(async (ctx) => {
-          return await requireOwnerOrAdmin(ctx, undefined);
-        });
-      }).rejects.toThrow(AUTH_ERRORS.NOT_AUTHORIZED);
-    });
   });
 
   describe("requireAdmin", () => {
