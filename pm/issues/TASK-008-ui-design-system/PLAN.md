@@ -1,15 +1,10 @@
 ---
-task_id: TASK-008
-task_name: Establish UI Design System and Component Library
-parent_spec: SPEC-002
+issue_id: TASK-008
+plan_type: task
 created: 2025-11-23
-updated: 2025-11-23
-status: planning
-complexity_score: 7.5
-estimated_hours: 10-14
-estimated_story_points: 8
-architectural_review_score: TBD
-architectural_review_status: pending
+last_updated: 2025-11-23
+complexity: 7.5
+status: planned
 ---
 
 # Implementation Plan: TASK-008 - Establish UI Design System and Component Library

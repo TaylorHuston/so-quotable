@@ -1,13 +1,10 @@
 ---
+issue_id: TASK-002
+plan_type: task
 created: 2025-10-31
 last_updated: 2025-10-31
-complexity_score: 4
-task_id: TASK-002
-epic_id: EPIC-001
-approach: pragmatic-mvp
-estimated_phases: 4
-estimated_time: 1.5 days
-mvp_scope: true
+complexity: 4
+status: complete
 ---
 
 # Implementation Plan: TASK-002 - Convex Backend Setup (Pragmatic MVP)

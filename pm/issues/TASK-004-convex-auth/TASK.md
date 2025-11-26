@@ -1,11 +1,10 @@
 ---
-id: TASK-004
-title: Implement Convex Auth with email and Google OAuth
-epic: EPIC-001
+issue_number: TASK-004
+type: task
+spec: SPEC-001
 status: done
 created: 2025-10-30
-updated: 2025-11-03
-completed: 2025-11-03
+jira_issue_key: null
 ---
 
 # TASK-004: Implement Convex Auth with email and Google OAuth

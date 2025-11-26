@@ -1,10 +1,10 @@
 ---
-id: TASK-008
-title: Establish UI Design System and Component Library
-epic: SPEC-002
+issue_number: TASK-008
+type: task
+spec: SPEC-002
 status: planned
 created: 2025-11-23
-updated: 2025-11-23
+jira_issue_key: null
 ---
 
 # TASK-008: Establish UI Design System and Component Library

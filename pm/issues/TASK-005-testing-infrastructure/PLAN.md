@@ -1,13 +1,10 @@
 ---
-id: PLAN-005
-task_id: TASK-005
-title: Set up testing infrastructure
+issue_id: TASK-005
+plan_type: task
 created: 2025-11-03
-complexity_score: 3
-jira_integrated: false
-code_architect_reviewed: true
-code_architect_status: "approved_with_modifications"
-code_architect_date: 2025-11-03
+last_updated: 2025-11-03
+complexity: 3
+status: complete
 ---
 
 # Implementation Plan: TASK-005 Set up testing infrastructure

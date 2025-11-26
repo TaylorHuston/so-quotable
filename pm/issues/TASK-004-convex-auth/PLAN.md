@@ -1,18 +1,10 @@
 ---
-task_id: TASK-004
-title: Implement Convex Auth with email and Google OAuth
-epic: EPIC-001
+issue_id: TASK-004
+plan_type: task
 created: 2025-11-02
-updated: 2025-11-02
-status: planned
-complexity_score: 10
-complexity_level: high
-test_first_approach: pragmatic
-security_critical: true
-phases: 4
-estimated_story_points: 7-8
-code_architect_review: 87/100 → 93/100 (changes incorporated)
-security_audit: pending (critical gaps addressed)
+last_updated: 2025-11-22
+complexity: 10
+status: complete
 ---
 
 # TASK-004 Implementation Plan: Convex Auth

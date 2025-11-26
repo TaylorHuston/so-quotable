@@ -1,14 +1,10 @@
 ---
-id: TASK-003
-title: Configure Cloudinary integration
-epic: EPIC-001
-status: merged
+issue_number: TASK-003
+type: task
+spec: SPEC-001
+status: done
 created: 2025-10-30
-updated: 2025-11-02
-completed: 2025-11-02
-merged: 2025-11-02
-merged_to: develop
-branch: feature/TASK-003-cloudinary-integration
+jira_issue_key: null
 ---
 
 # TASK-003: Configure Cloudinary integration

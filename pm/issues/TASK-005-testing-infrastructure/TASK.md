@@ -1,10 +1,10 @@
 ---
-id: TASK-005
-title: Set up testing infrastructure
-epic: EPIC-001
-status: todo
+issue_number: TASK-005
+type: task
+spec: SPEC-001
+status: done
 created: 2025-10-30
-updated: 2025-10-30
+jira_issue_key: null
 ---
 
 # TASK-005: Set up testing infrastructure

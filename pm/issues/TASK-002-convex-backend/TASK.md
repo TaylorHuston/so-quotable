@@ -1,10 +1,10 @@
 ---
-id: TASK-002
-title: Set up Convex backend and database schema
-epic: EPIC-001
+issue_number: TASK-002
+type: task
+spec: SPEC-001
 status: done
 created: 2025-10-30
-updated: 2025-10-30
+jira_issue_key: null
 ---
 
 # TASK-002: Set up Convex backend and database schema

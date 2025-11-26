@@ -1,10 +1,10 @@
 ---
-id: TASK-001
-title: Initialize Next.js project with TypeScript
+issue_number: TASK-001
+type: task
+spec: SPEC-001
 status: done
 created: 2025-10-30
-updated: 2025-10-31
-completed: 2025-10-31
+jira_issue_key: null
 ---
 
 # TASK-001: Initialize Next.js project with TypeScript

@@ -2,9 +2,9 @@
 id: SPEC-001
 name: mvp-infrastructure-setup
 title: MVP Infrastructure Setup
-status: completed
+status: in_progress
 created: 2025-10-30
-updated: 2025-11-22
+updated: 2025-11-26
 ---
 
 # SPEC-001: MVP Infrastructure Setup
@@ -139,7 +139,7 @@ Set up the foundational infrastructure for So Quotable based on the tech stack d
 - **Type Safety**: Zero TypeScript compilation errors (✅ achieved)
 - **API Response Time**: Backend queries <100ms for simple operations (✅ achieved)
 - **Image Optimization**: Automatic WebP conversion for supported browsers (✅ achieved)
-- **Security**: OWASP Top 10 compliance for authentication (✅ achieved via security audit)
+- **Security**: OWASP Top 10 compliance for authentication (⚠️ partial - TASK-007 addresses audit findings)
 
 ## Dependencies
 
@@ -194,7 +194,12 @@ Set up the foundational infrastructure for So Quotable based on the tech stack d
   - Scope: Vercel production deployment, Convex Cloud production, environment promotion, health checks
   - Note: Adapted for Convex free tier (local E2E testing workflow)
 
-**Progress**: 6/6 tasks complete (100%)
+- [ ] **TASK-007**: Add API authorization and security hardening
+  - Status: 🔲 Todo
+  - Scope: Add auth checks to mutations (quotes, people, images, generatedImages), secure debug functions
+  - Priority: High (security audit finding)
+
+**Progress**: 6/7 tasks complete (86%)
 
 ---
 
@@ -228,4 +233,4 @@ This spec establishes the technical foundation for all future development. The i
 - 97% backend test coverage achieved
 - E2E tests validate complete authentication flows
 
-**Current Status**: Infrastructure 100% complete. All MVP infrastructure tasks completed and deployed to production. Ready for EPIC-002: Core Quote Generation Features.
+**Current Status**: Infrastructure 86% complete. Core infrastructure deployed to production. TASK-007 (security hardening) pending to address authorization gaps identified in security audit. Upon completion, ready for EPIC-002: Core Quote Generation Features.

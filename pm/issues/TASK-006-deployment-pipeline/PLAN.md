@@ -1,11 +1,10 @@
 ---
-task_id: TASK-006
-task_title: Configure deployment pipeline
-spec_id: SPEC-001
-complexity_score: 8
-estimated_hours: 12-16
+issue_id: TASK-006
+plan_type: task
 created: 2025-11-18
-updated: 2025-11-25
+last_updated: 2025-11-26
+complexity: 8
+status: complete
 ---
 
 # Implementation Plan: TASK-006 Configure Deployment Pipeline
