@@ -40,6 +40,7 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_CONVEX_URL: "https://placeholder.convex.cloud"
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: "placeholder"
 
       # E2E tests are skipped in CI - Convex free tier doesn't support preview deployments
       # Run E2E tests locally before merging: npm run test:e2e
