@@ -131,7 +131,7 @@ Increase `max_timeout` in `.github/workflows/e2e-preview.yml`:
 
 ### Root Cause
 
-Known issue with Next.js Edge Runtime and Convex integration (documented in TASK-006 Phase 3.3).
+Known issue with Next.js Edge Runtime and Convex integration (documented in 006 Phase 3.3).
 
 ### Status
 

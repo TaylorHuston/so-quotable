@@ -394,7 +394,7 @@ providers: [
 
 - Convex Auth Docs: https://labs.convex.dev/auth
 - Next.js Integration: https://labs.convex.dev/auth/setup
-- Implementation: See TASK-004 in `pm/issues/TASK-004-convex-auth/`
+- Implementation: See 004 in `pm/issues/004-convex-auth/`
 
 ---
 

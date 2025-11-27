@@ -157,25 +157,25 @@ Includes an admin dashboard for the site administrator to manage the content cat
 ## Dependencies
 
 **Completed Infrastructure (SPEC-001):**
-- ✅ Next.js + TypeScript project (TASK-001)
-- ✅ Convex backend with database schema (TASK-002)
+- ✅ Next.js + TypeScript project (001)
+- ✅ Convex backend with database schema (002)
   - `people` table (name, bio, metadata)
   - `images` table (Cloudinary URLs, person attribution)
   - `quotes` table (text, attribution, source)
   - `generatedImages` table (user, Cloudinary URL, 30-day auto-delete)
-- ✅ Cloudinary integration (TASK-003)
+- ✅ Cloudinary integration (003)
   - Image upload actions
   - Text overlay transformations (already tested)
   - CDN delivery with auto-format optimization
-- ✅ Authentication & authorization (TASK-004)
+- ✅ Authentication & authorization (004)
   - Email/password + Google OAuth
   - Protected routes for admin dashboard
   - User session management
-- ✅ Testing infrastructure (TASK-005)
+- ✅ Testing infrastructure (005)
   - Vitest for unit tests
   - Playwright for E2E tests
   - convex-test for backend testing
-- ✅ Deployment pipeline (TASK-006)
+- ✅ Deployment pipeline (006)
   - Vercel production deployment
   - Convex Cloud backend
 
@@ -193,14 +193,14 @@ Includes an admin dashboard for the site administrator to manage the content cat
 
 Progress: 0/3 tasks complete (0%)
 
-- [ ] **TASK-008**: Establish UI design system and component library
+- [ ] **008**: Establish UI design system and component library
   - Design tokens (colors, typography, spacing with WCAG AA contrast)
   - Component library (buttons, forms, cards, modals with ARIA support)
   - Page layouts and navigation patterns
   - Accessibility guidelines and axe-core testing setup
   - Storybook or component documentation (optional)
 
-- [ ] **TASK-009**: Build admin dashboard with CRUD operations
+- [ ] **009**: Build admin dashboard with CRUD operations
   - People management UI (create, read, update, delete)
   - Photo management (Cloudinary upload, link to people, preview)
   - Quote management (create, attribute to people, source verification)
@@ -222,14 +222,14 @@ Progress: 0/3 tasks complete (0%)
 ## Notes
 
 **Development Approach:**
-- **UI-first**: TASK-008 establishes design system before building features
-- **Admin-first**: TASK-009 enables content population before user-facing features
+- **UI-first**: 008 establishes design system before building features
+- **Admin-first**: 009 enables content population before user-facing features
 - **Incremental complexity**: Start with fixed layout, add advanced features in future iterations
 - **Accessibility from start**: WCAG compliance built-in, not retrofitted
 
 **Technical Highlights:**
-- Leverages existing Cloudinary text overlay transformations (tested in TASK-003)
-- Uses existing database schema (defined in TASK-002)
+- Leverages existing Cloudinary text overlay transformations (tested in 003)
+- Uses existing database schema (defined in 002)
 - Progressive disclosure UI pattern (single page, show/hide sections)
 - Direct generation (no live preview) for MVP simplicity
 - Bottom third layout only (simplest Cloudinary transformation)
@@ -245,4 +245,4 @@ Progress: 0/3 tasks complete (0%)
 - Public gallery and social sharing
 - User-submitted quote suggestions (admin approval workflow)
 
-**Current Status**: Planned. SPEC-001 infrastructure complete. Ready to begin design system work (TASK-008).
+**Current Status**: Planned. SPEC-001 infrastructure complete. Ready to begin design system work (008).

@@ -1,13 +1,11 @@
 ---
-target_audience: ["ai-assistants", "development-team"]
-document_type: "reference"
-priority: "high"
-tags: ["claude-code", "commands", "workflow", "reference"]
+last_updated: "2025-11-26"
+description: "Catalog of 26 Claude Code slash commands for the development workflow"
 ---
 
 # Claude Code Command Reference
 
-Streamlined catalog of 26 Claude Code slash commands centered around the **3-phase development workflow** plus setup, quality, and support commands.
+Catalog of 26 Claude Code slash commands centered around the **3-phase development workflow** plus setup, quality, and support commands.
 
 ## How Commands Work Together
 
@@ -16,17 +14,17 @@ The AI Toolkit provides a flexible workflow that adapts to your needs:
 ### Core Development Flow
 
 1. **Brief/One Pager**: `/project-brief` - Define what you're building and why
-2. **Planning**: `/epic` - Break features into organized work
+2. **Planning**: `/spec` - Create feature specifications with acceptance criteria
 3. **Architecture**: `/adr` - Make technical decisions and create ADRs
 4. **Tasks**: `/plan TASK-###` - Break down implementation into phases
 5. **Build**: `/implement TASK-### PHASE` (automated) or `/advise TASK-### PHASE` (collaborative)
-6. **Quality**: `/quality`, `/troubleshoot`, `/security-audit` - Ensure excellence
+6. **Quality**: `/quality`, `/troubleshoot` - Ensure excellence
 
 ### Commands Are Conversational
 
 Each command guides you through its workflow:
-- `/project-brief` asks questions to complete your proejct brief
-- `/epic` helps structure features with acceptance criteria
+- `/project-brief` asks questions to complete your project brief
+- `/spec` helps structure features with acceptance criteria
 - `/adr` explores options before creating ADRs
 - `/plan` breaks work into testable, reviewable phases
 - `/implement` executes with the right domain experts (agents)
@@ -35,7 +33,7 @@ Each command guides you through its workflow:
 
 You don't have to follow a strict sequence:
 - Jump straight to `/adr` for technical decisions
-- Use `/implement` to quickly build a spike
+- Use `/issue` to create tasks, bugs, or spikes
 - Run `/quality` whenever you want a comprehensive review
 - Invoke `/docs` to generate or validate documentation
 
@@ -77,21 +75,21 @@ Commands use different parameter paradigms because **different workflows need di
 
 **When**: Command can operate contextually OR on specific target
 
-**Commands**: `/epic [EPIC-###]`
+**Commands**: `/spec [SPEC-###]`
 
 **Why**: Enables both "create new" and "refine existing" workflows with one command. Parameter is optional because context can determine behavior.
 
 **Example**:
 ```bash
-/epic                   # Create new epic (conversational)
-/epic EPIC-001          # Refine existing epic (targeted)
+/spec                   # Create new spec (conversational)
+/spec --update SPEC-001 # Update existing spec (targeted)
 ```
 
 ### 4️⃣ Subcommand Pattern
 
 **When**: Command provides multiple related operations with distinct behaviors
 
-**Commands**: `/branch {create|merge|delete|switch|status}`, `/quality {assess|validate|audit|fix}`
+**Commands**: `/branch {create|merge|delete|switch|status}`
 
 **Why**: Groups related operations under one command namespace. Each subcommand has its own parameters and workflow.
 
@@ -106,14 +104,28 @@ Commands use different parameter paradigms because **different workflows need di
 
 **When**: Complex operations requiring context, interpretation, or flexibility
 
-**Commands**: `/commit`, `/docs`
+**Commands**: `/commit`
 
 **Why**: Some operations benefit from AI understanding intent rather than rigid parameters. Natural language enables nuance.
 
 **Example**:
 ```bash
 /commit "add user authentication with tests"
-/docs "sync API documentation with latest endpoint changes"
+```
+
+### 6️⃣ Flags with Optional Natural Language
+
+**When**: Common operations need quick access, but flexibility for specific requests
+
+**Commands**: `/docs`
+
+**Why**: Flags provide shortcuts for common operations while natural language handles edge cases.
+
+**Example**:
+```bash
+/docs --sync                    # Quick flag for common operation
+/docs --generate "auth system"  # Flag with target
+/docs "sync API docs with latest endpoint changes"  # Natural language for specifics
 ```
 
 ### Pattern Selection Guidelines
@@ -125,6 +137,7 @@ Commands use different parameter paradigms because **different workflows need di
 - **Context-aware behavior?** → Optional arguments
 - **Multiple operations?** → Subcommand pattern
 - **Complex intent?** → Natural language
+- **Common operations + flexibility?** → Flags with optional natural language
 
 **Not a bug, it's a feature**: Different interfaces optimize for different tasks. Consistency in pattern *selection* (matching interface to workflow) is more valuable than forcing all commands to use the same paradigm.
 
@@ -134,7 +147,7 @@ Commands use different parameter paradigms because **different workflows need di
 
 - _Purpose_: Initialize new or existing projects with ai-toolkit structure and templates
 - _Usage_: `/toolkit-init`
-- _Features_: Interactive customization (2 questions), smart conflict resolution, organized templates (37 files)
+- _Features_: Interactive customization (2 questions), smart conflict resolution, organized templates (51 files)
 
 ### 💡 **/project-brief** - Interactive Project Vision
 
@@ -143,12 +156,12 @@ Commands use different parameter paradigms because **different workflows need di
 - _Features_: Gap-driven conversation, section-by-section updates, analysis mode
 - _Modes_: Create (new brief), Update (fill gaps), Review (suggestions only)
 
-### 🎯 **/epic** - Unified Epic Management
+### 🎯 **/spec** - Feature Specification Management
 
-- _Purpose_: Create new epics or refine existing ones through natural language conversation
-- _Usage_: `/epic | /epic EPIC-###`
-- _Features_: Context-aware (create or refine), conversational interface, lightweight template
-- _Structure_: `pm/epics/EPIC-###-name.md` (single file), `pm/issues/TASK-###-name/` or `BUG-###-name/` (flat directories)
+- _Purpose_: Create new specs or update existing ones through natural language conversation
+- _Usage_: `/spec | /spec --update SPEC-### | /spec --epic PROJ-###`
+- _Features_: Context-aware (create or update), conversational interface, automatic task creation
+- _Structure_: `pm/specs/SPEC-###-name.md` (spec file), `pm/issues/TASK-###-name/` or `BUG-###-name/` (task directories)
 
 ## 🌟 Core Workflow Commands
 
@@ -160,19 +173,27 @@ Commands use different parameter paradigms because **different workflows need di
 - _Usage_: `/adr [--epic EPIC-###] | [--foundation] | [--infrastructure] | [--deep] | [--question "text"]`
 - _Workflow Phase_: **1. Architecture** - Technical decisions, ADRs, Fast Track vs comprehensive analysis
 
-### 📋 **/plan** - Task Implementation Planning
+### 📝 **/issue** - Create Work Items
 
-- _Purpose_: Create PLAN.md file with phase-based breakdown for individual tasks and bugs
-- _Usage_: `/plan TASK-### | /plan BUG-###`
-- _Workflow Phase_: **2. Planning** - Phase-based task breakdown, agent coordination, test-first patterns
-- _Output_: Creates `pm/issues/TASK-###-*/PLAN.md` (keeps TASK.md clean for PM tool sync)
+- _Purpose_: Create TASK, BUG, or SPIKE issues from natural language description
+- _Usage_: `/issue "description"`
+- _Workflow Phase_: **1. Issue Creation** - AI detects type, creates appropriate issue file
+- _Output_: Creates `pm/issues/{TYPE}-###-name/` with TASK.md, BUG.md, or SPIKE.md
+- _Examples_: `/issue "add user login"` → TASK, `/issue "fix Safari crash"` → BUG, `/issue "GraphQL vs REST?"` → SPIKE
+
+### 📋 **/plan** - Implementation Planning
+
+- _Purpose_: Create PLAN.md with phase-based breakdown (auto-detects issue type)
+- _Usage_: `/plan TASK-### | /plan BUG-### | /plan SPIKE-###`
+- _Workflow Phase_: **2. Planning** - TDD phases for TASK, reproduction-first for BUG, exploration plans for SPIKE
+- _Output_: PLAN.md for TASK/BUG, PLAN-1.md + PLAN-2.md etc. for SPIKE
 
 ### ⚡ **/implement** - Automated Phase Execution
 
-- _Purpose_: Execute specific implementation phases from task plans with test-first enforcement (AI writes code)
-- _Usage_: `/implement TASK-### PHASE | /implement BUG-### PHASE | /implement --next`
-- _Workflow Phase_: **3. Execution (Automated)** - AI writes code, tests, commits
-- _Examples_: `/implement TASK-001 1.1`, `/implement BUG-003 2.2`, `/implement --next`
+- _Purpose_: Execute implementation phases with test-first enforcement (auto-detects issue type)
+- _Usage_: `/implement TASK-### PHASE | /implement BUG-### PHASE | /implement SPIKE-### | /implement --next`
+- _Workflow Phase_: **3. Execution** - TDD for TASK/BUG, exploration on spike branches for SPIKE
+- _Examples_: `/implement TASK-001 1.1`, `/implement SPIKE-001` (asks which plan, creates spike branch)
 
 ### 🤝 **/advise** - Collaborative Phase Guidance
 
@@ -182,12 +203,18 @@ Commands use different parameter paradigms because **different workflows need di
 - _Examples_: `/advise TASK-001 1.2`, `/advise --next`
 - _Hybrid_: Mix `/implement` (AI codes) and `/advise` (user codes) per phase
 
+### ✅ **/complete** - Finish Work Items
+
+- _Purpose_: Complete any issue type per its workflow's completion requirements
+- _Usage_: `/complete TASK-### | /complete BUG-### | /complete SPIKE-###`
+- _Workflow Phase_: **4. Completion** - Validates requirements, marks done
+- _SPIKE special_: Pulls WORKLOGs from spike branches, generates SPIKE-SUMMARY.md, commits to develop
+
 ## 🔧 Supporting Commands
 
 ### **Quality & Security**
 
 - **[/quality](./quality.md)** - Multi-dimensional quality analysis using specialized agents
-- **[/security-audit](./security-audit.md)** - OWASP-compliant security assessment with vulnerability remediation
 - **[/troubleshoot](../commands/troubleshoot.md)** - Systematic debugging with research-first approach, hypothesis testing, and rollback safety
 - **[/sanity-check](../commands/sanity-check.md)** - Mid-work validation with deep reflection to catch drift before it becomes expensive
 
@@ -201,15 +228,15 @@ Commands use different parameter paradigms because **different workflows need di
 
 ### **Jira Integration**
 
-- **[/import-issue](../commands/import-issue.md)** - Import Jira issue for local work with PLAN.md creation
-- **[/promote](../commands/promote.md)** - Promote local exploration issue to Jira for team visibility
-- **[/comment-issue](../commands/comment-issue.md)** - Add AI-suggested comments to external Jira issues based on work context
-- **[/refresh-schema](../commands/refresh-schema.md)** - Refresh Jira field schema cache when requirements change
+- **[/jira-import](../commands/jira-import.md)** - Import Jira issue for local work with PLAN.md creation
+- **[/jira-promote](../commands/jira-promote.md)** - Promote local exploration issue to Jira for team visibility
+- **[/jira-comment](../commands/jira-comment.md)** - Add AI-suggested comments to external Jira issues based on work context
+- **[/jira-epic](../commands/jira-epic.md)** - Create Jira epics through natural language conversation
 
 ### **Project Management & Documentation**
 
 - **[/project-status](../commands/project-status.md)** - Project status dashboard with intelligent context analysis
-- **[/docs](./docs.md)** - Unified documentation management (generate, validate, sync, update, health)
+- **[/docs](./docs.md)** - Unified documentation management (`--sync`, `--validate`, `--health`, `--update`, `--generate TARGET`)
 
 ### **Versioning & Releases**
 
@@ -224,28 +251,30 @@ Commands use different parameter paradigms because **different workflows need di
 |---------|---------|---------------|
 | `/toolkit-init` | Project scaffolding | Interactive (2 questions) |
 | `/project-brief` | Interactive project vision | `[--force] [--review]` |
-| `/epic` | Unified epic management | `[EPIC-###]` (optional) |
+| `/spec` | Feature specification management | `[--update SPEC-###] [--epic PROJ-###]` |
 | `/adr` | Technical architecture | Various flags for modes |
-| `/plan` | Task implementation planning | `TASK-###` or `BUG-###` |
-| `/implement` | Automated phase execution | `TASK-### PHASE` or `--next` |
+| `/issue` | Create work items | `"description"` (AI detects type) |
+| `/plan` | Implementation planning | `TASK-###`, `BUG-###`, or `SPIKE-###` |
+| `/implement` | Automated phase execution | `TASK-### PHASE`, `SPIKE-###`, or `--next` |
 | `/advise` | Collaborative phase guidance | `TASK-### PHASE` or `--next` |
-| `/quality` | Quality assessment | Subcommands (assess/validate/audit/fix) |
-| `/security-audit` | Security assessment | OWASP compliance analysis |
-| `/troubleshoot` | Systematic debugging | `[BUG-XXX \| TASK-XXX] [--continue]` |
+| `/complete` | Finish work items | `TASK-###`, `BUG-###`, or `SPIKE-###` |
+| `/quality` | Quality assessment | `[--focus AREA]` |
+| `/troubleshoot` | Systematic debugging | `[BUG-XXX \| TASK-XXX]` |
 | `/sanity-check` | Mid-work validation | No arguments (deep reflection) |
 | `/branch` | Branch operations | `create \| merge \| delete \| switch \| status` |
 | `/commit` | Branch-aware git commits | Natural language instructions |
 | `/worklog` | Work log entries | `"your comment text"` |
 | `/sync-progress` | Sync plan with git changes | No arguments (analyzes diff) |
 | `/refresh` | Refresh AI context | No arguments (silent) |
-| `/import-issue` | Import Jira issue | `PROJ-###` |
-| `/promote` | Promote local to Jira | `TASK-### \| BUG-###` |
-| `/comment-issue` | Add Jira comment | `PROJ-### ["text"]` |
-| `/refresh-schema` | Refresh Jira schema | No arguments |
-| `/project-status` | Project dashboard | `[--format] [--scope] [--detailed]` |
-| `/docs` | Documentation management | Natural language instructions |
+| `/jira-import` | Import Jira issue | `PROJ-###` |
+| `/jira-promote` | Promote local to Jira | `TASK-### \| BUG-###` |
+| `/jira-comment` | Add Jira comment | `PROJ-###` |
+| `/jira-epic` | Create Jira epic | `[PROJ-### \| --spec SPEC-###]` |
+| `/project-status` | Project dashboard | `[--ai-format] [--detailed]` |
+| `/docs` | Documentation management | `--sync \| --validate \| --health \| --update \| --generate TARGET` |
 | `/changelog` | CHANGELOG maintenance | No arguments (interactive) |
-| `/release` | Version releases | `[version] \| patch \| minor \| major` |
+| `/release` | Version releases | No arguments (reads conventions) |
+| `/ui-design` | UI mockup creation | No arguments (interactive) |
 
 ## Command Creation Best Practices
 

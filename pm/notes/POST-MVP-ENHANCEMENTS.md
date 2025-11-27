@@ -1,9 +1,9 @@
-# TASK-004: Post-MVP Enhancements
+# 004: Post-MVP Enhancements
 
 This document contains all improvements and features that were identified but deferred from the MVP implementation of Convex Auth.
 
 **Created**: 2025-11-06
-**Context**: During TASK-004 implementation and quality assessment, many valuable improvements were identified but deferred to keep the MVP focused and production-ready. These enhancements can be prioritized post-MVP based on user feedback and business priorities.
+**Context**: During 004 implementation and quality assessment, many valuable improvements were identified but deferred to keep the MVP focused and production-ready. These enhancements can be prioritized post-MVP based on user feedback and business priorities.
 
 ---
 

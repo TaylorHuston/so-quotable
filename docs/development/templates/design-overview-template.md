@@ -1,3 +1,8 @@
+---
+last_updated: "2025-11-24"
+description: "Living documentation synthesizing approved UI designs and extracted patterns"
+---
+
 # Design Overview
 
 Living documentation synthesizing approved UI designs and extracted patterns.
@@ -359,7 +364,7 @@ As new designs are approved:
 
 ## Guidelines
 
-See `docs/development/conventions/ui-design-guidelines.md` for:
+See `docs/development/guidelines/ui-design-guidelines.md` for:
 - Complete design token configuration
 - Responsive breakpoint definitions
 - Accessibility requirements

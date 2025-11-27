@@ -2,7 +2,7 @@
 
 **Document Status**: Phase 6.4 Complete
 **Last Updated**: 2025-11-25
-**Related**: TASK-006 Phase 6.4 - Create deployment checklist
+**Related**: 006 Phase 6.4 - Create deployment checklist
 
 ---
 
@@ -1801,8 +1801,8 @@ for i in {1..10}; do curl https://so-quoteable.vercel.app/api/health; done
 - [Rollback Procedures](./rollback.md) - Comprehensive rollback guide (decision criteria, procedures, troubleshooting)
 - [Auth Setup](./auth-setup.md) - OAuth and authentication configuration
 - [ADR-003: Deployment Strategy](../project/adrs/ADR-003-environment-and-deployment-strategy.md) - Architecture decisions and rationale
-- [TASK-006 PLAN.md](../../pm/issues/TASK-006-deployment-pipeline/PLAN.md) - Deployment pipeline task plan
-- [TASK-006 WORKLOG.md](../../pm/issues/TASK-006-deployment-pipeline/WORKLOG.md) - Deployment history and lessons learned
+- [006 PLAN.md](../../pm/issues/006-deployment-pipeline/PLAN.md) - Deployment pipeline task plan
+- [006 WORKLOG.md](../../pm/issues/006-deployment-pipeline/WORKLOG.md) - Deployment history and lessons learned
 
 ---
 

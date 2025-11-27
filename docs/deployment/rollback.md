@@ -2,7 +2,7 @@
 
 **Document Status**: Phase 5.2 Complete
 **Last Updated**: 2025-11-23
-**Related**: TASK-006 Phase 5.2 - Document rollback procedures
+**Related**: 006 Phase 5.2 - Document rollback procedures
 
 ---
 
@@ -1150,8 +1150,8 @@ After each drill, verify:
 - [Environment Variables Setup](./environment-setup.md) - Environment configuration
 - [ADR-003: Deployment Strategy](../project/adrs/ADR-003-environment-and-deployment-strategy.md) - Architecture decisions
 - [GitHub Secrets Setup](./github-secrets-setup.md) - CI/CD configuration
-- [TASK-006 PLAN.md](../../pm/issues/TASK-006-deployment-pipeline/PLAN.md) - Deployment pipeline setup
-- [TASK-006 WORKLOG.md](../../pm/issues/TASK-006-deployment-pipeline/WORKLOG.md) - Deployment history and lessons learned
+- [006 PLAN.md](../../pm/issues/006-deployment-pipeline/PLAN.md) - Deployment pipeline setup
+- [006 WORKLOG.md](../../pm/issues/006-deployment-pipeline/WORKLOG.md) - Deployment history and lessons learned
 
 ---
 

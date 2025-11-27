@@ -502,7 +502,7 @@ If you encounter issues not covered here:
 
 1. Check [Convex Auth Documentation](https://labs.convex.dev/auth)
 2. Search [Convex Discord](https://discord.gg/convex) for similar issues
-3. Review project WORKLOG: `pm/issues/TASK-004-convex-auth/WORKLOG.md`
+3. Review project WORKLOG: `pm/issues/004-convex-auth/WORKLOG.md`
 4. Check browser console and Convex logs for error messages
 5. Verify environment variables are set correctly
 
@@ -538,16 +538,16 @@ TBD
 **Current Focus**: Core quote generation features (EPIC-002)
 
 **Latest**:
-- ✅ TASK-006: Deployment pipeline configured (2025-11-22)
+- ✅ 006: Deployment pipeline configured (2025-11-22)
   - Production deployments via Vercel + Convex Cloud
   - Simplified workflow for Convex free tier
   - Local E2E testing before production push
   - Production deployment verified and operational
-- ✅ TASK-005: E2E testing infrastructure (Playwright)
-- ✅ TASK-004: Convex Auth (email/password + Google OAuth, 94% coverage)
-- ✅ TASK-003: Cloudinary integration (92% coverage, 146 tests)
-- ✅ TASK-002: Convex backend setup (97.36% coverage)
-- ✅ TASK-001: Next.js project initialized
+- ✅ 005: E2E testing infrastructure (Playwright)
+- ✅ 004: Convex Auth (email/password + Google OAuth, 94% coverage)
+- ✅ 003: Cloudinary integration (92% coverage, 146 tests)
+- ✅ 002: Convex backend setup (97.36% coverage)
+- ✅ 001: Next.js project initialized
 
 **Infrastructure**: Complete and production-ready
 **Next**: Quote generation UI and image transformation features (EPIC-002)

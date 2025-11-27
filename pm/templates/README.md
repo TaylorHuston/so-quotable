@@ -22,7 +22,7 @@ This directory contains 4 templates:
 Commands use convention-based template lookup:
 
 ```
-TASK-001 → looks for templates/task.md
+001 → looks for templates/task.md
 BUG-003  → looks for templates/bug.md
 SPIKE-007 → looks for templates/spike.md (custom template you can create)
 ```
@@ -34,7 +34,7 @@ The issue prefix (lowercased) determines which template to use.
 The **plan.md** template is special - it's used by the `/plan` command to create separate PLAN.md files:
 
 ```
-/plan TASK-001 → creates pm/issues/TASK-001-*/PLAN.md
+/plan 001 → creates pm/issues/001-*/PLAN.md
 /plan BUG-003  → creates pm/issues/BUG-003-*/PLAN.md
 ```
 

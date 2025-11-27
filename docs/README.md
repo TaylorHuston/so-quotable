@@ -47,8 +47,8 @@ Update as you make architectural decisions via `/adr`.
 ### `project/adrs/` - Decision History
 Architecture Decision Records document important technical choices. Create via `/adr`.
 
-### `development/conventions/` and `development/workflows/` - Project Configuration
-Customizable conventions and workflows that configure how AI agents work in your project. See `development/README.md` for details.
+### `development/guidelines/` - Project Configuration
+6 customizable templates that configure how AI agents work in your project. See `development/README.md` for details.
 
 ## Commands
 
@@ -57,4 +57,4 @@ Create and manage documentation using AI commands:
 - `/adr` - Make technical decisions and create ADRs
 - `/docs` - Generate, validate, or sync documentation
 
-See the main README.md for development commands.
+See `GETTING-STARTED.md` for complete workflow.

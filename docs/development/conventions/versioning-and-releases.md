@@ -58,10 +58,10 @@ While in `0.x.y`, we use:
 - `0.0.x` for **bug fixes** (patch releases)
 
 **Examples from our project:**
-- `0.1.0` - Initial Next.js setup (TASK-001)
-- `0.2.0` - Convex backend (TASK-002)
-- `0.3.0` - Cloudinary integration (TASK-003)
-- `0.4.0` - Authentication (TASK-004)
+- `0.1.0` - Initial Next.js setup (001)
+- `0.2.0` - Convex backend (002)
+- `0.3.0` - Cloudinary integration (003)
+- `0.4.0` - Authentication (004)
 - `0.4.1` - Bug fix (hypothetical)
 - `0.5.0` - Quote generation (next feature)
 

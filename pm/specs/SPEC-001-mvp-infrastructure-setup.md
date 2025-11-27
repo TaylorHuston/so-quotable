@@ -127,7 +127,7 @@ Set up the foundational infrastructure for So Quotable based on the tech stack d
 - [x] Test coverage reporting configured
 
 ✅ **Deployment:**
-- [x] Production deployment pipeline configured (Vercel + Convex Cloud) (TASK-006)
+- [x] Production deployment pipeline configured (Vercel + Convex Cloud) (006)
 - [x] All E2E tests passing (22/22 authentication scenarios)
 
 ## Success Metrics
@@ -139,7 +139,7 @@ Set up the foundational infrastructure for So Quotable based on the tech stack d
 - **Type Safety**: Zero TypeScript compilation errors (✅ achieved)
 - **API Response Time**: Backend queries <100ms for simple operations (✅ achieved)
 - **Image Optimization**: Automatic WebP conversion for supported browsers (✅ achieved)
-- **Security**: OWASP Top 10 compliance for authentication (⚠️ partial - TASK-007 addresses audit findings)
+- **Security**: OWASP Top 10 compliance for authentication (⚠️ partial - 007 addresses audit findings)
 
 ## Dependencies
 
@@ -162,57 +162,66 @@ Set up the foundational infrastructure for So Quotable based on the tech stack d
 
 ## Tasks
 
-- [x] **TASK-001**: Initialize Next.js project with TypeScript
+- [x] **001**: Initialize Next.js project with TypeScript
   - Status: ✅ Completed 2025-10-30, merged to develop
   - Deliverables: Next.js 15, TypeScript, App Router, Tailwind CSS, ESLint, health check endpoint
 
-- [x] **TASK-002**: Set up Convex backend and database schema
+- [x] **002**: Set up Convex backend and database schema
   - Status: ✅ Completed 2025-11-01, merged to develop
   - Coverage: 97.36%
   - Tests: 146+ tests passing
   - Deliverables: Database schema (people, quotes, images), CRUD operations, real-time queries
 
-- [x] **TASK-003**: Configure Cloudinary integration
+- [x] **003**: Configure Cloudinary integration
   - Status: ✅ Completed 2025-11-02, merged to develop
   - Coverage: 92%
   - Tests: 146 tests passing
   - Deliverables: Server-side upload, URL transformations, auto-deletion (30 days)
 
-- [x] **TASK-004**: Implement Convex Auth with email and Google OAuth
+- [x] **004**: Implement Convex Auth with email and Google OAuth
   - Status: ✅ Completed 2025-11-18, merged to develop
   - Quality: Security 88/100, Testing 78/100, Code Quality 92/100
   - Tests: 526/558 tests passing (94%)
   - Deliverables: Email/password auth, Google OAuth, email verification (Resend), password reset flow
 
-- [x] **TASK-005**: Set up testing infrastructure
+- [x] **005**: Set up testing infrastructure
   - Status: ✅ Completed 2025-11-18, merged to develop
   - Progress: E2E auth tests written (22 scenarios), 22/22 passing
   - Code Review: 92/100 (production-ready)
 
-- [x] **TASK-006**: Configure deployment pipeline
+- [x] **006**: Configure deployment pipeline
   - Status: ✅ Completed 2025-11-22, merged to main
   - Scope: Vercel production deployment, Convex Cloud production, environment promotion, health checks
   - Note: Adapted for Convex free tier (local E2E testing workflow)
 
-- [ ] **TASK-007**: Add API authorization and security hardening
-  - Status: 🔲 Todo
+- [x] **007**: Add API authorization and security hardening
+  - Status: ✅ Completed 2025-11-26, merged to develop
   - Scope: Add auth checks to mutations (quotes, people, images, generatedImages), secure debug functions
-  - Priority: High (security audit finding)
+  - Quality: Security 97/100 (exceeds target 95+)
 
-**Progress**: 6/7 tasks complete (86%)
+- [ ] **009**: Fix failing unit tests
+  - Status: 🔲 Todo
+  - Scope: Fix 25 failing tests (reset-password mock, forgot-password autoFocus, emailVerification env)
+  - Priority: Medium (test suite hygiene)
+
+**Progress**: 7/8 tasks complete (88%)
 
 ---
 
-## Recent Updates (2025-11-18)
+## Recent Updates (2025-11-26)
 
-**TASK-004 Completed and Merged**:
-- Password reset flow implemented with magic links (1-hour tokens, rate limiting)
-- Critical password update bug fixed (Convex Auth `modifyAccountCredentials` integration)
-- Email verification upgraded from console to Resend with branded templates
-- Performance optimizations: debounced password strength (300ms), optimized email checks
-- CHANGELOG updated with all Phase 8.2.5 and 8.2.6 features
-- Quality assessment: Security 88/100 (OWASP compliant), Testing 78/100, Code 92/100
+**007 Completed and Merged to develop**:
+- All 16 mutations now require authentication (quotes, people, images, generatedImages)
+- Debug functions converted to internalQuery (not callable from client)
+- Auth helper library created (`convex/lib/auth.ts`) with `requireAuth()` and `requireAdmin()`
+- `createdBy` field made required with backfill migration for existing records
+- Security guidelines updated with authentication patterns
+- Quality: Security audit score 97/100 (target: 95+)
 - Successfully merged to develop branch
+
+**009 Created**:
+- Created to address 25 failing unit tests discovered during merge validation
+- Root causes: incomplete mocks (useAction), autoFocus detection, missing env vars
 
 **Key Lesson Learned**: Convex free tier requires adapted deployment workflow (local E2E testing before production push, no preview deployments). Generated TypeScript files (convex/_generated) must be committed to git per official Convex examples.
 
@@ -233,4 +242,4 @@ This spec establishes the technical foundation for all future development. The i
 - 97% backend test coverage achieved
 - E2E tests validate complete authentication flows
 
-**Current Status**: Infrastructure 86% complete. Core infrastructure deployed to production. TASK-007 (security hardening) pending to address authorization gaps identified in security audit. Upon completion, ready for EPIC-002: Core Quote Generation Features.
+**Current Status**: Infrastructure 88% complete. Core infrastructure deployed to production with security hardening complete. 009 (test fixes) is the final task to achieve a fully green test suite. Upon completion, ready for EPIC-002: Core Quote Generation Features.
