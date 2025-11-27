@@ -614,7 +614,7 @@ RESEND_API_KEY=<production-key>
 1. **Vercel Dashboard** (for Next.js environment)
 2. **Convex Dashboard** (for Convex actions)
 
-See [Environment Setup Guide](./environment-setup.md) for detailed configuration.
+For detailed configuration, see the Vercel and Convex dashboards referenced above.
 
 ### Free Tier Constraints
 
@@ -673,7 +673,6 @@ See [Environment Setup Guide](./environment-setup.md) for detailed configuration
    - Navigate to: https://vercel.com/taylor-hustons-projects/so-quoteable/settings/environment-variables
    - Add missing variable
    - Redeploy: Settings → Git → Redeploy
-   - See [Environment Setup Guide](./environment-setup.md)
 
 3. **Build Command Failure**
    ```
@@ -772,7 +771,6 @@ curl https://so-quoteable.vercel.app/api/health
    **Solution**:
    - Verify all required env vars are set in Vercel dashboard
    - Redeploy to pick up environment changes
-   - See [Environment Setup Guide](./environment-setup.md)
 
 3. **Convex Function Error**
 
@@ -1456,7 +1454,7 @@ Before deploying to production, verify:
 - [ ] No console.log statements in production code
 
 **Configuration**:
-- [ ] Environment variables verified (see [Environment Setup](./environment-setup.md))
+- [ ] Environment variables verified in Vercel and Convex dashboards
 - [ ] CONVEX_DEPLOY_KEY is set in GitHub Secrets
 - [ ] Feature flags configured (if applicable)
 

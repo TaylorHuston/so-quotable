@@ -1146,10 +1146,8 @@ After each drill, verify:
 
 ## Related Documentation
 
-- [Vercel Setup Documentation](./vercel-setup.md) - Deployment configuration
-- [Environment Variables Setup](./environment-setup.md) - Environment configuration
+- [Deployment Runbook](./runbook.md) - Deployment configuration and procedures
 - [ADR-003: Deployment Strategy](../project/adrs/ADR-003-environment-and-deployment-strategy.md) - Architecture decisions
-- [GitHub Secrets Setup](./github-secrets-setup.md) - CI/CD configuration
 - [006 PLAN.md](../../pm/issues/006-deployment-pipeline/PLAN.md) - Deployment pipeline setup
 - [006 WORKLOG.md](../../pm/issues/006-deployment-pipeline/WORKLOG.md) - Deployment history and lessons learned
 

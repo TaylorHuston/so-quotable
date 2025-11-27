@@ -266,8 +266,8 @@ npx convex deploy
 | `RESEND_API_KEY` | Email service | Convex Dashboard |
 
 **Setup Documentation**:
-- [Complete Environment Setup Guide](./docs/deployment/environment-setup.md) - Detailed variable configuration
-- [GitHub Secrets Setup](./docs/deployment/github-secrets-setup.md) - CI/CD secrets configuration
+- Environment variables are configured in Vercel Dashboard and Convex Dashboard
+- See [Deployment Runbook](./docs/deployment/runbook.md) for detailed configuration
 
 ### Monitoring and Health Checks
 
