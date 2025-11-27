@@ -33,7 +33,7 @@ describe("ForgotPasswordPage", () => {
 
     mockRequestPasswordReset = vi.fn();
 
-    vi.mocked(useMutation).mockReturnValue(mockRequestPasswordReset);
+    vi.mocked(useMutation).mockReturnValue(mockRequestPasswordReset as any);
   });
 
   describe("Rendering", () => {

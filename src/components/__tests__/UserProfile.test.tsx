@@ -52,7 +52,7 @@ describe("UserProfile", () => {
     vi.mocked(useAuthActions).mockReturnValue({
       signIn: vi.fn(),
       signOut: mockSignOut,
-    });
+    } as any);
 
     vi.mocked(useRouter).mockReturnValue({
       push: mockPush,
@@ -63,7 +63,7 @@ describe("UserProfile", () => {
       prefetch: vi.fn(),
     } as any);
 
-    vi.mocked(useQuery).mockImplementation(mockUseQuery);
+    vi.mocked(useQuery).mockImplementation(mockUseQuery as any);
   });
 
   describe("Unauthenticated State", () => {

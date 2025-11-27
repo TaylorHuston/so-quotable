@@ -14,7 +14,7 @@ import ResetPasswordPage from "../page";
 
 // Mock dependencies
 vi.mock("convex/react", async (importOriginal) => {
-  const actual = await importOriginal();
+  const actual = (await importOriginal()) as Record<string, unknown>;
   return {
     ...actual,
     useMutation: vi.fn(),
@@ -54,9 +54,9 @@ describe("ResetPasswordPage", () => {
       }),
     };
 
-    vi.mocked(useMutation).mockReturnValue(mockResetPasswordWithToken);
+    vi.mocked(useMutation).mockReturnValue(mockResetPasswordWithToken as any);
     vi.mocked(useConvex).mockReturnValue({} as any);
-    vi.mocked(useAction).mockReturnValue(mockResetPasswordWithToken);
+    vi.mocked(useAction).mockReturnValue(mockResetPasswordWithToken as any);
     vi.mocked(useAuthActions).mockReturnValue({
       signIn: vi.fn(),
       signOut: vi.fn(),
@@ -116,7 +116,7 @@ describe("ResetPasswordPage", () => {
       const noTokenSearchParams = {
         get: vi.fn().mockReturnValue(null),
       };
-      vi.mocked(useSearchParams).mockReturnValue(noTokenSearchParams);
+      vi.mocked(useSearchParams).mockReturnValue(noTokenSearchParams as any);
 
       render(<ResetPasswordPage />);
 
