@@ -36,19 +36,11 @@ jobs:
       - name: Run tests
         run: npm run test:run
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-
-      - name: Run E2E tests
-        run: npm run test:e2e:ci
-
-      - name: Upload Playwright test traces on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-traces
-          path: test-results/
-          retention-days: 7
-
       - name: Build application
         run: npm run build
+        env:
+          NEXT_PUBLIC_CONVEX_URL: "https://placeholder.convex.cloud"
+
+      # E2E tests are skipped in CI - Convex free tier doesn't support preview deployments
+      # Run E2E tests locally before merging: npm run test:e2e
+      # See ADR-003 for deployment strategy details
