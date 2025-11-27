@@ -1166,8 +1166,3 @@ After each drill, verify:
 
 **Document Owner**: DevOps Engineer / Platform Team
 
----
-
-**Last Updated**: 2025-11-23
-**Version**: 1.0.0
-**Status**: Phase 5.2 Complete

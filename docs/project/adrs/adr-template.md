@@ -86,7 +86,3 @@ sections:
 
 {references}
 
----
-
-**Template Version**: 1.0
-**Last Updated**: 2025-10-22

@@ -456,8 +456,3 @@ Design tokens are formatted for compatibility across tech stacks:
 
 **Conversion happens automatically** when generating tech-specific mockups.
 
----
-
-**Last updated:** 2025-11-03
-**Version:** 1.1.0
-**Next review:** As needed when design system evolves
