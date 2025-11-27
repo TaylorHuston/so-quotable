@@ -42,7 +42,7 @@ This runbook provides step-by-step instructions for deploying So Quotable to pro
 | **Production Site** | https://so-quoteable.vercel.app | Live application |
 | **Vercel Dashboard** | https://vercel.com/taylor-hustons-projects/so-quoteable | Deployment management |
 | **Convex Dashboard** | https://dashboard.convex.dev/deployment/steady-anaconda-957 | Backend monitoring |
-| **GitHub Repository** | https://github.com/TaylorHuston/soquoteable | Source code |
+| **GitHub Repository** | https://github.com/TaylorHuston/so-quotable | Source code |
 | **Health Endpoint** | https://so-quoteable.vercel.app/api/health | System status |
 | **Rollback Guide** | [rollback.md](./rollback.md) | Emergency rollback procedures |
 | **Auth Setup** | [auth-setup.md](./auth-setup.md) | OAuth and authentication |
@@ -68,7 +68,7 @@ Before performing deployments, ensure you have:
    - Development deployment: cheery-cow-298 (https://cheery-cow-298.convex.cloud)
 
 3. **GitHub Repository Access**
-   - Write access to https://github.com/TaylorHuston/soquoteable
+   - Write access to https://github.com/TaylorHuston/so-quotable
    - Ability to push to `main` branch
    - Access to GitHub Secrets (for CI/CD configuration)
 
@@ -131,8 +131,8 @@ Ensure the following tools are installed and authenticated:
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/TaylorHuston/soquoteable.git
-cd soquoteable
+git clone https://github.com/TaylorHuston/so-quotable.git
+cd so-quotable
 
 # 2. Use correct Node.js version
 nvm use
@@ -716,7 +716,7 @@ For detailed configuration, see the Vercel and Convex dashboards referenced abov
 1. **Missing CONVEX_DEPLOY_KEY**
 
    **Solution**:
-   - Navigate to: https://github.com/TaylorHuston/soquoteable/settings/secrets/actions
+   - Navigate to: https://github.com/TaylorHuston/so-quotable/settings/secrets/actions
    - Verify `CONVEX_DEPLOY_KEY` secret exists
    - If missing, regenerate in Convex dashboard:
      - Go to: https://dashboard.convex.dev/deployment/steady-anaconda-957/settings
@@ -1104,7 +1104,7 @@ vercel logs | grep "Init Duration"
 
 **Purpose**: View automated test results and deployment logs.
 
-**Access**: https://github.com/TaylorHuston/soquoteable/actions
+**Access**: https://github.com/TaylorHuston/so-quotable/actions
 
 **Key Workflows**:
 - **Test Workflow**: Runs on every push (linting, type check, tests)
@@ -1789,8 +1789,8 @@ for i in {1..10}; do curl https://so-quoteable.vercel.app/api/health; done
 - Convex Dashboard: https://dashboard.convex.dev/deployment/cheery-cow-298
 
 **Repository and CI/CD**:
-- GitHub: https://github.com/TaylorHuston/soquoteable
-- GitHub Actions: https://github.com/TaylorHuston/soquoteable/actions
+- GitHub: https://github.com/TaylorHuston/so-quotable
+- GitHub Actions: https://github.com/TaylorHuston/so-quotable/actions
 
 ---
 

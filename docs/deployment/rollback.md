@@ -63,7 +63,7 @@ Before performing a rollback, ensure you have:
 
 - **Vercel Dashboard**: Admin access to https://vercel.com/taylor-hustons-projects/so-quoteable
 - **Convex Dashboard**: Admin access to https://dashboard.convex.dev
-- **GitHub Repository**: Write access to https://github.com/TaylorHuston/soquoteable
+- **GitHub Repository**: Write access to https://github.com/TaylorHuston/so-quotable
 - **Terminal Access**: Command-line access to project repository
 
 ### Required Tools
