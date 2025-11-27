@@ -7,6 +7,7 @@
  * @vitest-environment happy-dom
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import React from "react";
@@ -50,7 +51,7 @@ describe("RegisterForm", () => {
     vi.mocked(useAuthActions).mockReturnValue({
       signIn: mockSignIn,
       signOut: vi.fn(),
-    });
+    } as any);
 
     vi.mocked(useRouter).mockReturnValue({
       push: mockPush,
@@ -457,7 +458,7 @@ describe("RegisterForm", () => {
       });
 
       // Verify the query was called with normalized email
-      const queryCall = mockConvexQuery.mock.calls[0];
+      const queryCall = mockConvexQuery.mock.calls[0]!;
       expect(queryCall[1]).toHaveProperty("email");
     });
 
@@ -549,7 +550,7 @@ describe("RegisterForm", () => {
         expect(mockSignIn).toHaveBeenCalledTimes(1);
       });
 
-      const callArgs = mockSignIn.mock.calls[0];
+      const callArgs = mockSignIn.mock.calls[0]!;
       expect(callArgs[0]).toBe("password");
       expect(callArgs[1]).toBeInstanceOf(FormData);
 

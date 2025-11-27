@@ -7,6 +7,7 @@
  * @vitest-environment happy-dom
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import React from "react";
@@ -43,7 +44,7 @@ describe("LoginForm", () => {
     vi.mocked(useAuthActions).mockReturnValue({
       signIn: mockSignIn,
       signOut: vi.fn(),
-    });
+    } as any);
 
     vi.mocked(useRouter).mockReturnValue({
       push: mockPush,
@@ -167,7 +168,7 @@ describe("LoginForm", () => {
         expect(mockSignIn).toHaveBeenCalledTimes(1);
       });
 
-      const callArgs = mockSignIn.mock.calls[0];
+      const callArgs = mockSignIn.mock.calls[0]!;
       expect(callArgs[0]).toBe("password");
       expect(callArgs[1]).toBeInstanceOf(FormData);
 

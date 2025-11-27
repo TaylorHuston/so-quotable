@@ -1,13 +1,6 @@
 ---
-# === Metadata ===
-template_type: "documentation"
-created: "2025-10-30"
 last_updated: "2025-10-30"
-target_audience: ["AI Assistants", "Content Team", "Development Team"]
-description: "Writing style and content guidelines for UI copy, documentation, and user-facing text."
-title: "Writing Style Guide"
-category: "Content"
-tags: ["content", "copywriting", "microcopy", "voice-tone"]
+description: "Writing style and content guidelines for UI copy, documentation, and user-facing text"
 ---
 
 # Writing Style Guide
@@ -428,8 +421,9 @@ For strategic content decisions (voice definition, messaging architecture):
 
 ## Related Documentation
 
-- Design system: `docs/project/design-system.md` (visual design)
-- API guidelines: `docs/development/guidelines/api-guidelines.md` (technical writing)
+- Design overview: `docs/project/design-overview.md` (approved designs and patterns)
+- UI design guidelines: `docs/development/conventions/ui-design-guidelines.md` (design tokens and standards)
+- API guidelines: `docs/development/conventions/api-guidelines.md` (technical writing)
 - ADRs: `docs/project/adrs/` (architectural decisions)
 
 ## Maintenance

@@ -9,6 +9,7 @@
  * @vitest-environment node
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { NextRequest } from "next/server";
 
@@ -40,18 +41,18 @@ const middlewareModule = await import("./middleware");
 const middleware = middlewareModule.default;
 
 // Helper to create mock NextRequest
-function createMockRequest(pathname: string): NextRequest {
+function createMockRequest(pathname: string, url?: string): NextRequest {
   return {
     nextUrl: {
       pathname,
       clone: () => ({ pathname }),
     },
-    url: `http://localhost:3000${pathname}`,
+    url: url ?? `http://localhost:3000${pathname}`,
   } as unknown as NextRequest;
 }
 
 // Helper to create mock convexAuth context
-function createMockConvexAuth(isAuthenticated: boolean) {
+function createMockConvexAuth(isAuthenticated: boolean): any {
   return {
     convexAuth: {
       isAuthenticated: vi.fn().mockResolvedValue(isAuthenticated),
@@ -342,8 +343,7 @@ describe("middleware", () => {
     it("should handle query parameters on protected routes", async () => {
       // Arrange
       // Note: pathname doesn't include query params, so this should work normally
-      const request = createMockRequest("/dashboard");
-      request.url = "http://localhost:3000/dashboard?foo=bar";
+      const request = createMockRequest("/dashboard", "http://localhost:3000/dashboard?foo=bar");
       const context = createMockConvexAuth(false);
 
       // Act
@@ -357,8 +357,7 @@ describe("middleware", () => {
 
     it("should not redirect auth pages even with query parameters", async () => {
       // Arrange
-      const request = createMockRequest("/login");
-      request.url = "http://localhost:3000/login?redirect=/dashboard";
+      const request = createMockRequest("/login", "http://localhost:3000/login?redirect=/dashboard");
       const context = createMockConvexAuth(false);
 
       // Act

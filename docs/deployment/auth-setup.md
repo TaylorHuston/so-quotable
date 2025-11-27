@@ -346,7 +346,7 @@ After deploying, update Google OAuth redirect URIs:
 **Troubleshooting OAuth:**
 - If you see "Error 400: redirect_uri_mismatch", verify redirect URIs match exactly
 - If you see "This app isn't verified", add yourself as a test user or publish the app
-- Check browser console for CSP errors (should be resolved in TASK-004)
+- Check browser console for CSP errors (should be resolved in 004)
 
 ### 3. Test Protected Routes
 
@@ -610,7 +610,7 @@ await resend.emails.send({
 
 1. Check [Convex Discord](https://discord.gg/convex) for community support
 2. Search [Convex GitHub Discussions](https://github.com/get-convex/convex-backend/discussions)
-3. Review project WORKLOG in `pm/issues/TASK-004-convex-auth/WORKLOG.md`
+3. Review project WORKLOG in `pm/issues/004-convex-auth/WORKLOG.md`
 4. Check [Google OAuth troubleshooting](https://developers.google.com/identity/protocols/oauth2/troubleshooting)
 
 ---
@@ -635,8 +635,3 @@ Before deploying authentication to production, verify:
 - [ ] Security headers checked
 - [ ] Monitoring and logging configured
 
----
-
-**Last Updated**: 2025-11-17
-**Version**: 1.0.0 (TASK-004 Complete)
-**Deployment Status**: Production Ready

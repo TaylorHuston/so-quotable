@@ -1,14 +1,8 @@
 ---
-# === Metadata ===
-template_type: "guideline"
-version: "1.0.0"
-created: "2025-10-30"
-last_updated: "2025-10-31"
-status: "Active"
-target_audience: ["AI Assistants", "Code Architects", "Development Team"]
+last_updated: "2025-11-25"
 description: "Design philosophy, architectural patterns, and decision-making principles for So Quotable"
 
-# === Architecture Configuration (Machine-readable for AI agents) ===
+# === Architecture Configuration ===
 architecture_style: "serverless"    # Serverless with Convex + Next.js
 design_principles: ["DRY", "KISS", "YAGNI", "SOLID"]
 layer_separation: "loose"           # Feature-based organization, loose coupling

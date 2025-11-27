@@ -1,18 +1,12 @@
 ---
-# === Metadata ===
-template_type: "guideline"
-version: "1.0.0"
-created: "2025-10-30"
 last_updated: "2025-10-30"
-status: "Active"
-target_audience: ["AI Assistants", "Development Team"]
 description: "Three-branch Git workflow with automated merge validation and production safety rules"
 
-# === Git Configuration (Machine-readable for AI agents) ===
+# === Git Configuration ===
 branching_strategy: "three-branch"     # main, develop, work branches
 main_branch: "main"                    # production
 develop_branch: "develop"              # staging
-work_branch_pattern: "type/ISSUE-ID"  # feature/TASK-001, bugfix/BUG-003
+work_branch_pattern: "type/###"       # feature/001, bugfix/002
 commit_convention: "conventional"      # conventional commits
 pr_required: true
 squash_merge: false
@@ -64,6 +58,8 @@ commit_type_inference:
 
 **Referenced by Commands:** `/branch`, `/commit`, `/implement`
 
+**IMPORTANT:** Never commit without the express permission from the user first.
+
 ## Quick Reference
 
 This guideline defines our three-branch Git workflow with automated merge validation. Commands like `/branch` and `/implement` enforce these rules automatically.
@@ -84,30 +80,31 @@ main (production)
   ↑
   └─ develop (staging)
        ↑
-       ├─ feature/TASK-001  (work branch)
-       ├─ feature/TASK-002  (work branch)
-       └─ bugfix/BUG-001    (work branch)
+       ├─ feature/001  (work branch for task)
+       ├─ feature/002  (work branch for task)
+       └─ bugfix/003   (work branch for bug)
 ```
 
 ### Branch Naming Convention
 
-**Strict format**: `type/ISSUE-ID`
+**Strict format**: `type/###`
 
 ```
-feature/TASK-001    # Feature implementation
-bugfix/BUG-003      # Bug fix
+feature/001    # Feature implementation (TASK.md exists)
+bugfix/003     # Bug fix (BUG.md exists)
+spike/005/plan-1   # Spike exploration
 ```
 
 **Naming rules:**
-- Type must be `feature` (for TASK-###) or `bugfix` (for BUG-###)
-- Must include issue ID exactly as it appears (TASK-001, BUG-003, etc.)
-- No additional description allowed (keeps branches tied to issues)
+- Type: `feature` for tasks, `bugfix` for bugs, `spike/###/plan-N` for spikes
+- Issue ID is numeric (001, 002, etc.) - type determined by file in issue directory
+- External Jira issues: `feature/PROJ-123` works seamlessly
 
 ### Main Branches
 
 - **Production**: `main` - Deployed to production environment
 - **Staging**: `develop` - Deployed to staging environment for validation
-- **Work branches**: `type/ISSUE-ID` - Short-lived development branches
+- **Work branches**: `type/###` - Short-lived development branches
 
 ## Branch Merge Rules
 
@@ -116,9 +113,9 @@ bugfix/BUG-003      # Bug fix
 ### Normal Development Flow (95% of cases)
 
 ```
-feature/TASK-001 → develop (tests pass) → main (staging validated)
-       ↓              ↓                      ↓
-   your work      staging env          production env
+feature/001 → develop (tests pass) → main (staging validated)
+     ↓             ↓                      ↓
+  your work    staging env          production env
 ```
 
 **Rules:**
@@ -158,96 +155,36 @@ hotfix/critical-bug → main (emergency only)
 
 ### Creating Work Branches
 
-**Two methods are supported** - choose based on your workflow preference:
+**Two methods** - choose based on preference:
 
-#### Method 1: Automatic Creation (Faster Workflow)
+**Automatic**: `/implement 001 1.1` prompts to create `feature/001` (quick iteration)
+**Explicit**: `/branch create 001` creates branch before work (manual control)
 
-Start implementing and `/implement` creates the branch automatically:
-
-```bash
-/implement TASK-001 1.1
-# → Prompts: "Create and switch to feature/TASK-001? (y/n)"
-# → Creates feature/TASK-001 from develop (if you confirm)
-# → Switches to new branch
-# → Executes phase 1.1
-```
-
-**When to use:**
-- Quick iteration - start coding immediately
-- Default workflow - let the system manage branches
-- Non-blocking prompts - you can decline if needed
-
-#### Method 2: Explicit Creation (Full Control)
-
-Create the branch explicitly before starting work:
-
-```bash
-/branch create TASK-001
-# → Creates feature/TASK-001 from develop
-# → Switches to new branch
-
-/implement TASK-001 1.1
-# → Executes phase 1.1 on your existing branch
-```
-
-**When to use:**
-- Manual control - you want explicit branch management
-- Setup work - create branch before planning implementation
-- Multiple issues - create several branches at once
-
-**Both approaches are equivalent** - they create the same branch from the same base. The only difference is timing and control preference.
+Both create the same branch from `develop`. Only difference is timing.
 
 ### Merging Work Branches
 
 **To develop (staging):**
-
-✅ **This is the ONLY valid destination for work branches** (feature/*, bugfix/*)
-
 ```bash
-/branch merge
-# OR
 /branch merge develop
 ```
-
-**Merge rules enforced:**
-1. All tests MUST pass (unit, integration, E2E)
-2. Merge BLOCKED if any test fails
-3. Shows test results before merge
+Enforces: All tests pass, no uncommitted changes. Merge blocked if tests fail.
 
 **To main (production):**
-
-❌ **Work branches CANNOT merge to main** - You must merge to develop first, then develop to main.
-
 ```bash
-# ❌ WRONG - This will be BLOCKED
-git checkout feature/TASK-001
+# Must merge to develop first, then:
+git checkout develop
 /branch merge main
-# Error: Cannot merge work branch to main. Merge to develop first.
-
-# ✅ CORRECT - Two-step process
-/branch merge develop          # Step 1: Work → staging
-git checkout develop           # Step 2: Switch to develop
-/branch merge main             # Step 3: Staging → production (after validation)
 ```
-
-**Merge rules enforced:**
-1. Source branch MUST be `develop` (work branches BLOCKED)
-2. Staging deployment health checks MUST pass
-3. Automated validation of staging environment
-4. Merge BLOCKED if health checks fail
+Enforces: Source must be `develop` (work branches blocked), staging health checks pass.
 
 ### Deleting Work Branches
 
-After merging to develop, delete your work branch:
-
+After merging:
 ```bash
-/branch delete feature/TASK-001
+/branch delete feature/001
 ```
-
-Verification:
-- Confirms branch is fully merged
-- Cleans up local and remote branches
-- Prevents accidental deletion of unmerged work
+Verifies branch is fully merged before deletion.
 
 ## Commit Conventions
 
@@ -266,9 +203,9 @@ Verification:
 The `/commit` command automatically includes issue references from your branch name:
 
 ```bash
-# On branch feature/TASK-001
+# On branch feature/001
 /commit "implement user authentication"
-# → Generates: feat(TASK-001): implement user authentication
+# → Generates: feat(001): implement user authentication
 ```
 
 ### Commit Type Inference
@@ -287,35 +224,35 @@ The `/commit` command automatically includes issue references from your branch n
 # Test files → type: test
 git add src/**/*.test.js
 /commit "add login tests"
-# → test(TASK-001): add login tests
+# → test(001): add login tests
 
 # Documentation → type: docs
 git add README.md docs/api.md
 /commit "update API documentation"
-# → docs(TASK-001): update API documentation
+# → docs(001): update API documentation
 
 # Config files → type: chore
 git add package.json .eslintrc
 /commit "update dependencies"
-# → chore(TASK-001): update dependencies
+# → chore(001): update dependencies
 
 # Source code → type: feat (default)
 git add src/auth.js
 /commit "add authentication"
-# → feat(TASK-001): add authentication
+# → feat(001): add authentication
 ```
 
 **Keyword Detection** (from commit message):
 
 ```bash
 /commit "fix login timeout issue"
-# → fix(TASK-001): fix login timeout issue
+# → fix(001): fix login timeout issue
 
 /commit "refactor database connection"
-# → refactor(TASK-001): refactor database connection
+# → refactor(001): refactor database connection
 
 /commit "optimize query performance"
-# → perf(TASK-001): optimize query performance
+# → perf(001): optimize query performance
 ```
 
 **Customization:**
@@ -342,35 +279,34 @@ When staging multiple file types, the command picks the most specific match:
 
 The `/branch merge` command enforces quality gates based on target branch.
 
-**Note**: These merge gates are a **subset of the quality gates** defined in `development-loop.md`. The full development loop ensures quality at the phase level; these merge rules enforce quality at the branch integration level.
+**Note**: These merge gates are a **subset of the quality gates** defined in `task-workflow.md`. The full development loop ensures quality at the phase level; these merge rules enforce quality at the branch integration level.
 
-- **Per-Phase Gates** (development-loop.md) → Enforced during `/implement`
-- **Per-Task Gates** (development-loop.md) → Enforced by `/branch merge develop` (below)
+- **Per-Phase Gates** (task-workflow.md) → Enforced during `/implement`
+- **Per-Task Gates** (task-workflow.md) → Enforced by `/branch merge develop` (below)
 - **Merge to Production** → Additional staging validation rules (below)
 
 ### Merging to `develop` (Staging)
 
-**Implements Per-Task Gates** from `development-loop.md`:
+**Enforces Per-Task Gates** from `task-workflow.md`. See that file for complete quality gate definitions.
 
-**Required validations:**
-1. ✅ All tests pass (unit, integration, E2E)
-2. ✅ No uncommitted changes
-3. ✅ Branch is up to date with remote
-
-**Implicitly validated** (from development loop):
-- All phases complete (each passed per-phase gates)
-- Code review scores ≥90 per phase
-- Test coverage ≥95% (configurable in development-loop.md)
-- WORKLOG documented
+**Technical checks performed by `/branch merge develop`:**
+1. ✅ All tests pass (full suite execution)
+2. ✅ Linting passes (no errors allowed)
+3. ✅ Type checking passes (`npm run type-check`)
+4. ✅ No uncommitted changes
+5. ✅ Branch is up to date with remote
+6. ⚠️ Documentation sync validation (see task-workflow.md "Documentation Synchronization Checklist")
 
 **Process:**
 ```bash
 /branch merge develop
-# 1. Runs full test suite
-# 2. Shows test results
-# 3. Blocks merge if tests fail
-# 4. Executes merge if all pass
-# 5. Pushes to remote
+# 1. Runs linter (npm run lint) - blocks on errors
+# 2. Runs type-check (npm run type-check) - blocks on errors
+# 3. Runs full test suite
+# 4. Shows results
+# 5. Blocks merge if any check fails
+# 6. Executes merge if all pass
+# 7. Pushes to remote
 ```
 
 ### Merging to `main` (Production)
@@ -441,7 +377,7 @@ git checkout develop
 
 ### `/branch` - Branch operations
 ```bash
-/branch create TASK-001        # Create work branch
+/branch create 001             # Create work branch (feature/001)
 /branch merge [target]         # Merge with validation
 /branch delete branch-name     # Delete merged branch
 /branch switch branch-name     # Switch branches
@@ -450,8 +386,8 @@ git checkout develop
 
 ### `/implement` - Start work
 ```bash
-/implement TASK-001 1.1
-# → Creates feature/TASK-001 if needed
+/implement 001 1.1
+# → Creates feature/001 if needed
 # → Warns if on wrong branch
 # → Executes implementation phase
 ```
@@ -468,24 +404,24 @@ git checkout develop
 ### Good Commit Messages
 
 ```
-feat(TASK-001): implement user registration endpoint
-fix(BUG-003): resolve login session timeout issue
-docs(TASK-002): update API documentation
-test(TASK-001): add integration tests for auth flow
+feat(001): implement user registration endpoint
+fix(003): resolve login session timeout issue
+docs(002): update API documentation
+test(001): add integration tests for auth flow
 refactor: simplify database connection logic
 ```
 
 ### Complete Branch Workflow
 
 ```bash
-# 1. Start work on issue (creates feature/TASK-001 from develop)
-/implement TASK-001 1.1
-# → Creates feature/TASK-001 from develop
+# 1. Start work on issue (creates feature/001 from develop)
+/implement 001 1.1
+# → Creates feature/001 from develop
 # → Executes phase 1.1
 
 # 2. Continue implementation on feature branch
-/implement TASK-001 1.2
-/implement TASK-001 2.1
+/implement 001 1.2
+/implement 001 2.1
 
 # 3. Commit work on feature branch
 /commit "implement authentication logic"
@@ -512,14 +448,14 @@ refactor: simplify database connection logic
 # → Deploys to production
 
 # 7. Clean up work branch after successful deploy
-/branch delete feature/TASK-001
+/branch delete feature/001
 ```
 
 ## Related Documentation
 
-- **[Versioning and Releases](./versioning-and-releases.md)** - Semantic versioning strategy, release process, git tagging
-- **[Development Loop](./development-loop.md)** - Implementation workflow and quality gates
-- **[Testing Standards](./testing-standards.md)** - Test requirements for merge validation
+- [Versioning and Releases](./versioning-and-releases.md) - Semantic versioning, git tagging, and release process
+- [Development Loop](./task-workflow.md) - AI-assisted development workflow
+- Project [CHANGELOG.md](../../../CHANGELOG.md) - Version history
 
 ## General Git Knowledge
 

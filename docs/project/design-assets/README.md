@@ -61,7 +61,7 @@ Tracks:
 
 Configuration for AI-generated mockups:
 ```
-docs/development/guidelines/ui-design-guidelines.md
+docs/development/conventions/ui-design-guidelines.md
 ```
 
 Defines:

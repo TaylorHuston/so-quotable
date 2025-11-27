@@ -88,13 +88,13 @@ We will use **native Node.js development without Docker** as our primary develop
 
 ```bash
 # .nvmrc file for automatic version detection
-18.18.0
+20.9.0
 
 # package.json engines field (Vercel respects this)
 {
   "engines": {
-    "node": ">=18.18.0 <19.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=20.9.0",
+    "npm": ">=10.0.0"
   }
 }
 ```
@@ -103,7 +103,7 @@ We will use **native Node.js development without Docker** as our primary develop
 
 ```bash
 # One-time setup
-nvm install 18.18.0
+nvm install 20.9.0
 nvm use
 
 # Development (two terminals)
@@ -138,7 +138,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.18.0] # Match .nvmrc exactly
+        node-version: [20.9.0] # Match .nvmrc exactly
     steps:
       - uses: actions/setup-node@v4
         with:
@@ -410,7 +410,7 @@ Convex is designed as a cloud-first service with no local emulator. Building moc
 1. **`.nvmrc`**:
 
 ```
-18.18.0
+20.9.0
 ```
 
 2. **`package.json` engines**:
@@ -418,8 +418,8 @@ Convex is designed as a cloud-first service with no local emulator. Building moc
 ```json
 {
   "engines": {
-    "node": ">=18.18.0 <19.0.0",
-    "npm": ">=9.0.0"
+    "node": ">=20.9.0",
+    "npm": ">=10.0.0"
   }
 }
 ```
@@ -485,7 +485,7 @@ If the team grows beyond 5 developers, provide optional Docker:
 
 ```dockerfile
 # Dockerfile.dev (optional, not for MVP)
-FROM node:18.18.0-alpine
+FROM node:20.9.0-alpine
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci

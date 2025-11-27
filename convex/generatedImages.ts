@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requireAuth, requireOwnerOrAdmin } from "./lib/auth";
 
 /**
  * Get all generated images for a quote (uses by_quote index)
@@ -51,6 +52,9 @@ export const create = mutation({
     expiresAt: v.number(),
   },
   handler: async (ctx, args) => {
+    // Authentication required
+    const userId = await requireAuth(ctx);
+
     // Basic validation
     if (!args.cloudinaryId.trim()) {
       throw new Error("Cloudinary ID is required and cannot be empty");
@@ -82,6 +86,7 @@ export const create = mutation({
       transformation: args.transformation.trim(),
       expiresAt: args.expiresAt,
       createdAt: Date.now(),
+      createdBy: userId,
     });
 
     return generatedImageId;
@@ -96,6 +101,15 @@ export const remove = mutation({
     id: v.id("generatedImages"),
   },
   handler: async (ctx, args) => {
+    // Verify resource exists
+    const generatedImage = await ctx.db.get(args.id);
+    if (!generatedImage) {
+      throw new Error("Generated image not found");
+    }
+
+    // Check ownership or admin
+    await requireOwnerOrAdmin(ctx, generatedImage.createdBy);
+
     await ctx.db.delete(args.id);
     return args.id;
   },

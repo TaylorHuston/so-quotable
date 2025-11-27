@@ -152,7 +152,7 @@ See `components/README.md` for current approved components.
 ## Design Guidelines
 
 All designs follow tokens and patterns defined in:
-- `docs/development/guidelines/ui-design-guidelines.md` - Design tokens, breakpoints, accessibility
+- `docs/development/conventions/ui-design-guidelines.md` - Design tokens, breakpoints, accessibility
 
 Teams customize this guideline to match their brand/requirements.
 

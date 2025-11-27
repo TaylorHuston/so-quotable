@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { requireAuth, requireOwnerOrAdmin } from "./lib/auth";
 
 /**
  * List quotes with pagination and optional person filter
@@ -58,6 +59,7 @@ export const get = query({
 
 /**
  * Create a new quote with validation
+ * Requires authentication - sets createdBy to authenticated user
  */
 export const create = mutation({
   args: {
@@ -68,6 +70,9 @@ export const create = mutation({
     verified: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
+    // Require authentication
+    const userId = await requireAuth(ctx);
+
     // Basic validation
     if (!args.text.trim()) {
       throw new Error("Quote text is required and cannot be empty");
@@ -86,6 +91,7 @@ export const create = mutation({
       source: args.source,
       sourceUrl: args.sourceUrl,
       verified: args.verified ?? false,
+      createdBy: userId,
       createdAt: now,
       updatedAt: now,
     });
@@ -96,6 +102,7 @@ export const create = mutation({
 
 /**
  * Update a quote (supports verified flag, sets updatedAt timestamp)
+ * Requires authentication and ownership (or admin role)
  */
 export const update = mutation({
   args: {
@@ -107,6 +114,13 @@ export const update = mutation({
   },
   handler: async (ctx, args) => {
     const { id, ...updates } = args;
+
+    // Fetch existing quote and verify ownership
+    const quote = await ctx.db.get(id);
+    if (!quote) {
+      throw new Error("Quote not found");
+    }
+    await requireOwnerOrAdmin(ctx, quote.createdBy);
 
     // Basic validation for text if provided
     if (updates.text !== undefined && !updates.text.trim()) {
@@ -136,12 +150,20 @@ export const update = mutation({
 
 /**
  * Remove a quote (hard delete)
+ * Requires authentication and ownership (or admin role)
  */
 export const remove = mutation({
   args: {
     id: v.id("quotes"),
   },
   handler: async (ctx, args) => {
+    // Fetch existing quote and verify ownership
+    const quote = await ctx.db.get(args.id);
+    if (!quote) {
+      throw new Error("Quote not found");
+    }
+    await requireOwnerOrAdmin(ctx, quote.createdBy);
+
     await ctx.db.delete(args.id);
     return args.id;
   },

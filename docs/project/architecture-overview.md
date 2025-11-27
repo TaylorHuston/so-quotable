@@ -34,7 +34,7 @@ Enable users to:
 
 ## Architecture Principles
 
-See [architectural-principles.md](../development/guidelines/architectural-principles.md) for detailed principles.
+See [architectural-principles.md](../development/conventions/architectural-principles.md) for detailed principles.
 
 Key principles:
 
@@ -205,7 +205,7 @@ User → Frontend → Convex Query (search)
 
 ## Security Architecture
 
-See [security-guidelines.md](../development/guidelines/security-guidelines.md) for detailed guidelines.
+See [security-guidelines.md](../development/conventions/security-guidelines.md) for detailed guidelines.
 
 **Key Security Measures**:
 
@@ -394,7 +394,7 @@ providers: [
 
 - Convex Auth Docs: https://labs.convex.dev/auth
 - Next.js Integration: https://labs.convex.dev/auth/setup
-- Implementation: See TASK-004 in `pm/issues/TASK-004-convex-auth/`
+- Implementation: See 004 in `pm/issues/004-convex-auth/`
 
 ---
 
@@ -429,7 +429,7 @@ See [ADR-003: Development Environment and Deployment Strategy](./adrs/ADR-003-en
 ### Environment Strategy
 
 1. **Development**: Native Node.js (no Docker) with nvm for version management
-   - Node.js 18.18.0 (enforced via .nvmrc and package.json engines)
+   - Node.js 20.x (enforced via .nvmrc and package.json engines)
    - Two terminals: `npm run dev` + `npx convex dev`
    - Hot reload with native file system performance
 
@@ -496,7 +496,7 @@ Merge to main → Vercel auto-deploy → Convex deploy → Health check → Live
 
 ## API Architecture
 
-See [api-guidelines.md](../development/guidelines/api-guidelines.md) for detailed guidelines.
+See [api-guidelines.md](../development/conventions/api-guidelines.md) for detailed guidelines.
 
 ### API Style
 
@@ -629,7 +629,7 @@ export default defineSchema({
 
 ## Error Handling Strategy
 
-See [api-guidelines.md](../development/guidelines/api-guidelines.md#error-handling) for details.
+See [api-guidelines.md](../development/conventions/api-guidelines.md#error-handling) for details.
 
 - Consistent error response format
 - Appropriate HTTP status codes
@@ -641,7 +641,7 @@ See [api-guidelines.md](../development/guidelines/api-guidelines.md#error-handli
 
 ## Testing Strategy
 
-See [ADR-002: Testing Framework](./adrs/ADR-002-testing-framework.md) and [testing-standards.md](../development/guidelines/testing-standards.md) for detailed standards.
+See [ADR-002: Testing Framework](./adrs/ADR-002-testing-framework.md) and [testing-standards.md](../development/conventions/testing-standards.md) for detailed standards.
 
 ### Testing Framework
 
@@ -752,9 +752,9 @@ For detailed records of architectural decisions, see [ADRs](./adrs/README.md).
 ## References
 
 - [Project Brief](../project-brief.md)
-- [API Guidelines](../development/guidelines/api-guidelines.md)
-- [Security Guidelines](../development/guidelines/security-guidelines.md)
-- [Testing Standards](../development/guidelines/testing-standards.md)
+- [API Guidelines](../development/conventions/api-guidelines.md)
+- [Security Guidelines](../development/conventions/security-guidelines.md)
+- [Testing Standards](../development/conventions/testing-standards.md)
 - [ADRs](./adrs/README.md)
 
 ---

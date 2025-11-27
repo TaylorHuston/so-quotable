@@ -1,14 +1,23 @@
 name: E2E Tests on Preview Deployment
 
 # Purpose: Run E2E tests against Vercel preview deployments to validate PRs
-# Trigger: On pull requests to main/develop branches
-# Strategy: Wait for Vercel preview deployment, then run Playwright tests against live preview URL
-# This ensures E2E tests validate the actual deployed application, not just local builds
+# Trigger: Manual only (workflow_dispatch) - automatic triggers disabled
+#
+# NOTE: This workflow is DISABLED for automatic runs because:
+# - Convex free tier doesn't support multiple deployments (see ADR-003)
+# - Preview deployments would connect to production Convex backend (unsafe)
+# - E2E tests should be run locally before merging: npm run test:e2e
+#
+# To re-enable when upgrading to Convex Pro tier:
+# 1. Set up separate Convex deployment for previews
+# 2. Configure Vercel preview environment variables
+# 3. Uncomment the pull_request trigger below
 
 on:
-  pull_request:
-    branches: [main, develop]
-    types: [opened, synchronize, reopened]
+  workflow_dispatch:  # Manual trigger only
+  # pull_request:     # DISABLED - see ADR-003 for deployment strategy
+  #   branches: [main, develop]
+  #   types: [opened, synchronize, reopened]
 
 jobs:
   e2e-preview:

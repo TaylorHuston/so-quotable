@@ -7,6 +7,7 @@
  * @vitest-environment happy-dom
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any, @next/next/no-img-element */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import React from "react";
@@ -52,7 +53,7 @@ describe("UserProfile", () => {
     vi.mocked(useAuthActions).mockReturnValue({
       signIn: vi.fn(),
       signOut: mockSignOut,
-    });
+    } as any);
 
     vi.mocked(useRouter).mockReturnValue({
       push: mockPush,
@@ -63,7 +64,7 @@ describe("UserProfile", () => {
       prefetch: vi.fn(),
     } as any);
 
-    vi.mocked(useQuery).mockImplementation(mockUseQuery);
+    vi.mocked(useQuery).mockImplementation(mockUseQuery as any);
   });
 
   describe("Unauthenticated State", () => {

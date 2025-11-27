@@ -1,10 +1,5 @@
 ---
-# === Metadata ===
-template_type: "guideline"
-created: "2025-11-13"
 last_updated: "2025-11-13"
-status: "Active"
-target_audience: ["AI Assistants"]
 description: "Jira integration patterns for dual-mode PM (local + external PM tool)"
 ---
 
@@ -422,10 +417,10 @@ AI Implementation Update:
 - `pm-guide.md` - Core workflows and plan execution (Jira-agnostic)
 
 **Templates:**
-- `pm/templates/spec.md` - Spec template (used in local mode)
-- `pm/templates/task.md` - Task template (used in local mode)
-- `pm/templates/bug.md` - Bug template (used in local mode)
-- `pm/templates/plan.md` - Plan template (used in both modes)
+- `templates/spec-template.md` - Spec template (used in local mode)
+- `templates/task-template.md` - Task template (used in local mode)
+- `templates/bug-template.md` - Bug template (used in local mode)
+- `templates/plan-template.md` - Plan template (used in both modes)
 
 **Commands:**
 - `/spec` - Creates specs (local mode: file, Jira mode: Jira Epic)

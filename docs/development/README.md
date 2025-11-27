@@ -20,7 +20,7 @@ Each guideline has 3 parts:
 ---
 testing_framework: "vitest"
 test_location: "tests/"
-# Coverage target configured in development-loop.md
+# Coverage target configured in task-workflow.md
 ---
 ```
 
@@ -40,16 +40,33 @@ For general testing best practices, Claude has extensive knowledge...
 
 ## Your Guidelines
 
-### Core Guidelines (6 files)
+### Organized in 4 Directories
 
+**Conventions** (`conventions/` - 7 files):
 1. **api-guidelines.md** - API patterns (REST/GraphQL/tRPC), structure, auth
-2. **testing-standards.md** - Testing frameworks, coverage, strategy
-3. **git-workflow.md** - Branching, commits, PRs, releases
-4. **coding-standards.md** - Naming, formatting, file organization
-5. **security-guidelines.md** - Auth, data protection, vulnerabilities
-6. **architectural-principles.md** - Design philosophy (DRY, SOLID, etc.)
+2. **architectural-principles.md** - Design philosophy (DRY, SOLID, etc.)
+3. **coding-standards.md** - Naming, formatting, file organization
+4. **security-guidelines.md** - Auth, data protection, vulnerabilities
+5. **testing-standards.md** - Testing frameworks, coverage, strategy
+6. **ui-design-guidelines.md** - Design tokens, breakpoints, accessibility
+7. **versioning-and-releases.md** - Semantic versioning, releases, CHANGELOG
 
-Each guideline starts with TBD placeholders and gets filled in as you make decisions.
+**Workflows** (`workflows/` - 9 files):
+- **agent-coordination.md** - How specialized agents work together
+- **bug-workflow.md** - Bug fix workflow (reproduction-first + 5-step debugging)
+- **git-workflow.md** - Branching, commits, PRs, releases
+- **pm-file-formats.md** - SPEC.md, TASK.md, PLAN.md formats
+- **pm-workflows.md** - Planning and implementation workflows
+- **quality-gates.md** - Quality standards and gates
+- **spike-workflow.md** - Time-boxed technical exploration workflow
+- **task-workflow.md** - Task implementation workflow (TDD)
+- **worklog-format.md** - WORKLOG entry formats and examples
+
+**Templates** (`templates/` - 13 files): PM and documentation templates used by commands
+
+**Misc** (`misc/` - 4 files): Command/agent references and integration guides
+
+Most guidelines start with TBD placeholders and get filled in as you make decisions.
 
 ## How Guidelines Evolve
 
@@ -126,19 +143,70 @@ Auth middleware: src/server/middleware/auth.ts
 Commands read guidelines before executing:
 
 **`/implement TASK-001 1.1`**
-1. Reads `testing-standards.md` → knows to use Vitest
-2. Reads `coding-standards.md` → knows file naming conventions
-3. Reads `api-guidelines.md` → knows API patterns (if building API)
+1. Reads `conventions/testing-standards.md` → knows to use Vitest
+2. Reads `conventions/coding-standards.md` → knows file naming conventions
+3. Reads `conventions/api-guidelines.md` → knows API patterns (if building API)
 4. Implements following your project's patterns
 
 **`/quality`**
-1. Reads `quality-standards.md` → knows your quality bar
-2. Reads `security-guidelines.md` → checks security requirements
-3. Reads `testing-standards.md` → verifies test coverage
+1. Reads `workflows/quality-gates.md` → knows your quality bar
+2. Reads `conventions/security-guidelines.md` → checks security requirements
+3. Reads `conventions/testing-standards.md` → verifies test coverage
 
 **`/commit`**
-1. Reads `git-workflow.md` → knows commit convention
+1. Reads `workflows/git-workflow.md` → knows commit convention
 2. Formats commit message accordingly
+
+## Guideline Versioning
+
+**Guidelines use date-based tracking, not version numbers.**
+
+### Metadata Fields
+
+Each guideline has three metadata fields:
+```yaml
+---
+created: "2025-10-30"        # When guideline was first created
+last_updated: "2025-11-06"   # When last significantly changed
+status: "Active"             # Active, Optional, Deprecated
+---
+```
+
+### When to Update `last_updated`
+
+**DO update** when making:
+- ✅ Structural changes (added/removed sections)
+- ✅ Configuration changes (frontmatter updates)
+- ✅ Workflow changes (changed steps/requirements)
+- ✅ Behavior changes (how agents should interpret this)
+
+**DON'T update** for:
+- ❌ Typo fixes (too minor)
+- ❌ Grammar improvements (cosmetic)
+- ❌ Example additions (unless they change behavior)
+
+### Why No Version Numbers?
+
+Guidelines are **living documentation**, not APIs:
+- They evolve continuously as your project matures
+- Version numbers (1.0, 2.0) imply discrete releases that don't match reality
+- `last_updated` date tells you freshness without version number overhead
+- CHANGELOG.md tracks what changed (more useful than version numbers)
+
+**Example workflow:**
+```bash
+# Make significant change to testing-standards.md
+# Update last_updated: "2025-11-06"
+# Add entry to CHANGELOG.md under "Documentation"
+```
+
+### Status Field
+
+- **Active**: Used by commands/agents, kept current
+- **Optional**: Template, fill in when needed
+- **Deprecated**: No longer used, kept for reference
+
+---
 
 ## Best Practices
 
@@ -183,7 +251,7 @@ New team members (human or AI) read guidelines to understand:
 The AI Toolkit itself follows these guidelines:
 - **File naming**: kebab-case (testing-standards.md, not TestingStandards.md)
 - **Documentation**: Three-tier structure (docs/project/, docs/development/, plugin docs)
-- **Templates**: YAML frontmatter + markdown (epic.md, task.md, adr-template.md)
+- **Templates**: YAML frontmatter + markdown (spec.md, task.md, adr-template.md)
 - **Commands**: Read templates/guidelines at runtime to adapt behavior
 
 ## Getting Help

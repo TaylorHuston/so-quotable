@@ -1,14 +1,8 @@
 ---
-# === Metadata ===
-template_type: "guideline"
-version: "1.0.0"
-created: "2025-10-30"
-last_updated: "2025-10-31"
-status: "Active"
-target_audience: ["AI Assistants", "API Designers", "Backend Developers"]
+last_updated: "2025-11-25"
 description: "API design patterns, structure, and conventions for Convex function-based API"
 
-# === API Configuration (Machine-readable for AI agents) ===
+# === API Configuration ===
 api_pattern: "Convex Functions"  # Convex function-based API
 api_location: "convex/"          # Convex backend functions
 authentication: "Convex Auth"    # Convex Auth (email/password + OAuth)

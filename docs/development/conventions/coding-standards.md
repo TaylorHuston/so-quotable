@@ -1,14 +1,8 @@
 ---
-# === Metadata ===
-template_type: "guideline"
-version: "1.0.0"
-created: "2025-10-30"
-last_updated: "2025-10-31"
-status: "Active"
-target_audience: ["AI Assistants", "Development Team"]
+last_updated: "2025-11-25"
 description: "Code style, naming conventions, and file organization standards for So Quotable"
 
-# === Coding Configuration (Machine-readable for AI agents) ===
+# === Coding Configuration ===
 language: "typescript"          # TypeScript (mandatory)
 file_naming: "kebab-case"       # kebab-case for files
 directory_structure: "feature-based"  # Feature-based organization

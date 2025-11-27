@@ -34,7 +34,7 @@ sections:
     prompt: "What tasks make up this epic?"
     required: true
     format: checklist
-    hint: "Bulleted checkbox list with global IDs in creation order: [ ] TASK-001, [ ] BUG-003, etc."
+    hint: "Bulleted checkbox list with global IDs in creation order: [ ] 001, [ ] BUG-003, etc."
 ---
 
 # EPIC-{id}: {name}

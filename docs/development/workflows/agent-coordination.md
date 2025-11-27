@@ -1,495 +1,238 @@
 ---
-# === Metadata ===
-template_type: "guideline"
-version: "1.0.0"
-created: "2025-11-02"
-last_updated: "2025-11-02"
-status: "Active"
-target_audience: ["AI Assistants"]
+last_updated: "2025-11-26"
 description: "Agent coordination patterns, governance rules, and collaboration protocols"
 
-# === Machine-readable Configuration (for AI agents) ===
+# === Agent Coordination Configuration ===
 
 # Architectural Governance
 architectural_governance:
   mandatory_review_agent: "code-architect"
-  review_trigger: "all_plans"  # Every PLAN.md reviewed before user presentation
-  review_authority: "blocking"  # Can block plan presentation until approved
-  adherence_requirement: "Must follow existing ADRs and architectural patterns"
+  review_trigger: "all_plans"
+  review_authority: "blocking"
 
 # Security Governance
 security_governance:
   review_agent: "security-auditor"
   auto_invocation: true
-  trigger_mode: "conditional"  # Auto-detect security-relevant work
-
-  # Detection Criteria (from development-loop.md)
+  trigger_mode: "conditional"
   security_keywords:
-    - auth, login, password, token, session, permission, role, access control
-    - encrypt, decrypt, hash, salt, crypto, PII, sensitive data, personal information
-    - security, vulnerability, threat, OWASP, XSS, CSRF, SQL injection, sanitize, validate input
-    - admin, privilege, elevation, sudo, root
-    - API key, secret, credential, OAuth, SAML, SSO, third-party
-
+    - auth, login, password, token, session, permission, role
+    - encrypt, decrypt, hash, crypto, PII, sensitive data
+    - security, vulnerability, OWASP, XSS, CSRF, SQL injection
+    - admin, privilege, API key, secret, credential, OAuth
   security_file_patterns:
-    - "**/auth/**", "**/authentication/**", "**/authorization/**"
-    - "**/security/**", "**/crypto/**", "**/encryption/**"
-    - "**/*Auth*", "**/*Security*", "**/*Crypto*", "**/*Validation*"
-    - "**/middleware/auth*", "**/guards/**", "**/policies/**"
-
-  review_authority: "blocking"  # Can block phase completion for critical issues
-  review_scope: "OWASP compliance, threat modeling, input validation, crypto usage"
+    - "**/auth/**", "**/security/**", "**/crypto/**"
+    - "**/*Auth*", "**/*Security*", "**/guards/**"
+  review_authority: "blocking"
 
 # Quality Governance
 quality_gates:
   code_review_agent: "code-reviewer"
-  minimum_score: 90  # Per-phase threshold (configurable in development-loop.md)
-  review_frequency: "per_phase"  # Every phase reviewed before completion
+  minimum_score: 90
+  review_frequency: "per_phase"
+  test_coverage_agent: "domain_specialists"
+  test_strategy_agent: "test-engineer"
+  minimum_coverage: 95
 
-  test_coverage_agent: "test-engineer"
-  minimum_coverage: 95  # Percentage (configurable in development-loop.md)
-  test_strategy: "test_first"  # TDD/BDD encouraged
-
-# Agent Escalation Paths
+# Escalation Hierarchy
 escalation_hierarchy:
   architectural_questions:
     from: ["domain_specialists", "refactoring-specialist"]
     to: "code-architect"
-    when: "Uncertain about architectural patterns, ADR applicability, system design"
-
   security_concerns:
     from: ["domain_specialists", "code-reviewer"]
     to: "security-auditor"
-    when: "Security implications unclear, handling sensitive data, auth/crypto work"
-
   performance_issues:
     from: ["database-specialist", "frontend-specialist", "backend-specialist"]
     to: "performance-optimizer"
-    when: "Cross-cutting performance concerns, application-level optimization needed"
-
   refactoring_needs:
     from: ["code-reviewer", "migration-specialist"]
     to: "refactoring-specialist"
-    when: "Code quality issues, technical debt, pattern improvements needed"
 
-# Agent Collaboration Patterns
+# Collaboration Patterns
 collaboration_patterns:
-  parallel_work:
-    - [frontend-specialist, backend-specialist]  # Can work simultaneously on features
-    - [test-engineer, domain_specialists]  # TDD: tests written alongside implementation
-
-  sequential_handoff:
-    - [context-analyzer, domain_specialists]  # Context gathered before implementation
-    - [domain_specialists, code-reviewer]  # Implementation reviewed after completion
-    - [code-reviewer, technical-writer]  # Documentation after code approved
-
-  continuous_collaboration:
-    - [domain_specialists, test-engineer]  # Ongoing test-first guidance
-    - [domain_specialists, security-auditor]  # Security review during implementation
-
+  parallel: [frontend-specialist, backend-specialist]
+  sequential: [domain_specialists → code-reviewer → technical-writer]
+  continuous: [domain_specialists + security-auditor]
 ---
 
 # Agent Coordination Guidelines
 
-**Referenced by:** All agent files for understanding governance, escalation, and collaboration
+**Referenced by:** All agent files
 
-## Quick Reference
+## Governance Rules
 
-This guideline defines how agents coordinate, when to escalate, and how quality gates enforce standards. Agents read this to understand their role in the broader workflow.
+### Code-Architect (Mandatory)
 
-## Architectural Governance
+**All plans reviewed before user presentation.**
 
-### Code-Architect: Mandatory Review Authority
+- **Trigger**: `/plan` command (automatic, non-skippable)
+- **Authority**: BLOCKING - can prevent plan presentation
+- **Scope**: Architectural soundness, ADR consistency, technology choices, cross-cutting concerns
 
-**All implementation plans reviewed by code-architect before user presentation.**
+### Security-Auditor (Conditional)
 
-**When Invoked:**
-- **Automatic** by `/plan` command (mandatory, non-skippable)
-- After project-manager generates initial PLAN.md
-- Before plan shown to user
+**Auto-invoked for security-relevant work.**
 
-**Review Scope:**
-- Architectural soundness and consistency with existing ADRs
-- Phase structure and logical breakdown
-- Technology choices and patterns
-- Scalability and maintainability considerations
-- Cross-cutting concerns (security, performance, observability)
-- Integration with existing system architecture
+- **Plan-Level**: Task contains security keywords → threat modeling review
+- **Phase-Level**: Files match security patterns → implementation review
+- **Authority**: BLOCKING - can prevent phase completion for critical issues
+- **Detection**: Keywords and file patterns in YAML config above
 
-**Authority:**
-- **BLOCKING**: Can prevent plan presentation until issues resolved
-- **ADVISORY**: Can suggest additional phases or approach changes
-- **ADR CREATION**: Can require ADR for significant architectural decisions
+### Code-Reviewer (Per-Phase)
 
-**What This Means for Domain Specialists:**
-1. Your implementation approach will be architecturally reviewed
-2. Follow existing ADRs and architectural patterns
-3. When uncertain about architecture, escalate to code-architect
-4. Don't make significant architectural decisions without code-architect involvement
+**Every phase reviewed before completion.**
 
-**Configuration:**
-- Review requirements defined in `development-loop.md` "Plan Review Requirements"
-- ADR patterns defined in `architectural-principles.md`
+- **Trigger**: `/implement` iteration loop
+- **Threshold**: 90+ score required (iterate until met)
+- **Scope**: Code quality, best practices, maintainability, test coverage
 
-## Security Governance
+### Test-Engineer (Guidance)
 
-### Security-Auditor: Conditional Auto-Invocation
+**Test strategy and coverage validation.**
 
-**Security-relevant work automatically reviewed by security-auditor.**
+- **Trigger**: `/plan` (strategy), `/implement` (guidance), `/troubleshoot` (debugging)
+- **Threshold**: 95% coverage required
 
-**When Invoked:**
+---
 
-**1. Plan-Level Review** (after code-architect approval):
-- **Trigger**: Task description or acceptance criteria contain security keywords
-- **Timing**: During `/plan` command, after code-architect approves
-- **Scope**: Threat modeling, security approach validation, required security phases
+## Escalation Paths
 
-**2. Phase-Level Review** (before phase completion):
-- **Trigger**: Phase description or modified files match security patterns
-- **Timing**: During `/implement` command, before marking phase complete
-- **Scope**: Implementation review for vulnerabilities, crypto usage, input validation
+**When to escalate to another agent:**
 
-**Detection Criteria** (see machine-readable config above):
-- **Keywords**: auth, login, password, token, encrypt, crypto, PII, OAuth, admin, etc.
-- **File Patterns**: `**/auth/**`, `**/security/**`, `**/*Auth*`, `**/guards/**`, etc.
+| Escalate To | From | When |
+|-------------|------|------|
+| code-architect | Any specialist | Architectural patterns, ADR applicability, system design, technology choices |
+| security-auditor | Any specialist | Auth/crypto work, sensitive data, unclear security implications |
+| performance-optimizer | Domain specialists | Cross-cutting performance, app-level optimization needed |
+| refactoring-specialist | code-reviewer | Systematic refactoring, technical debt across multiple files |
 
-**Authority:**
-- **BLOCKING**: Can prevent phase completion for critical vulnerabilities
-- **ADVISORY**: Can recommend additional security controls
-- **PHASE REQUIREMENT**: Can require threat modeling or penetration testing phases
+---
 
-**What This Means for Domain Specialists:**
-1. Security-auditor will automatically review your work if security-relevant
-2. You don't need to manually invoke - auto-detection handles it
-3. Critical security issues will block phase completion
-4. Follow OWASP guidelines and secure coding practices
-5. When implementing auth/crypto/permissions, expect security review
-
-**Configuration:**
-- Detection criteria defined in `development-loop.md` "Security-Relevant Phase Detection"
-- Security standards defined in `security-guidelines.md`
-- OWASP compliance patterns in security-auditor agent
-
-**Manual Override:**
-- If security work not auto-detected, manually request security review
-- User can explicitly invoke `/security-audit` for comprehensive review
-
-## Quality Gates
-
-### Code-Reviewer: Per-Phase Quality Validation
-
-**Every implementation phase reviewed for code quality before completion.**
-
-**When Invoked:**
-- During `/implement` command iteration loop
-- After domain specialist completes implementation
-- Before marking phase as complete in PLAN.md
-
-**Review Scope:**
-- Code quality and best practices
-- Design patterns appropriateness
-- Maintainability and readability
-- Performance implications
-- Test coverage adequacy
-
-**Quality Threshold:**
-- **Minimum Score**: 90/100 (configurable in `development-loop.md`)
-- **Enforcement**: Iterate until threshold met
-- **Guidance**: Constructive feedback for improvements
-
-**What This Means for Domain Specialists:**
-1. Your code will be reviewed every phase
-2. Aim for 90+ quality score to avoid rework
-3. Follow coding standards and best practices
-4. Write maintainable, well-documented code
-
-### Test-Engineer: Test-First Guidance
-
-**Test strategy and coverage validated throughout implementation.**
-
-**When Involved:**
-- During `/plan` command (test strategy in phases)
-- During `/implement` command (test-first guidance)
-- Via `/test-fix` command (test failure resolution)
-
-**Test Coverage Threshold:**
-- **Minimum Coverage**: 95% (configurable in `development-loop.md`)
-- **Test-First**: Encouraged via pragmatic test-first protocol
-- **Enforcement**: Coverage checked before phase completion
-
-**What This Means for Domain Specialists:**
-1. Consider tests when planning implementation
-2. Write tests before or alongside implementation
-3. Aim for 95%+ coverage
-4. test-engineer provides guidance on test strategy
-
-## Agent Escalation Patterns
-
-**When to escalate to other agents:**
-
-### Escalate to Code-Architect
-
-**From:** Any domain specialist, refactoring-specialist
-**When:**
-- Uncertain about architectural patterns or ADR applicability
-- Considering significant architectural changes
-- Need guidance on system design or technology choices
-- Cross-cutting concerns affecting multiple modules
-- Technical debt has architectural implications
-
-**Example:**
-```
-Frontend-specialist: "Should this state management be Redux or Context API?"
-→ Escalate to code-architect for architectural guidance
-```
-
-### Escalate to Security-Auditor
-
-**From:** Any domain specialist, code-reviewer
-**When:**
-- Implementing authentication or authorization logic
-- Handling sensitive data (PII, credentials, payment info)
-- Using cryptography or encryption
-- Unsure about input validation or sanitization approach
-- Security implications unclear
-
-**Note:** Often auto-invoked, but manual escalation available.
-
-**Example:**
-```
-Backend-specialist: "Storing API keys - use environment variables or secrets manager?"
-→ Escalate to security-auditor for security best practices
-```
-
-### Escalate to Performance-Optimizer
-
-**From:** database-specialist, frontend-specialist, backend-specialist, devops-engineer
-**When:**
-- Cross-cutting performance issues (spans multiple components)
-- Application-level optimization needed (not just database or frontend)
-- Profiling required to identify bottlenecks
-- Performance targets not met despite domain-level optimization
-
-**Handoff Pattern:**
-- database-specialist handles query optimization first
-- If still slow, escalate to performance-optimizer for application-level analysis
-
-**Example:**
-```
-Database-specialist: "Queries optimized with indexes, but page still slow"
-→ Escalate to performance-optimizer for broader performance analysis
-```
-
-### Escalate to Refactoring-Specialist
-
-**From:** code-reviewer, migration-specialist, any domain specialist
-**When:**
-- Code quality issues require systematic refactoring
-- Technical debt cleanup needed across multiple files
-- Pattern improvements needed (not just spot fixes)
-- Code smells identified but unclear how to refactor
-
-**Example:**
-```
-Code-reviewer: "This module has high cyclomatic complexity across 15 functions"
-→ Escalate to refactoring-specialist for systematic cleanup
-```
-
-## Agent Collaboration Patterns
-
-### Parallel Work Patterns
-
-**Frontend + Backend Simultaneously:**
-- When features have clear API contracts defined
-- Both can work in parallel once contract agreed
-- API-designer can facilitate contract definition
-
-**Test-Engineer + Domain Specialists:**
-- TDD: test-engineer writes tests, domain specialist implements
-- Parallel: tests and implementation developed together
-- Continuous: test-engineer provides ongoing guidance
-
-### Sequential Handoff Patterns
-
-**Context-Analyzer → Domain Specialists:**
-1. context-analyzer gathers project context (ADRs, patterns, previous work)
-2. Provides filtered, domain-specific context to domain specialist
-3. Domain specialist implements with full context awareness
-
-**Domain Specialists → Code-Reviewer:**
-1. Domain specialist completes implementation
-2. code-reviewer validates quality, best practices
-3. Iterate until quality score ≥ 90
-4. Mark phase complete
-
-**Code-Reviewer → Technical-Writer:**
-1. Code approved by code-reviewer
-2. technical-writer documents new features
-3. Ensures documentation accuracy matches implementation
-
-### Continuous Collaboration Patterns
-
-**Domain Specialists + Test-Engineer:**
-- Ongoing test-first guidance throughout implementation
-- test-engineer available for test strategy questions
-- Continuous feedback on test coverage and quality
-
-**Domain Specialists + Security-Auditor:**
-- For security-relevant work, security-auditor reviews during implementation
-- Can provide early feedback before phase completion
-- Prevents late-stage security rework
-
-## Agent Invocation Decision Tree
-
-**Use this to decide which agent to invoke for edge cases:**
+## Decision Trees
 
 ### Performance Issues
 ```
 Is it slow?
-├─ Database queries? → database-specialist (query optimization, indexes)
-├─ Frontend rendering? → frontend-specialist (then performance-optimizer if needed)
-├─ Backend API? → backend-specialist (then performance-optimizer if needed)
-├─ Infrastructure? → devops-engineer (scaling, caching, CDN)
-└─ Cross-cutting? → performance-optimizer (application-level profiling)
+├─ Database queries? → database-specialist
+├─ Frontend rendering? → frontend-specialist
+├─ Backend API? → backend-specialist
+├─ Infrastructure? → devops-engineer
+└─ Cross-cutting? → performance-optimizer
 ```
 
 ### Code Quality Issues
 ```
 Code needs improvement?
-├─ Design patterns? → refactoring-specialist (systematic cleanup)
-├─ Architecture? → code-architect (system design)
-├─ Testing? → test-engineer (test strategy, coverage)
-├─ Security? → security-auditor (vulnerabilities, OWASP)
-└─ General review? → code-reviewer (quality validation)
+├─ Design patterns? → refactoring-specialist
+├─ Architecture? → code-architect
+├─ Testing? → test-engineer
+├─ Security? → security-auditor
+└─ General review? → code-reviewer
 ```
 
 ### Documentation Needs
 ```
 Documentation required?
-├─ Architecture decisions? → code-architect (creates ADRs)
-├─ API documentation? → technical-writer (API docs, guides)
-├─ Security docs? → security-auditor + technical-writer (threat models, auth flows)
-└─ User guides? → technical-writer (end-user documentation)
+├─ Architecture decisions? → code-architect (ADRs)
+├─ API documentation? → technical-writer
+├─ Security docs? → security-auditor + technical-writer
+└─ User guides? → technical-writer
 ```
 
-### Migration/Upgrade Work
-```
-Upgrading framework or dependencies?
-├─ Version upgrade only? → migration-specialist (dependency updates)
-├─ + Code pattern changes? → migration-specialist + refactoring-specialist (parallel work)
-├─ + Architecture changes? → code-architect + migration-specialist (architectural guidance)
-└─ + Performance concerns? → migration-specialist + performance-optimizer (optimization)
-```
+---
+
+## Collaboration Patterns
+
+**Parallel Work:**
+- Frontend + Backend when API contract defined
+- Domain specialists + code-reviewer (tests alongside implementation)
+
+**Sequential Handoff:**
+- Domain specialist → code-reviewer (iterate until 90+) → phase complete
+- code-reviewer → technical-writer (documentation after approval)
+
+**Continuous:**
+- Domain specialists + security-auditor (security-relevant work)
+- Domain specialists + test-engineer (test strategy guidance)
+
+---
 
 ## Responsibility Boundaries
 
-**Clarifying overlapping domains:**
+| Domain | Primary Agent | Escalate To |
+|--------|---------------|-------------|
+| Query optimization | database-specialist | performance-optimizer (if app-level) |
+| Code quality | refactoring-specialist | - |
+| Framework upgrades | migration-specialist | refactoring-specialist (post-migration) |
+| Analytics features | backend-specialist | data-analyst (analysis) |
 
-### Performance Optimization
+---
 
-**Database-Specialist Handles:**
-- Query optimization (indexes, query structure)
-- Database-level performance (connection pooling, caching)
-- Schema design for performance
+## Agent Handoff in Practice
 
-**Performance-Optimizer Handles:**
-- Application-level performance (algorithmic optimization)
-- Cross-cutting performance (multiple components)
-- Profiling and bottleneck identification
-- Performance testing strategy
+**Example: `/implement` orchestrating a backend phase**
 
-**Handoff:** database-specialist optimizes database layer first, escalates to performance-optimizer if application-level issues remain.
+```
+User: /implement TASK-001 1.2
 
-### Code Improvement
+/implement command:
+1. Reads PLAN.md → Phase 1.2: "Implement login endpoint"
+2. Determines domain: backend → Selects backend-specialist
+3. Invokes backend-specialist
 
-**Refactoring-Specialist Handles:**
-- Code quality improvements within current framework
-- Technical debt reduction
-- Pattern improvements and code smells
+backend-specialist:
+4. Reads WORKLOG.md for context
+5. Follows TDD loop: tests → implement → tests pass
+6. Writes WORKLOG.md entry
 
-**Migration-Specialist Handles:**
-- Framework version upgrades
-- Dependency migrations
-- Breaking API changes
+/implement command:
+7. Invokes code-reviewer
 
-**Handoff:** migration-specialist leads upgrades, refactoring-specialist handles code modernization post-migration.
+code-reviewer:
+8. Reviews → Score: 85 ("Add input validation")
 
-### Analytics & Data
+/implement command:
+9. Score < 90 → Re-invokes backend-specialist
 
-**Data-Analyst Handles:**
-- Data processing and analysis
-- Business intelligence and reporting
-- Data visualization preparation
+backend-specialist:
+10. Addresses feedback, re-runs tests
 
-**Backend-Specialist Handles:**
-- Analytics feature implementation (tracking, events)
-- Data pipelines and ETL
-- Analytics API endpoints
-
-**Handoff:** backend-specialist implements analytics features, data-analyst analyzes resulting data.
-
-## Context-Analyzer: Pre-Task Intelligence
-
-**Automatic context gathering before complex tasks.**
-
-**When Auto-Invoked:**
-- Before complex, multi-step tasks
-- When `/implement` starts work on new epic
-- When semantic code analysis would help
-
-**What It Provides:**
-- Project context (ADRs, architectural patterns)
-- Domain-specific filtering (only relevant context)
-- Previous work and lessons learned
-- Semantic code structure (via Serena tools)
-
-**What This Means for Domain Specialists:**
-1. You'll receive pre-filtered, relevant context
-2. Don't need to manually search for ADRs or patterns
-3. context-analyzer has already gathered what you need
-4. Focus on implementation, not context discovery
-
-## Customization
-
-**Teams can customize governance rules in this guideline:**
-
-### Adjust Quality Thresholds
-```yaml
-quality_gates:
-  minimum_score: 85  # Lower threshold for faster iteration
-  minimum_coverage: 90  # Adjust test coverage requirement
+/implement command:
+11. Re-invokes code-reviewer → Score: 92 ✓
+12. Marks phase complete, updates PLAN.md
 ```
 
-### Modify Security Detection
-```yaml
-security_governance:
-  security_keywords:
-    - Add custom keywords for your domain
-    - Remove keywords that cause false positives
+**Key insight**: Commands orchestrate, agents execute. WORKLOG enables handoffs.
 
-  security_file_patterns:
-    - Add custom file patterns
-    - "**/your-custom-security-path/**"
-```
+---
 
-### Change Escalation Paths
-```yaml
-escalation_hierarchy:
-  custom_escalation:
-    from: ["your-custom-agent"]
-    to: "target-agent"
-    when: "Your custom escalation criteria"
-```
+## Context-Analyzer
 
-## Related Documentation
+**On-demand external research specialist.**
 
-**Governance Sources:**
-- `development-loop.md` - Quality gates, test coverage, security detection criteria
-- `security-guidelines.md` - Security standards and OWASP compliance
-- `architectural-principles.md` - ADR patterns and architectural principles
-- `git-workflow.md` - Branch merge gates and deployment validation
+**Use For:**
+- External documentation lookup
+- Community solutions research
+- Best practice discovery
 
-**Agent References:**
-- All domain specialist agents reference this guideline
-- Quality agents (code-reviewer, test-engineer, security-auditor) enforce rules from here
-- Strategic agents (code-architect, project-manager) coordinate based on patterns here
+**Don't Use For:**
+- Local project context (use Read/Grep/Glob)
+- ADR discovery (use Glob)
+- Codebase patterns (use Read directly)
+
+**Workflow:**
+1. Checks CLAUDE.md Resources first
+2. Fetches docs via Context7
+3. Searches community via WebSearch
+4. Returns curated summary with links
+5. Creates Investigation WORKLOG entry
+
+---
+
+## Related Files
+
+- task-workflow.md - TDD loop, quality gates
+- security-guidelines.md - OWASP compliance
+- architectural-principles.md - ADR patterns
+- worklog-format.md - Entry formats

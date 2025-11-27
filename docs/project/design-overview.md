@@ -359,7 +359,7 @@ As new designs are approved:
 
 ## Guidelines
 
-See `docs/development/guidelines/ui-design-guidelines.md` for:
+See `docs/development/conventions/ui-design-guidelines.md` for:
 - Complete design token configuration
 - Responsive breakpoint definitions
 - Accessibility requirements

@@ -1,14 +1,8 @@
 ---
-# === Metadata ===
-template_type: "guideline"
-version: "1.0.0"
-created: "2025-11-03"
-last_updated: "2025-11-03"
-status: "Active"
-target_audience: ["Development Team", "AI Assistants"]
+last_updated: "2025-11-25"
 description: "Semantic versioning strategy, release process, and CHANGELOG maintenance"
 
-# === Configuration ===
+# === Versioning Configuration ===
 versioning_scheme: "semver"  # Semantic Versioning 2.0.0
 pre_release_phase: true      # Currently in 0.x.y (pre-1.0.0)
 changelog_format: "keep-a-changelog"
@@ -64,10 +58,10 @@ While in `0.x.y`, we use:
 - `0.0.x` for **bug fixes** (patch releases)
 
 **Examples from our project:**
-- `0.1.0` - Initial Next.js setup (TASK-001)
-- `0.2.0` - Convex backend (TASK-002)
-- `0.3.0` - Cloudinary integration (TASK-003)
-- `0.4.0` - Authentication (TASK-004)
+- `0.1.0` - Initial Next.js setup (001)
+- `0.2.0` - Convex backend (002)
+- `0.3.0` - Cloudinary integration (003)
+- `0.4.0` - Authentication (004)
 - `0.4.1` - Bug fix (hypothetical)
 - `0.5.0` - Quote generation (next feature)
 
@@ -443,7 +437,3 @@ git push origin develop
 - [Development Loop](./development-loop.md) - Implementation workflow
 - Project [CHANGELOG.md](../../../CHANGELOG.md) - Version history
 
----
-
-**Last Updated**: 2025-11-03
-**Next Review**: When releasing v1.0.0 (production-ready)

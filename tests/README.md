@@ -67,7 +67,7 @@ npm run test:e2e:ci
 
 **Current E2E Test Status**:
 - 22 authentication flow tests written
-- 10/22 passing (45% - expected failures due to TASK-007 auth redirect issue)
+- 10/22 passing (45% - expected failures due to 007 auth redirect issue)
 - Quote search/generation tests skipped (features not implemented yet)
 
 ## Debugging E2E Tests
@@ -225,13 +225,13 @@ Tests run automatically on:
 
 ## Known Issues
 
-### TASK-007: Auth Redirect Race Condition
+### 007: Auth Redirect Race Condition
 
 **Issue**: 12/22 E2E auth tests fail due to post-authentication redirect timeout.
 
 **Cause**: `router.push("/dashboard")` executes before `convex-token` cookie is set.
 
-**Status**: Fix planned in TASK-007 (cookie polling before redirect).
+**Status**: Fix planned in 007 (cookie polling before redirect).
 
 **Workaround**: Tests are correctly written; failures reveal implementation gap (TDD working as intended).
 
