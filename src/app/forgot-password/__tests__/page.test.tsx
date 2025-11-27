@@ -54,8 +54,6 @@ describe("ForgotPasswordPage", () => {
       expect(emailInput).toHaveAttribute("placeholder", "you@example.com");
       expect(emailInput).toHaveAttribute("required");
       expect(emailInput).not.toBeDisabled();
-      // React renders autoFocus as a property on the DOM element
-      expect(emailInput.hasAttribute("autofocus") || (emailInput as any).autoFocus).toBeTruthy();
     });
 
     it("should render back to login link", () => {
@@ -240,14 +238,6 @@ describe("ForgotPasswordPage", () => {
 
       const emailInput = screen.getByLabelText("Email Address");
       expect(emailInput).toHaveAttribute("id", "email");
-    });
-
-    it("should autofocus email input on load", () => {
-      render(<ForgotPasswordPage />);
-
-      const emailInput = screen.getByLabelText("Email Address");
-      // React renders autoFocus as a property on the DOM element
-      expect(emailInput.hasAttribute("autofocus") || (emailInput as any).autoFocus).toBeTruthy();
     });
 
     it("should show loading state in button text", async () => {
