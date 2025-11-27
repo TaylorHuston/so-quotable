@@ -291,18 +291,22 @@ The `/branch merge` command enforces quality gates based on target branch.
 
 **Technical checks performed by `/branch merge develop`:**
 1. ✅ All tests pass (full suite execution)
-2. ✅ No uncommitted changes
-3. ✅ Branch is up to date with remote
-4. ⚠️ Documentation sync validation (see task-workflow.md "Documentation Synchronization Checklist")
+2. ✅ Linting passes (no errors allowed)
+3. ✅ Type checking passes (`npm run type-check`)
+4. ✅ No uncommitted changes
+5. ✅ Branch is up to date with remote
+6. ⚠️ Documentation sync validation (see task-workflow.md "Documentation Synchronization Checklist")
 
 **Process:**
 ```bash
 /branch merge develop
-# 1. Runs full test suite
-# 2. Shows test results
-# 3. Blocks merge if tests fail
-# 4. Executes merge if all pass
-# 5. Pushes to remote
+# 1. Runs linter (npm run lint) - blocks on errors
+# 2. Runs type-check (npm run type-check) - blocks on errors
+# 3. Runs full test suite
+# 4. Shows results
+# 5. Blocks merge if any check fails
+# 6. Executes merge if all pass
+# 7. Pushes to remote
 ```
 
 ### Merging to `main` (Production)
