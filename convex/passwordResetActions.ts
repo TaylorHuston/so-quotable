@@ -3,6 +3,7 @@
 import { v } from "convex/values";
 import { action, internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { Id } from "./_generated/dataModel";
 import { Resend } from "resend";
 import { modifyAccountCredentials } from "@convex-dev/auth/server";
 export const resetPasswordWithToken = action({
@@ -10,7 +11,7 @@ export const resetPasswordWithToken = action({
     token: v.string(),
     newPassword: v.string(),
   },
-  handler: async (ctx, args): Promise<{ success: boolean; error?: string; message?: string; userId?: any }> => {
+  handler: async (ctx, args): Promise<{ success: boolean; error?: string; message?: string; userId?: Id<"users"> }> => {
     // Validate token format
     if (!args.token || args.token.length < 20) {
       return {
