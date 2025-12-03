@@ -4327,3 +4327,111 @@ Files: convex/passwordReset.ts, convex/schema.ts, convex/auth.ts, src/app/forgot
 **Note**: Code reviewer's critical issue about password update has been verified as properly addressed using Convex Auth's modifyAccountCredentials (line 274).
 
 Full report: /tmp/password-reset-security-audit.md
+
+
+## 2025-12-03 20:55 - [AUTHOR: claude] Production OAuth Fix
+
+### Context
+
+After deploying to production (Vercel + Convex prod deployment), Google OAuth was failing with "invalid_client" error 401.
+
+### Root Cause Analysis
+
+1. **Initial symptom**: Network trace showed `client_id=undefined` in OAuth URL
+2. **Investigation**: Convex MCP only sees dev deployment (`cheery-cow-298`), not production (`steady-anaconda-957`)
+3. **Discovery**: Production Convex deployment was missing critical environment variables:
+   - `AUTH_GOOGLE_ID` - Google OAuth client ID
+   - `AUTH_GOOGLE_SECRET` - Google OAuth client secret
+   - `SITE_URL` - Production URL for redirects
+   - `JWT_PRIVATE_KEY` - Signs JWT tokens for sessions
+   - `JWKS` - Public key for JWT verification
+
+4. **CLI issue**: Using `CONVEX_DEPLOYMENT=prod:...` doesn't work for production access
+5. **Solution**: Use `CONVEX_DEPLOY_KEY` from Vercel environment to access production
+
+### Actions Taken
+
+1. **Retrieved deploy key from Vercel**:
+   ```bash
+   vercel env pull .env.vercel.local --environment=production
+   ```
+
+2. **Set missing environment variables in production**:
+   ```bash
+   CONVEX_DEPLOY_KEY="prod:steady-anaconda-957|..." npx convex env set AUTH_GOOGLE_ID "..."
+   CONVEX_DEPLOY_KEY="prod:steady-anaconda-957|..." npx convex env set AUTH_GOOGLE_SECRET "..."
+   CONVEX_DEPLOY_KEY="prod:steady-anaconda-957|..." npx convex env set SITE_URL "https://so-quoteable.vercel.app"
+   CONVEX_DEPLOY_KEY="prod:steady-anaconda-957|..." npx convex env set JWKS '...'
+   CONVEX_DEPLOY_KEY="prod:steady-anaconda-957|..." npx convex env set -- JWT_PRIVATE_KEY "..."
+   ```
+
+3. **Updated auth.ts to explicitly pass credentials**:
+   ```typescript
+   Google({
+     clientId: process.env.AUTH_GOOGLE_ID,
+     clientSecret: process.env.AUTH_GOOGLE_SECRET,
+     // ...
+   })
+   ```
+
+4. **Google Cloud Console setup**:
+   - Published OAuth app from Testing to Production mode
+   - Added domain verification file (`public/google04357940f2bb12da.html`)
+   - Verified domain in Google Search Console
+
+### Lessons Learned
+
+1. **Convex MCP limitation**: Only sees dev deployments, need `CONVEX_DEPLOY_KEY` for production
+2. **CLI deployment selectors**: `CONVEX_DEPLOYMENT=prod:...` doesn't work; use `CONVEX_DEPLOY_KEY=...`
+3. **Auth.js provider quirk**: `@auth/core` providers don't auto-detect Convex env vars; pass explicitly
+4. **PEM keys with dashes**: Use `--` to stop option parsing for values starting with dashes
+
+### Verification
+
+- ✅ Google OAuth working in production
+- ✅ User can sign in with Google account
+- ✅ Session properly created
+- ✅ Redirect to dashboard working
+
+### Files Changed
+
+- `convex/auth.ts` - Explicitly pass clientId and clientSecret to Google provider
+
+**Status**: ✅ COMPLETE - Production OAuth fully functional
+
+
+## 2025-12-03 21:00 - [AUTHOR: claude] TASK-004 Closure
+
+### Final Status
+
+All phases of TASK-004 are complete:
+- Phase 1-4: Core auth implementation ✅
+- Phase 5: Password validation sync ✅
+- Phase 6: OAuth redirect fix ✅
+- Phase 7: Comprehensive testing ✅
+- Phase 8: Quality remediation ✅
+- Production OAuth fix ✅
+
+### Auth System Summary
+
+**Authentication Methods**:
+- Email/password with NIST-compliant validation (12+ chars, complexity requirements)
+- Google OAuth with explicit credential passing
+
+**Security Features**:
+- Session management (24h default, 7d with "remember me")
+- Rate limiting (5 failed attempts → lockout)
+- Security headers (CSP, HSTS, X-Frame-Options, etc.)
+- JWT tokens with proper key management
+
+**Testing**:
+- 616+ unit tests passing
+- 22 E2E tests passing
+- ~92% code coverage
+
+**Documentation**:
+- `docs/deployment/auth-setup.md` - Comprehensive setup guide
+- JSDoc on all exported functions
+- Troubleshooting guide in README
+
+**Status**: ✅ TASK-004 CLOSED
