@@ -117,8 +117,10 @@ export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
     }),
 
     // Google OAuth (Phase 3)
-    // Customize profile to match our schema requirements
+    // Explicitly pass credentials - Convex env vars not auto-detected by @auth/core
     Google({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
       profile(profile) {
         const email = (profile.email as string) || "";
         const name = (profile.name as string) || email.split("@")[0] || "user";
